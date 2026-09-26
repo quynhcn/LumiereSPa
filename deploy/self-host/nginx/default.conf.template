@@ -1,0 +1,46 @@
+# Cổng API tương thích supabase-js: /auth/v1/* → GoTrue, /rest/v1/* → PostgREST.
+# ${ALLOWED_ORIGIN} = SITE_URL (domain web app) — chỉ domain này được gọi API từ trình duyệt.
+
+map $http_origin $cors_origin {
+  default "";
+  "${ALLOWED_ORIGIN}" $http_origin;
+  "~^http://localhost(:\d+)?$" $http_origin;   # dev — xóa dòng này trên production nếu muốn chặt hơn
+}
+
+server {
+  listen 80;
+  client_max_body_size 5m;
+
+  proxy_set_header Host $host;
+  proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;   # hold_slot giới hạn theo IP
+  proxy_set_header X-Forwarded-Proto $scheme;
+  proxy_hide_header Access-Control-Allow-Origin;
+  proxy_hide_header Access-Control-Allow-Credentials;
+  proxy_hide_header Access-Control-Allow-Headers;
+  proxy_hide_header Access-Control-Allow-Methods;
+  proxy_hide_header Access-Control-Expose-Headers;
+
+  add_header Access-Control-Allow-Origin $cors_origin always;
+  add_header Access-Control-Allow-Methods "GET, POST, PUT, PATCH, DELETE, OPTIONS" always;
+  add_header Access-Control-Allow-Headers "authorization, apikey, content-type, x-client-info, x-supabase-api-version, prefer, range, accept-profile, content-profile" always;
+  add_header Access-Control-Expose-Headers "Content-Range, Content-Location, X-Total-Count" always;
+  add_header Access-Control-Max-Age 86400 always;
+  add_header Vary Origin always;
+
+  location /auth/v1/ {
+    if ($request_method = OPTIONS) { return 204; }
+    proxy_pass http://auth:9999/;
+  }
+
+  location /rest/v1/ {
+    if ($request_method = OPTIONS) { return 204; }
+    proxy_pass http://rest:3000/;
+  }
+
+  location = /health {
+    add_header Content-Type text/plain;
+    return 200 "ok";
+  }
+
+  location / { return 404; }
+}

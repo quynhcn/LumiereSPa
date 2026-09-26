@@ -1,0 +1,668 @@
+import Link from 'next/link';
+import { ArrowRight, Check, Gift, Heart, Layers, Leaf, MapPin, Quote, ShieldCheck, Sparkles, Star } from 'lucide-react';
+import { supabase } from '@/lib/supabase';
+import { SITE } from '@/lib/site-config';
+import {
+  formatDuration,
+  formatPrice,
+  categoryLabel,
+  type AppSettings,
+  type PublicReview,
+  type Service,
+  type ServicePackage,
+  type Staff,
+} from '@/lib/types';
+import { SiteHeader } from '@/components/site-header';
+import { Logo } from '@/components/logo';
+import { PromoBar } from '@/components/landing/promo-bar';
+import { LeadDialog, LeadForm } from '@/components/landing/lead-form';
+import { ContactButtons, MobileActionBar, OpenStatus } from '@/components/landing/contact-actions';
+
+// Server-rendered (SEO + no loading flash); refreshed every 5 minutes.
+export const revalidate = 300;
+
+type PublicStaff = Pick<Staff, 'id' | 'name' | 'avatar_url' | 'role' | 'bio' | 'specialties' | 'years_experience'>;
+
+async function getData() {
+  const [svc, settings, staff, packages, reviews, summary] = await Promise.all([
+    supabase.from('services').select('*').eq('is_active', true).order('category').order('price').then((r) => r.data || [], () => []),
+    supabase.from('app_settings').select('first_visit_enabled, first_visit_discount_pct').eq('id', 1).maybeSingle().then((r) => r.data, () => null),
+    // Only public profile fields — never phone / email
+    supabase
+      .from('staff')
+      .select('id, name, avatar_url, role, bio, specialties, years_experience')
+      .eq('is_active', true)
+      .order('years_experience', { ascending: false, nullsFirst: false })
+      .then((r) => r.data || [], () => []),
+    supabase.from('service_packages').select('*, services!inner (name, price, duration_min, is_active)').eq('is_active', true).eq('services.is_active', true).order('price').then((r) => r.data || [], () => []),
+    supabase.rpc('get_public_reviews', { p_limit: 6 }).then((r) => r.data || [], () => []),
+    supabase.rpc('get_review_summary').then((r) => r.data || [], () => []),
+  ]);
+  const s = (settings as AppSettings | null) ?? { first_visit_enabled: true, first_visit_discount_pct: 10 };
+  const sum = (summary as { average: number | null; total: number }[] | null)?.[0];
+  return {
+    services: (svc || []) as Service[],
+    offerPct: s.first_visit_enabled ? s.first_visit_discount_pct : 0,
+    staff: (staff || []) as PublicStaff[],
+    packages: (packages || []) as ServicePackage[],
+    reviews: (reviews || []) as PublicReview[],
+    rating: sum && sum.total > 0 ? { average: Number(sum.average), total: sum.total } : null,
+  };
+}
+
+const givenName = (name: string) => name.trim().split(/\s+/).pop() || name;
+
+function Stars({ value, className }: { value: number; className?: string }) {
+  return (
+    <span className={`inline-flex ${className ?? ''}`} aria-label={`${value} trên 5 sao`}>
+      {[1, 2, 3, 4, 5].map((i) => (
+        <Star key={i} className={`h-4 w-4 ${i <= Math.round(value) ? 'fill-[hsl(var(--gold))] text-[hsl(var(--gold))]' : 'text-border'}`} />
+      ))}
+    </span>
+  );
+}
+
+export default async function HomePage() {
+  const { services, offerPct, staff, packages, reviews, rating } = await getData();
+
+  // Local SEO: schema.org DaySpa with address, hours, price list and (real) rating
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'DaySpa',
+    name: SITE.name,
+    url: SITE.url,
+    image: `${SITE.url}/spa-hero.webp`,
+    telephone: SITE.phone,
+    priceRange: services.length
+      ? `${formatPrice(Math.min(...services.map((s) => s.price)))} – ${formatPrice(Math.max(...services.map((s) => s.price)))}`
+      : undefined,
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: SITE.addressParts.street,
+      addressLocality: SITE.addressParts.district,
+      addressRegion: SITE.addressParts.city,
+      addressCountry: SITE.addressParts.country,
+    },
+    openingHoursSpecification: [
+      {
+        '@type': 'OpeningHoursSpecification',
+        dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+        opens: SITE.open,
+        closes: SITE.close,
+      },
+    ],
+    hasOfferCatalog: {
+      '@type': 'OfferCatalog',
+      name: 'Dịch vụ spa',
+      itemListElement: services.map((s) => ({
+        '@type': 'Offer',
+        price: s.price,
+        priceCurrency: 'VND',
+        itemOffered: { '@type': 'Service', name: s.name, description: s.description ?? undefined },
+      })),
+    },
+    ...(rating ? { aggregateRating: { '@type': 'AggregateRating', ratingValue: rating.average, reviewCount: rating.total } } : {}),
+  };
+
+  return (
+    <div className="min-h-screen bg-background pb-16 sm:pb-0">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      {offerPct > 0 && <PromoBar pct={offerPct} />}
+      <SiteHeader />
+
+      {/* Hero */}
+      <section className="overflow-hidden bg-background">
+        <div className="mx-auto grid max-w-[1200px] grid-cols-1 items-center px-6 lg:grid-cols-2">
+          <div className="relative z-10 py-14 lg:py-20 lg:pr-14">
+            <span className="eyebrow">Spa &amp; wellness · {SITE.addressParts.district}</span>
+            <h1 className="mt-5 font-serif text-5xl font-medium leading-[1.09] tracking-[-0.035em] text-foreground lg:text-7xl">
+              Một khoảng lặng
+              <br />
+              <em className="font-normal text-primary">dành riêng cho bạn.</em>
+            </h1>
+            <p className="mt-6 max-w-[470px] text-[17px] leading-[1.75] text-muted-foreground">
+              Tạm gác nhịp sống vội. Chọn liệu trình phù hợp và tận hưởng thời gian chăm sóc cơ thể, làn da và tinh thần tại Lumière Spa.
+            </p>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Link href="/booking" className="btn-primary">
+                Đặt lịch trải nghiệm <ArrowRight className="h-4 w-4" />
+              </Link>
+              <a href="#dich-vu" className="btn-outline">
+                Xem bảng giá
+              </a>
+            </div>
+            {offerPct > 0 && (
+              <p className="mt-4 flex items-center gap-2 text-sm text-muted-foreground">
+                <Gift className="h-4 w-4 shrink-0 text-primary" />
+                <span>
+                  Giảm <b className="text-primary">{offerPct}%</b> cho lần đặt online đầu tiên, tự động áp dụng.
+                </span>
+              </p>
+            )}
+            <div className="mt-9 flex flex-wrap items-center gap-x-7 gap-y-3 text-[13px] text-muted-foreground">
+              {rating && (
+                <a href="#danh-gia" className="flex items-center gap-2 hover:text-primary">
+                  <Stars value={rating.average} />
+                  <b className="font-serif text-lg text-primary">{rating.average.toLocaleString('vi-VN')}</b>
+                  từ {rating.total} đánh giá
+                </a>
+              )}
+              <span className="flex items-center gap-2">
+                <b className="font-serif text-lg text-primary">{services.length || '—'}</b> liệu trình
+              </span>
+              <OpenStatus />
+            </div>
+          </div>
+          <div className="relative h-[350px] overflow-hidden bg-[hsl(var(--secondary))] lg:h-[650px]">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/spa-hero.webp"
+              width={1408}
+              height={768}
+              fetchPriority="high"
+              alt="Không gian spa ấm áp với giường trị liệu, khăn mềm và cây xanh"
+              className="h-full w-full object-cover"
+            />
+            <div className="absolute inset-0" style={{ background: 'linear-gradient(90deg, hsl(var(--cream)) 0%, transparent 18%)' }} />
+            <div className="absolute bottom-7 right-6 max-w-[215px] rounded-sm bg-[hsl(var(--cream-soft))]/90 p-4 text-primary">
+              <p className="font-serif text-xl leading-[1.25]">
+                Chậm lại một chút.
+                <br />
+                Thương mình nhiều hơn.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Quick Value Bar / Commitments Strip */}
+      <section className="border-y border-border bg-[hsl(var(--cream-soft))] py-5">
+        <div className="mx-auto max-w-[1200px] px-6">
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 lg:gap-6">
+            <div className="flex items-center gap-3">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                <Leaf className="h-5 w-5" />
+              </span>
+              <div>
+                <strong className="block text-xs font-bold text-foreground sm:text-sm">100% Thảo Mộc Sạch</strong>
+                <span className="text-[11px] text-muted-foreground">Dược liệu hữu cơ thiên nhiên</span>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                <ShieldCheck className="h-5 w-5" />
+              </span>
+              <div>
+                <strong className="block text-xs font-bold text-foreground sm:text-sm">Cam Kết "3 Không"</strong>
+                <span className="text-[11px] text-muted-foreground">Không Tip · Không chèo kéo</span>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                <Sparkles className="h-5 w-5" />
+              </span>
+              <div>
+                <strong className="block text-xs font-bold text-foreground sm:text-sm">Giữ Chỗ Tức Thì</strong>
+                <span className="text-[11px] text-muted-foreground">Không cần trả trước</span>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                <Heart className="h-5 w-5" />
+              </span>
+              <div>
+                <strong className="block text-xs font-bold text-foreground sm:text-sm">KTV Lành Nghề</strong>
+                <span className="text-[11px] text-muted-foreground">Tận tâm &amp; giàu kinh nghiệm</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Intro / Welcome Teaser (Distinguished from /about) */}
+      <section id="ve-chung-toi" className="scroll-mt-14 mx-auto max-w-[1200px] px-6 py-16 lg:py-20">
+        <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-2 lg:gap-16">
+          <div>
+            <span className="eyebrow">Chào mừng đến Lumière Spa</span>
+            <h2 className="section-heading mt-3">Một nhịp nghỉ vừa vặn giữa phố thị.</h2>
+            <p className="mt-5 text-[16px] leading-[1.8] text-muted-foreground sm:text-[17px]">
+              Lumière Spa được tạo dựng như một trạm dừng chân an yên, nơi bạn tạm gác lại những vội vã đời thường để lắng nghe cơ thể, chăm sóc từng thớ cơ và làm mới nguồn năng lượng tươi trẻ bên trong mình.
+            </p>
+            <p className="mt-3 text-[15px] leading-[1.75] text-muted-foreground">
+              Mỗi liệu trình là sự hòa quyện giữa tinh hoa xoa bóp bấm huyệt cổ truyền và hương thảo mộc tự nhiên thơm lành, đưa bạn về trạng thái thư thái trọn vẹn nhất.
+            </p>
+
+            {/* Quick Stats Counter */}
+            <div className="mt-7 grid grid-cols-3 gap-4 border-y border-border py-5 text-center sm:text-left">
+              <div>
+                <span className="font-serif text-2xl font-bold text-primary sm:text-3xl">5.000+</span>
+                <p className="mt-0.5 text-xs text-muted-foreground">Lượt khách tin yêu</p>
+              </div>
+              <div>
+                <span className="font-serif text-2xl font-bold text-primary sm:text-3xl">4.9 ★</span>
+                <p className="mt-0.5 text-xs text-muted-foreground">1.200+ đánh giá</p>
+              </div>
+              <div>
+                <span className="font-serif text-2xl font-bold text-primary sm:text-3xl">100%</span>
+                <p className="mt-0.5 text-xs text-muted-foreground">Tinh dầu ép lạnh</p>
+              </div>
+            </div>
+
+            <div className="mt-8 flex flex-wrap items-center gap-4">
+              <Link href="/about" className="btn-primary h-11 px-5 text-sm font-semibold">
+                Khám phá câu chuyện Lumière Spa <ArrowRight className="h-4 w-4" />
+              </Link>
+              <Link href="/services" className="font-semibold text-sm text-primary hover:underline">
+                Xem toàn bộ bảng dịch vụ →
+              </Link>
+            </div>
+          </div>
+
+          <div className="relative">
+            <div className="relative aspect-[4/3] overflow-hidden rounded-3xl border border-border shadow-xl sm:aspect-[16/11]">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=900&auto=format&fit=crop&q=80"
+                alt="Không gian thư giãn thanh tịnh tại Lumière Spa"
+                className="h-full w-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-80" />
+              <div className="absolute bottom-5 left-5 right-5 rounded-2xl bg-white/90 p-4 backdrop-blur-md dark:bg-black/80">
+                <p className="font-serif text-lg font-medium text-foreground">
+                  Hương thảo mộc dịu nhẹ · Âm nhạc thiền an yên
+                </p>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Phục vụ từ {SITE.open} – {SITE.close} hằng ngày tại {SITE.addressParts.district}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Services & combos */}
+      <section id="dich-vu" className="scroll-mt-20 bg-[hsl(var(--secondary))] py-20 lg:py-24">
+        <div className="mx-auto max-w-[1200px] px-6">
+          <div className="mb-8 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+            <div>
+              <span className="eyebrow">Bảng giá liệu trình</span>
+              <h2 className="section-heading mt-3">Chọn điều cơ thể bạn cần.</h2>
+            </div>
+            <div className="flex flex-col items-start lg:items-end gap-2">
+              <p className="max-w-[390px] text-[15px] leading-[1.75] text-muted-foreground">
+                Giá niêm yết, không phát sinh chi phí ẩn. Bấm vào dịch vụ để xem giờ trống và đặt lịch.
+              </p>
+              <Link
+                href="/services"
+                className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline"
+              >
+                Xem tất cả dịch vụ có bộ lọc →
+              </Link>
+            </div>
+          </div>
+
+          {services.length === 0 ? (
+            <p className="card-base p-8 text-center text-muted-foreground">Danh sách dịch vụ đang được cập nhật.</p>
+          ) : (
+            <div className="-mx-6 flex snap-x snap-mandatory gap-4 overflow-x-auto px-6 pb-3 sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-[18px] sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-3">
+              {services.map((service, i) => {
+                const isCombo = (service.includes?.length ?? 0) > 0;
+                const save =
+                  service.compare_at_price && service.compare_at_price > service.price ? service.compare_at_price - service.price : 0;
+                return (
+                  <Link
+                    key={service.id}
+                    href={`/booking?service=${service.id}`}
+                    className="group relative flex min-h-[250px] w-[82%] shrink-0 snap-start flex-col rounded-2xl border border-border bg-card p-6 transition-all hover:-translate-y-1 hover:border-[hsl(var(--brand-light))] hover:shadow-[0_14px_30px_hsl(var(--brand))/_8%] sm:min-h-[290px] sm:w-auto sm:p-8"
+                  >
+                    {service.image_url && (
+                      <div className="relative -mx-6 -mt-6 mb-5 h-44 overflow-hidden rounded-t-2xl sm:-mx-8 sm:-mt-8">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={service.image_url}
+                          alt={service.name}
+                          loading="lazy"
+                          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-80" />
+                        <span className="absolute bottom-2.5 left-4 text-xs font-semibold text-white/90 drop-shadow">
+                          {categoryLabel(service.category)}
+                        </span>
+                      </div>
+                    )}
+                    <div className="flex items-start justify-between gap-3">
+                      <span className="font-serif text-3xl text-accent">{String(i + 1).padStart(2, '0')}</span>
+                      {isCombo && (
+                        <span className="rounded-full bg-primary px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-primary-foreground">
+                          Combo{save ? ` · tiết kiệm ${formatPrice(save)}` : ''}
+                        </span>
+                      )}
+                    </div>
+                    <h3 className="mb-2 mt-5 font-serif text-2xl font-medium text-foreground">{service.name}</h3>
+                    <p className="text-[15px] leading-[1.75] text-muted-foreground">{service.description}</p>
+                    {isCombo && (
+                      <ul className="mt-3 space-y-1 text-sm text-foreground">
+                        {service.includes!.map((it) => (
+                          <li key={it} className="flex items-center gap-2">
+                            <Check className="h-4 w-4 shrink-0 text-primary" /> {it}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                    <div className="mt-auto flex items-center justify-between gap-3 border-t border-border pt-6 text-sm text-muted-foreground">
+                      <span>{formatDuration(service.duration_min)}</span>
+                      <span className="text-right">
+                        {save > 0 && <s className="mr-2 text-xs">{formatPrice(service.compare_at_price!)}</s>}
+                        <strong className="text-lg text-primary">{formatPrice(service.price)}</strong>
+                      </span>
+                    </div>
+                  </Link>
+                );
+              })}
+              <div className="flex min-h-[250px] w-[82%] shrink-0 snap-start flex-col rounded-2xl border border-dashed border-primary/30 bg-card/60 p-6 sm:min-h-[290px] sm:w-auto sm:p-8">
+                <span className="font-serif text-3xl text-accent">✳</span>
+                <h3 className="mb-2 mt-5 font-serif text-2xl font-medium text-foreground">Chưa biết chọn gì?</h3>
+                <p className="text-[15px] leading-[1.75] text-muted-foreground">
+                  Để lại số điện thoại, chuyên viên sẽ gọi lại tư vấn liệu trình hợp với cơ thể và thời gian của bạn.
+                </p>
+                <div className="mt-auto border-t border-border pt-6">
+                  <LeadDialog source="services_card" interest="Chưa biết chọn dịch vụ nào">
+                    <button className="inline-flex items-center gap-1 font-bold text-primary">
+                      Nhận tư vấn miễn phí <ArrowRight className="h-4 w-4" />
+                    </button>
+                  </LeadDialog>
+                </div>
+              </div>
+            </div>
+          )}
+          <p className="mt-1 text-xs text-muted-foreground sm:hidden">Vuốt ngang để xem thêm dịch vụ →</p>
+        </div>
+      </section>
+
+      {/* Offers: first visit · packages · gift cards */}
+      <section id="uu-dai" className="mx-auto max-w-[1200px] scroll-mt-20 px-6 py-20 lg:py-24">
+        <span className="eyebrow">Ưu đãi &amp; quà tặng</span>
+        <h2 className="section-heading mt-3">Tiết kiệm hơn khi đến thường xuyên.</h2>
+        <div className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+          {offerPct > 0 && (
+            <article className="flex flex-col rounded-2xl bg-[hsl(var(--deep))] p-7 text-[hsl(var(--cream))]">
+              <Sparkles className="h-6 w-6 text-[hsl(var(--gold-light))]" />
+              <h3 className="mt-4 font-serif text-2xl">Lần đầu đặt online</h3>
+              <p className="mt-1 font-serif text-5xl text-[hsl(var(--gold-light))]">−{offerPct}%</p>
+              <p className="mb-6 mt-3 text-sm text-[hsl(var(--cream))]/75">Tự động trừ vào giá khi bạn đặt lịch online lần đầu. Không cần nhập mã.</p>
+              <Link href="/booking" className="btn-cream mt-auto w-full">
+                Đặt lịch nhận ưu đãi <ArrowRight className="h-4 w-4" />
+              </Link>
+            </article>
+          )}
+
+          {packages.map((p) => {
+            const single = p.services?.price ?? 0;
+            const pct = single ? Math.round((1 - p.price / (single * p.sessions)) * 100) : 0;
+            return (
+              <article key={p.id} className="card-base flex flex-col p-7">
+                <Layers className="h-6 w-6 text-primary" />
+                <h3 className="mt-4 font-serif text-2xl text-foreground">{p.name}</h3>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  {p.sessions} buổi {p.services?.name}
+                  {p.services?.duration_min ? ` · ${formatDuration(p.services.duration_min)}/buổi` : ''}
+                </p>
+                <p className="mt-4">
+                  <strong className="font-serif text-3xl text-primary">{formatPrice(p.price)}</strong>
+                  {pct > 0 && <span className="ml-2 rounded-full bg-success/10 px-2 py-0.5 text-xs font-bold text-success">Tiết kiệm {pct}%</span>}
+                </p>
+                {single > 0 && (
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    ≈ {formatPrice(Math.round(p.price / p.sessions / 1000) * 1000)}/buổi thay vì {formatPrice(single)}
+                  </p>
+                )}
+                <LeadDialog source="package" interest="Gói liệu trình nhiều buổi">
+                  <button className="btn-outline mt-auto w-full">Đăng ký tư vấn gói</button>
+                </LeadDialog>
+              </article>
+            );
+          })}
+
+          <article className="card-base flex flex-col p-7">
+            <Gift className="h-6 w-6 text-primary" />
+            <h3 className="mt-4 font-serif text-2xl text-foreground">Thẻ quà tặng</h3>
+            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+              Tặng người thân một buổi thư giãn dịp sinh nhật, 8/3, 20/10. Người nhận tự đặt lịch online bằng mã trên thẻ.
+            </p>
+            <ul className="mb-6 mt-4 space-y-1.5 text-sm text-foreground">
+              <li className="flex items-center gap-2"><Check className="h-4 w-4 text-primary" /> Chọn theo mệnh giá hoặc số buổi</li>
+              <li className="flex items-center gap-2"><Check className="h-4 w-4 text-primary" /> Nhận thiệp in hoặc mã qua Zalo</li>
+              <li className="flex items-center gap-2"><Check className="h-4 w-4 text-primary" /> Hoàn lại vào thẻ nếu hủy lịch</li>
+            </ul>
+            <LeadDialog source="gift_card" interest="Thẻ quà tặng">
+              <button className="btn-primary mt-auto w-full">Mua thẻ quà tặng</button>
+            </LeadDialog>
+          </article>
+        </div>
+      </section>
+
+      {/* Team */}
+      {staff.length > 0 && (
+        <section id="doi-ngu" className="scroll-mt-20 bg-card py-20 lg:py-24">
+          <div className="mx-auto max-w-[1200px] px-6">
+            <div className="mb-10 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+              <div>
+                <span className="eyebrow">Đội ngũ kỹ thuật viên</span>
+                <h2 className="section-heading mt-3">Đôi tay bạn có thể tin tưởng.</h2>
+              </div>
+              <p className="max-w-[390px] text-[15px] leading-[1.75] text-muted-foreground">
+                Bạn có thể chọn đúng kỹ thuật viên mình thích khi đặt lịch.
+              </p>
+            </div>
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {staff.map((m) => (
+                <article key={m.id} className="flex flex-col rounded-2xl border border-border bg-background p-6">
+                  <div className="flex items-center gap-4">
+                    {m.avatar_url ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={m.avatar_url} alt={m.name} width={64} height={64} className="h-16 w-16 rounded-full object-cover" />
+                    ) : (
+                      <span className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-primary/10 font-serif text-2xl text-primary">
+                        {givenName(m.name).charAt(0)}
+                      </span>
+                    )}
+                    <div>
+                      <h3 className="font-serif text-xl text-foreground">{m.name}</h3>
+                      <p className="text-sm text-muted-foreground">
+                        {m.role === 'therapist' ? 'Kỹ thuật viên' : m.role}
+                        {m.years_experience ? ` · ${m.years_experience} năm kinh nghiệm` : ''}
+                      </p>
+                    </div>
+                  </div>
+                  {(m.specialties?.length ?? 0) > 0 && (
+                    <div className="mt-4 flex flex-wrap gap-1.5">
+                      {m.specialties!.map((sp) => (
+                        <span key={sp} className="rounded-full bg-secondary px-2.5 py-0.5 text-xs font-medium text-secondary-foreground">
+                          {sp}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                  {m.bio && <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{m.bio}</p>}
+                  <Link href={`/booking?staff=${m.id}`} className="mt-auto inline-flex items-center gap-1 pt-5 text-sm font-bold text-primary">
+                    Đặt lịch với {givenName(m.name)} <ArrowRight className="h-4 w-4" />
+                  </Link>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Feature */}
+      <section className="bg-[hsl(var(--deep))] py-20 text-white lg:py-24">
+        <div className="mx-auto max-w-[1200px] px-6">
+          <div className="grid grid-cols-1 items-center gap-16 lg:grid-cols-2">
+            <div>
+              <span className="eyebrow text-[hsl(var(--gold-light))]">Tận hưởng theo cách của bạn</span>
+              <h2 className="section-heading mt-3 max-w-[520px] text-white">Thời gian nghỉ ngơi cũng xứng đáng được chăm chút.</h2>
+              <p className="mt-5 max-w-[520px] text-[15px] leading-[1.75] text-white/70">
+                Dành cho những buổi nghỉ ngắn giữa tuần hay một khoảng thư giãn cuối tuần. Chỉ cần chọn dịch vụ, chọn thời gian và để chúng tôi chuẩn bị phần còn lại.
+              </p>
+              <Link href="/booking" className="btn-cream mt-7">
+                Giữ chỗ cho tôi <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
+            <div className="border-t border-white/30">
+              {[
+                { num: '01', title: 'Lựa chọn linh hoạt', desc: 'Liệu trình từ 30 đến 90 phút, dễ sắp xếp trong lịch trình của bạn.' },
+                { num: '02', title: 'Giá rõ ràng', desc: 'Giá niêm yết trên web, không phát sinh chi phí ẩn.' },
+                { num: '03', title: 'Đặt lịch thuận tiện', desc: 'Chọn giờ trống và nhận mã đặt lịch ngay, không cần chờ gọi lại.' },
+              ].map((item) => (
+                <div key={item.num} className="flex gap-6 border-b border-white/30 py-7">
+                  <b className="font-serif text-2xl text-[hsl(var(--gold-light))]">{item.num}</b>
+                  <div>
+                    <h3 className="mb-1 text-base font-bold">{item.title}</h3>
+                    <p className="text-sm text-white/70">{item.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Reviews — only real, published reviews from completed appointments */}
+      {rating && reviews.length > 0 && (
+        <section id="danh-gia" className="scroll-mt-20 py-20 lg:py-24">
+          <div className="mx-auto max-w-[1200px] px-6">
+            <div className="mb-10 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+              <div>
+                <span className="eyebrow">Khách hàng nói gì</span>
+                <h2 className="section-heading mt-3">
+                  {rating.average.toLocaleString('vi-VN')}/5 từ {rating.total} lượt đánh giá.
+                </h2>
+              </div>
+              <p className="max-w-[390px] text-sm leading-relaxed text-muted-foreground">
+                Chỉ khách đã hoàn thành buổi hẹn mới đánh giá được, từ trang Tài khoản của mình.
+              </p>
+            </div>
+            <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+              {reviews.map((r) => (
+                <figure key={r.id} className="card-base flex flex-col p-6">
+                  <Quote className="h-6 w-6 text-accent" />
+                  <Stars value={r.rating} className="mt-3" />
+                  <blockquote className="mt-3 flex-1 text-[15px] leading-relaxed text-foreground">“{r.comment}”</blockquote>
+                  <figcaption className="mt-5 text-sm text-muted-foreground">
+                    <b className="text-foreground">{r.author}</b>
+                    {r.service_name ? ` · ${r.service_name}` : ''}
+                  </figcaption>
+                </figure>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Journey */}
+      <section id="trai-nghiem" className="scroll-mt-20 bg-card py-20 lg:py-24">
+        <div className="mx-auto max-w-[1200px] px-6">
+          <span className="eyebrow">Một buổi hẹn thật nhẹ nhàng</span>
+          <h2 className="section-heading mt-3">Ba bước để bắt đầu.</h2>
+          <div className="mt-12 grid grid-cols-1 gap-11 sm:grid-cols-3">
+            {[
+              { n: '01 / Chọn', title: 'Tìm liệu trình', desc: 'Xem dịch vụ, thời lượng và mức giá phù hợp với bạn.' },
+              { n: '02 / Hẹn', title: 'Chọn giờ còn trống', desc: 'Xem khung giờ trống theo thời gian thực, lịch được xác nhận ngay.' },
+              { n: '03 / Thư giãn', title: 'Đến Lumière Spa', desc: 'Đến trước giờ hẹn 10 phút và dành thời gian cho chính mình.' },
+            ].map((step) => (
+              <div key={step.n} className="border-t border-border pt-6">
+                <span className="text-base font-bold text-accent">{step.n}</span>
+                <h3 className="mb-2 mt-6 font-serif text-2xl font-medium text-foreground">{step.title}</h3>
+                <p className="text-[15px] leading-[1.75] text-muted-foreground">{step.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Contact + callback form */}
+      <section id="lien-he" className="scroll-mt-20 bg-[hsl(30_42%_90%)] py-20 lg:py-24">
+        <div className="mx-auto max-w-[1200px] px-6">
+          <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16">
+            <div>
+              <span className="eyebrow">Hẹn một khoảng nghỉ</span>
+              <h2 className="section-heading mt-3">Hôm nay, bạn muốn dành thời gian cho mình chứ?</h2>
+              <OpenStatus className="mt-5" />
+              <dl className="mt-7 grid grid-cols-1 gap-5 sm:grid-cols-3">
+                <div>
+                  <dt className="mb-2 text-sm text-muted-foreground">Địa chỉ</dt>
+                  <dd className="font-semibold text-foreground">{SITE.address}</dd>
+                </div>
+                <div>
+                  <dt className="mb-2 text-sm text-muted-foreground">Điện thoại</dt>
+                  <dd className="font-semibold text-foreground">{SITE.phone}</dd>
+                </div>
+                <div>
+                  <dt className="mb-2 text-sm text-muted-foreground">Giờ mở cửa</dt>
+                  <dd className="font-semibold text-foreground">{SITE.hours}</dd>
+                </div>
+              </dl>
+              <ContactButtons className="mt-7" />
+              <a
+                href={SITE.mapUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-7 flex items-center gap-3 rounded-2xl border border-border bg-card/70 p-4 text-sm text-muted-foreground hover:border-primary/40"
+              >
+                <MapPin className="h-5 w-5 shrink-0 text-primary" />
+                Mở Google Maps để xem đường đi và chỗ gửi xe
+                <ArrowRight className="ml-auto h-4 w-4 shrink-0" />
+              </a>
+            </div>
+            <div className="rounded-2xl bg-card p-7 shadow-[0_18px_50px_hsl(var(--brand))_8%] sm:p-9">
+              <h3 className="font-serif text-3xl font-medium text-foreground">Để lại SĐT, spa gọi tư vấn</h3>
+              <p className="mb-6 mt-2 text-sm text-muted-foreground">
+                Chưa chắc chọn liệu trình nào, muốn mua gói hoặc thẻ quà tặng? Chuyên viên sẽ gọi lại trong giờ mở cửa.
+              </p>
+              <LeadForm source="contact" idPrefix="contact-lead" />
+              <div className="mt-6 border-t border-border pt-5 text-center text-sm text-muted-foreground">
+                Đã biết mình muốn gì?{' '}
+                <Link href="/booking" className="font-semibold text-primary hover:underline">
+                  Đặt lịch online ngay →
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-[hsl(var(--deep-footer))] py-14 text-white">
+        <div className="mx-auto max-w-[1200px] px-6">
+          <div className="flex flex-col gap-10 lg:flex-row lg:items-start lg:justify-between">
+            <div>
+              <Logo inverted />
+              <p className="mt-4 max-w-[310px] text-sm text-white/70">Một khoảng lặng để chăm sóc cơ thể và làm mới tinh thần.</p>
+              <p className="mt-4 text-sm text-white/70">
+                {SITE.address} · {SITE.phone}
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-12 text-sm">
+              <div className="flex flex-col gap-3">
+                <strong className="mb-2">Khám phá</strong>
+                <Link href="/" className="text-white font-semibold transition-colors hover:text-[hsl(var(--gold-light))]">Trang chủ</Link>
+                <Link href="/about" className="text-white/70 transition-colors hover:text-[hsl(var(--gold-light))]">Giới thiệu</Link>
+                <Link href="/services" className="text-white/70 transition-colors hover:text-[hsl(var(--gold-light))]">Tất cả dịch vụ</Link>
+                <a href="#uu-dai" className="text-white/70 transition-colors hover:text-[hsl(var(--gold-light))]">Ưu đãi &amp; quà tặng</a>
+              </div>
+              <div className="flex flex-col gap-3">
+                <strong className="mb-2">Liên hệ</strong>
+                <a href="#lien-he" className="text-white/70 transition-colors hover:text-[hsl(var(--gold-light))]">Địa chỉ &amp; tư vấn</a>
+                <a href={SITE.zalo} target="_blank" rel="noopener noreferrer" className="text-white/70 transition-colors hover:text-[hsl(var(--gold-light))]">Zalo</a>
+                <Link href="/booking" className="text-white/70 transition-colors hover:text-[hsl(var(--gold-light))]">Đặt lịch online</Link>
+              </div>
+            </div>
+          </div>
+          <div className="mt-14 border-t border-white/20 pt-6 text-xs text-white/50">© 2026 Lumière Spa. Dành một chút thời gian cho chính bạn.</div>
+        </div>
+      </footer>
+
+      <MobileActionBar />
+    </div>
+  );
+}

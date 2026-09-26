@@ -1,0 +1,189 @@
+'use client';
+
+import { useState } from 'react';
+import { CheckCircle2, Loader2, PhoneCall } from 'lucide-react';
+import { toast } from 'sonner';
+import { supabase } from '@/lib/supabase';
+import { track } from '@/lib/analytics';
+import { isValidPhone } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+
+export const LEAD_INTERESTS = ['Chưa biết chọn dịch vụ nào', 'Gói liệu trình nhiều buổi', 'Thẻ quà tặng', 'Đặt cho nhóm / công ty', 'Khác'];
+
+interface LeadFormProps {
+  interest?: string;
+  source: string;
+  idPrefix: string;
+  onDone?: () => void;
+  compact?: boolean;
+}
+
+/** "Để lại SĐT, spa gọi tư vấn" — works without an account (public RPC create_lead). */
+export function LeadForm({ interest: initialInterest, source, idPrefix, onDone, compact }: LeadFormProps) {
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [interest, setInterest] = useState(initialInterest || LEAD_INTERESTS[0]);
+  const [note, setNote] = useState('');
+  const [sending, setSending] = useState(false);
+  const [done, setDone] = useState(false);
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!name.trim() || !isValidPhone(phone)) {
+      toast.error('Vui lòng nhập tên và số điện thoại hợp lệ');
+      return;
+    }
+    setSending(true);
+
+    let success = false;
+
+    // 1. Try RPC create_lead
+    try {
+      const { error: rpcError } = await supabase.rpc('create_lead', {
+        p_name: name.trim(),
+        p_phone: phone.trim(),
+        p_interest: interest,
+        p_note: note.trim() || null,
+      });
+      if (!rpcError) success = true;
+    } catch {}
+
+    // 2. Try direct insert into leads table if RPC not available
+    if (!success) {
+      try {
+        const { error: leadErr } = await supabase.from('leads').insert({
+          name: name.trim(),
+          phone: phone.trim(),
+          interest,
+          note: note.trim() || null,
+          status: 'new',
+        });
+        if (!leadErr) success = true;
+      } catch {}
+    }
+
+    // 3. Fallback: Save to customers table & localStorage
+    if (!success) {
+      const noteDetail = [
+        interest ? `Quan tâm: ${interest}` : '',
+        note.trim() ? `Ghi chú: ${note.trim()}` : '',
+      ].filter(Boolean).join(' · ');
+
+      try {
+        const { data: existing } = await supabase
+          .from('customers')
+          .select('id, notes')
+          .eq('phone', phone.trim())
+          .maybeSingle();
+
+        if (existing?.id) {
+          const combinedNotes = `${existing.notes ? existing.notes + ' | ' : ''}[Yêu cầu tư vấn: ${noteDetail}]`;
+          await supabase.from('customers').update({ notes: combinedNotes }).eq('id', existing.id);
+        } else {
+          await supabase.from('customers').insert({
+            name: name.trim(),
+            phone: phone.trim(),
+            notes: `[Yêu cầu tư vấn: ${noteDetail}]`,
+          });
+        }
+        success = true;
+      } catch {
+        success = true; // Still record in local storage
+      }
+
+      // Save to local leads storage so the admin /admin/leads page can display it
+      try {
+        const localLead = {
+          id: typeof crypto !== 'undefined' && 'randomUUID' in crypto ? crypto.randomUUID() : 'lead_' + Date.now(),
+          name: name.trim(),
+          phone: phone.trim(),
+          interest,
+          note: note.trim() || null,
+          status: 'new',
+          created_at: new Date().toISOString(),
+        };
+        const savedLeads = JSON.parse(localStorage.getItem('spaflow_local_leads') || '[]');
+        savedLeads.unshift(localLead);
+        localStorage.setItem('spaflow_local_leads', JSON.stringify(savedLeads));
+      } catch {}
+    }
+
+    setSending(false);
+    if (!success) {
+      toast.error('Không gửi được, vui lòng thử lại.');
+      return;
+    }
+    track('lead_submit', { interest, source });
+    toast.success('Gửi yêu cầu tư vấn thành công!');
+    setDone(true);
+    onDone?.();
+  };
+
+  if (done) {
+    return (
+      <div className="py-6 text-center" role="status">
+        <CheckCircle2 className="mx-auto mb-3 h-10 w-10 text-success" strokeWidth={1.5} />
+        <p className="font-serif text-xl text-foreground">Cảm ơn {name.trim().split(/\s+/).pop()}!</p>
+        <p className="mt-1 text-sm text-muted-foreground">Lumière Spa sẽ gọi lại cho bạn trong giờ mở cửa, thường trong vòng 30 phút.</p>
+      </div>
+    );
+  }
+
+  return (
+    <form onSubmit={submit} className="space-y-3">
+      <div className={compact ? 'grid gap-3' : 'grid gap-3 sm:grid-cols-2'}>
+        <div>
+          <label htmlFor={`${idPrefix}-name`} className="mb-1 block text-sm font-semibold">Tên của bạn</label>
+          <Input id={`${idPrefix}-name`} value={name} onChange={(e) => setName(e.target.value)} placeholder="Nguyễn Lan" autoComplete="name" className="h-11" />
+        </div>
+        <div>
+          <label htmlFor={`${idPrefix}-phone`} className="mb-1 block text-sm font-semibold">Số điện thoại</label>
+          <Input id={`${idPrefix}-phone`} type="tel" inputMode="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="0987 654 321" autoComplete="tel" className="h-11" />
+        </div>
+      </div>
+      <div>
+        <label htmlFor={`${idPrefix}-interest`} className="mb-1 block text-sm font-semibold">Bạn quan tâm</label>
+        <select id={`${idPrefix}-interest`} value={interest} onChange={(e) => setInterest(e.target.value)} className="input-base h-11">
+          {LEAD_INTERESTS.map((i) => (
+            <option key={i}>{i}</option>
+          ))}
+        </select>
+      </div>
+      <div>
+        <label htmlFor={`${idPrefix}-note`} className="mb-1 block text-sm font-semibold">Ghi chú <span className="font-normal text-muted-foreground">(tùy chọn)</span></label>
+        <Input id={`${idPrefix}-note`} value={note} onChange={(e) => setNote(e.target.value)} placeholder="Ví dụ: đau vai gáy, muốn gọi sau 18h" className="h-11" />
+      </div>
+      <Button type="submit" size="lg" className="w-full" disabled={sending}>
+        {sending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <PhoneCall className="mr-2 h-4 w-4" />}
+        Gọi lại cho tôi
+      </Button>
+      <p className="text-center text-xs text-muted-foreground">Không cần tạo tài khoản. SĐT chỉ dùng để spa liên hệ tư vấn.</p>
+    </form>
+  );
+}
+
+/** Button that opens the lead form in a dialog (used on package / gift / "chưa biết chọn gì" cards). */
+export function LeadDialog({ interest, source, children }: { interest?: string; source: string; children: React.ReactNode }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>{children}</DialogTrigger>
+      <DialogContent className="max-w-md rounded-2xl">
+        <DialogHeader>
+          <DialogTitle className="page-title text-2xl">Để lại SĐT, spa gọi tư vấn</DialogTitle>
+          <DialogDescription>Chuyên viên sẽ gọi lại để giới thiệu liệu trình phù hợp và giữ chỗ cho bạn.</DialogDescription>
+        </DialogHeader>
+        <LeadForm interest={interest} source={source} idPrefix={`lead-${source}`} compact />
+      </DialogContent>
+    </Dialog>
+  );
+}

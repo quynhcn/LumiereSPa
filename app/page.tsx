@@ -33,6 +33,7 @@ import { SiteHeader } from '@/components/site-header';
 import { Logo } from '@/components/logo';
 import { PromoBar } from '@/components/landing/promo-bar';
 import { HeroCarousel } from '@/components/landing/hero-carousel';
+import { ServiceShowcase } from '@/components/landing/service-showcase';
 import { LeadDialog, LeadForm } from '@/components/landing/lead-form';
 import { ContactButtons, MobileActionBar, OpenStatus } from '@/components/landing/contact-actions';
 
@@ -344,104 +345,8 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Services & combos */}
-      <section id="dich-vu" className="scroll-mt-20 bg-[hsl(var(--secondary))] py-20 lg:py-24">
-        <div className="mx-auto max-w-[1200px] px-6">
-          <div className="mb-8 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-            <div>
-              <span className="eyebrow">Bảng giá liệu trình</span>
-              <h2 className="section-heading mt-3">Chọn điều cơ thể bạn cần.</h2>
-            </div>
-            <div className="flex flex-col items-start lg:items-end gap-2">
-              <p className="max-w-[390px] text-[15px] leading-[1.75] text-muted-foreground">
-                Giá niêm yết, không phát sinh chi phí ẩn. Bấm vào dịch vụ để xem giờ trống và đặt lịch.
-              </p>
-              <Link
-                href="/services"
-                className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline"
-              >
-                Xem tất cả dịch vụ có bộ lọc →
-              </Link>
-            </div>
-          </div>
-
-          {services.length === 0 ? (
-            <p className="card-base p-8 text-center text-muted-foreground">Danh sách dịch vụ đang được cập nhật.</p>
-          ) : (
-            <div className="-mx-6 flex snap-x snap-mandatory gap-4 overflow-x-auto px-6 pb-3 sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-[18px] sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-3">
-              {services.map((service, i) => {
-                const isCombo = (service.includes?.length ?? 0) > 0;
-                const save =
-                  service.compare_at_price && service.compare_at_price > service.price ? service.compare_at_price - service.price : 0;
-                return (
-                  <Link
-                    key={service.id}
-                    href={`/booking?service=${service.id}`}
-                    className="group relative flex min-h-[250px] w-[82%] shrink-0 snap-start flex-col rounded-2xl border border-border bg-card p-6 transition-all hover:-translate-y-1 hover:border-[hsl(var(--brand-light))] hover:shadow-[0_14px_30px_hsl(var(--brand))/_8%] sm:min-h-[290px] sm:w-auto sm:p-8"
-                  >
-                    {service.image_url && (
-                      <div className="relative -mx-6 -mt-6 mb-5 h-44 overflow-hidden rounded-t-2xl sm:-mx-8 sm:-mt-8">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          src={service.image_url}
-                          alt={service.name}
-                          loading="lazy"
-                          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-80" />
-                        <span className="absolute bottom-2.5 left-4 text-xs font-semibold text-white/90 drop-shadow">
-                          {categoryLabel(service.category)}
-                        </span>
-                      </div>
-                    )}
-                    <div className="flex items-start justify-between gap-3">
-                      <span className="font-serif text-3xl text-accent">{String(i + 1).padStart(2, '0')}</span>
-                      {isCombo && (
-                        <span className="rounded-full bg-primary px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-primary-foreground">
-                          Combo{save ? ` · tiết kiệm ${formatPrice(save)}` : ''}
-                        </span>
-                      )}
-                    </div>
-                    <h3 className="mb-2 mt-5 font-serif text-2xl font-medium text-foreground">{service.name}</h3>
-                    <p className="text-[15px] leading-[1.75] text-muted-foreground">{service.description}</p>
-                    {isCombo && (
-                      <ul className="mt-3 space-y-1 text-sm text-foreground">
-                        {service.includes!.map((it) => (
-                          <li key={it} className="flex items-center gap-2">
-                            <Check className="h-4 w-4 shrink-0 text-primary" /> {it}
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                    <div className="mt-auto flex items-center justify-between gap-3 border-t border-border pt-6 text-sm text-muted-foreground">
-                      <span>{formatDuration(service.duration_min)}</span>
-                      <span className="text-right">
-                        {save > 0 && <s className="mr-2 text-xs">{formatPrice(service.compare_at_price!)}</s>}
-                        <strong className="text-lg text-primary">{formatPrice(service.price)}</strong>
-                      </span>
-                    </div>
-                  </Link>
-                );
-              })}
-              <div className="flex min-h-[250px] w-[82%] shrink-0 snap-start flex-col rounded-2xl border border-dashed border-primary/30 bg-card/60 p-6 sm:min-h-[290px] sm:w-auto sm:p-8">
-                <span className="font-serif text-3xl text-accent">✳</span>
-                <h3 className="mb-2 mt-5 font-serif text-2xl font-medium text-foreground">Chưa biết chọn gì?</h3>
-                <p className="text-[15px] leading-[1.75] text-muted-foreground">
-                  Để lại số điện thoại, chuyên viên sẽ gọi lại tư vấn liệu trình hợp với cơ thể và thời gian của bạn.
-                </p>
-                <div className="mt-auto border-t border-border pt-6">
-                  <LeadDialog source="services_card" interest="Chưa biết chọn dịch vụ nào">
-                    <button className="inline-flex items-center gap-1 font-bold text-primary">
-                      Nhận tư vấn miễn phí <ArrowRight className="h-4 w-4" />
-                    </button>
-                  </LeadDialog>
-                </div>
-              </div>
-            </div>
-          )}
-          <p className="mt-1 text-xs text-muted-foreground sm:hidden">Vuốt ngang để xem thêm dịch vụ →</p>
-        </div>
-      </section>
+      {/* 5-Card Interactive Service Showcase matching mockup */}
+      <ServiceShowcase />
 
       {/* Offers: first visit · packages · gift cards */}
       <section id="uu-dai" className="mx-auto max-w-[1200px] scroll-mt-20 px-6 py-20 lg:py-24">

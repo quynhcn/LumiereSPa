@@ -1,9 +1,11 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import {
   ArrowRight,
   CheckCircle2,
+  Clock,
   Coffee,
   Droplets,
   Ear,
@@ -12,6 +14,7 @@ import {
   Leaf,
   MapPin,
   Music,
+  Phone,
   Quote,
   ShieldCheck,
   Smile,
@@ -27,104 +30,166 @@ import { LeadDialog } from '@/components/landing/lead-form';
 import { MobileActionBar } from '@/components/landing/contact-actions';
 import { Button } from '@/components/ui/button';
 
-// 5 Senses Therapy Concept
+// 5 Senses Therapy Concept (Matching Mockup Hình 1)
 const SENSES = [
   {
     icon: Leaf,
-    title: 'Khứu giác · Hương thảo mộc ấm',
+    sense: 'Khứu giác',
+    detail: 'Hương thảo mộc ấm',
     desc: 'Hương thơm từ sả chanh tươi, quế chi, vỏ bưởi và hoa hồi nấu thủ công mỗi sớm mai lan tỏa dịu nhẹ, xoa dịu căng thẳng thần kinh ngay khi bạn vừa bước qua cánh cửa.',
     tag: 'Thảo mộc nấu tươi',
+    image: '/sense-smell.jpg',
   },
   {
     icon: Music,
-    title: 'Thính giác · Âm hưởng thiền an yên',
+    sense: 'Thính giác',
+    detail: 'Âm hưởng thiền an yên',
     desc: 'Thanh âm chuông xoay Tây Tạng kết hợp cùng âm nhạc sóng não thiền định 432Hz giúp tĩnh tâm, đưa cơ thể và não bộ chìm sâu vào trạng thái thư giãn tuyệt đối.',
     tag: 'Tần số 432Hz',
+    image: '/sense-hearing.jpg',
   },
   {
     icon: Eye,
-    title: 'Thị giác · Tĩnh tại & Mộc mạc',
+    sense: 'Thị giác',
+    detail: 'Tĩnh tại & Mộc mạc',
     desc: 'Tông màu gỗ mộc trầm ấm, ánh sáng vàng 2700K dịu nhẹ cho mắt cùng những chậu cây xanh tươi mát tạo nên cảm giác bình yên như một chốn trú ẩn quen thuộc.',
     tag: 'Ánh sáng êm dịu',
+    image: '/sense-sight.jpg',
   },
   {
     icon: Droplets,
-    title: 'Xúc giác · Đôi tay ấm & Dầu ép lạnh',
+    sense: 'Xúc giác',
+    detail: 'Đôi tay ấm & Dầu ép lạnh',
     desc: 'Đôi bàn tay ấm nóng của kỹ thuật viên lành nghề với lực miết bấm huyệt chuẩn xác, kết hợp tinh dầu thực vật ép lạnh và khăn bông cotton hấp tiệt trùng 100°C.',
     tag: 'Dầu thực vật ép lạnh',
+    image: '/sense-touch.jpg',
   },
   {
     icon: Coffee,
-    title: 'Vị giác · Trà thảo mộc & Chè dưỡng nhan',
+    sense: 'Vị giác',
+    detail: 'Trà thảo mộc & Chè dưỡng nhan',
     desc: 'Tách trà hoa cúc ấm khai vị lúc mới đến để thanh lọc cơ thể, và chén chè dưỡng nhan thảo mộc thanh mát bồi bổ khí huyết sau khi kết thúc liệu trình.',
     tag: 'Thanh lọc cơ thể',
+    image: '/sense-taste.jpg',
   },
 ];
 
-// Core 3-No Commitment
-const THREE_NO_COMMITMENTS = [
-  {
-    title: 'Tuyệt đối không nhận Tip',
-    subtitle: 'Thư giãn trọn vẹn, không bận tâm',
-    desc: 'Đội ngũ kỹ thuật viên tại Lumière Spa được đảm bảo chế độ đãi ngộ xứng đáng và trân trọng. Khách hàng hoàn toàn yên tâm nghỉ ngơi mà không phải băn khoăn về chi phí bồi dưỡng.',
-  },
-  {
-    title: 'Không chèo kéo / ép mua gói',
-    subtitle: 'Tôn trọng sự tự nhiên của khách hàng',
-    desc: 'Tuyệt đối không có áp lực doanh số hay tư vấn mua thẻ dồn dập trong lúc trị liệu. Chúng tôi chỉ lắng nghe và đưa ra gợi ý khi bạn thực sự có nhu cầu.',
-  },
-  {
-    title: 'Không phát sinh chi phí ẩn',
-    subtitle: 'Giá niêm yết rõ ràng, minh bạch',
-    desc: 'Giá dịch vụ được công khai minh bạch. Toàn bộ trà bánh đón tiếp, nước ngâm chân thảo dược, khăn hấp và đồ dùng cá nhân đều được phục vụ miễn phí.',
-  },
-];
 
-// 4-Step Guest Journey
+// 4-Step Guest Experience Journey (Matching Mockup Hình 2)
 const EXPERIENCE_STEPS = [
   {
     step: '01',
-    title: 'Thưởng trà & Lắng nghe',
-    desc: 'Nhâm nhi tách trà thảo mộc ấm. Kỹ thuật viên lắng nghe những điểm đau mỏi trên cơ thể bạn để điều chỉnh lực tay và dòng tinh dầu phù hợp nhất.',
+    icon: Users,
+    title: 'Tư vấn & Lắng nghe',
+    desc: 'Chuyên viên sẽ lắng nghe nhu cầu, kiểm tra tình trạng da/cơ thể và đề xuất liệu trình phù hợp nhất dành riêng cho bạn.',
+    image: '/about-step-1.jpg',
   },
   {
     step: '02',
-    title: 'Ngâm chân đá muối dược liệu',
-    desc: 'Ngâm chân nước ấm thảo mộc cổ truyền kết hợp đá muối Himalaya giúp kích hoạt huyệt đạo bàn chân, giải tỏa căng cứng và lưu thông khí huyết.',
+    icon: Leaf,
+    title: 'Chuẩn bị liệu trình',
+    desc: 'Không gian, tinh dầu, thảo mộc và dụng cụ được chuẩn bị kỹ lưỡng, đảm bảo vệ sinh và mang lại trải nghiệm trọn vẹn, an toàn cho bạn.',
+    image: '/about-step-2.jpg',
   },
   {
     step: '03',
-    title: 'Trị liệu bấm huyệt chuyên sâu',
-    desc: 'Đôi bàn tay nghệ nhân thực hiện các kỹ thuật miết, day ấn huyệt chuẩn xác, kết hợp túi chườm thảo dược ấm giải phóng triệt để các bó cơ co thắt.',
+    icon: Heart,
+    title: 'Trải nghiệm thư giãn',
+    desc: 'Kỹ thuật viên thực hiện liệu trình với thao tác chuyên nghiệp, kết hợp tinh dầu thiên nhiên, giúp bạn thả lỏng cơ thể và cân bằng năng lượng.',
+    image: '/about-step-3.jpg',
   },
   {
     step: '04',
-    title: 'Thức giấc & Chè dưỡng nhan',
-    desc: 'Tỉnh giấc êm ái trong tiếng chuông xoay ngân vang. Thưởng thức chén chè dưỡng nhan ngọt thanh để bồi bổ và nạp lại năng lượng trọn vẹn.',
+    icon: Coffee,
+    title: 'Thư giãn & Chăm sóc sau liệu trình',
+    desc: 'Bạn được nghỉ ngơi, thưởng thức trà thảo mộc và nhận hướng dẫn chăm sóc tại nhà để duy trì hiệu quả lâu dài.',
+    image: '/about-step-4.jpg',
   },
 ];
 
-// Space Gallery
+// Custom Outline Icons for Spa Spaces (Matching Mockup Hình 1)
+function SpaceLeafIcon({ className = 'w-5 h-5' }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" />
+      <path d="M2 21c0-3 1.85-5.36 5.08-6" />
+    </svg>
+  );
+}
+
+function SpaceLotusIcon({ className = 'w-5 h-5' }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 4.5c-1.8 3.2-3.4 7-3.4 10.5a3.4 3.4 0 0 0 6.8 0c0-3.5-1.6-7.3-3.4-10.5Z" />
+      <path d="M8.6 15C6.2 13.5 3.8 15.2 4.2 17.8c2.2 1 5 .2 5.8-1.2" />
+      <path d="M15.4 15c2.4-1.5 4.8.2 4.4 2.8-2.2 1-5 .2-5.8-1.2" />
+      <path d="M5.5 19.2c2 1.3 4.2 1.3 6.5 1.3s4.5 0 6.5-1.3" />
+    </svg>
+  );
+}
+
+function SpaceHeartHandsIcon({ className = 'w-5 h-5' }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 8.8a1.9 1.9 0 0 1 2.7 0 1.9 1.9 0 0 1 0 2.7L12 14.2l-2.7-2.7a1.9 1.9 0 0 1 0-2.7 1.9 1.9 0 0 1 2.7 0Z" />
+      <path d="M5 14c1.2-1 2.8-1.5 4.5-1.5.8 0 1.6.3 2.2.8" />
+      <path d="M19 14c-1.2-1-2.8-1.5-4.5-1.5-.8 0-1.6.3-2.2.8" />
+      <path d="M6.5 18c2 2 4 2.5 5.5 2.5s3.5-.5 5.5-2.5" />
+    </svg>
+  );
+}
+
+function SpaceHerbIcon({ className = 'w-5 h-5' }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 21c0-4.5 1-8 4-11" />
+      <path d="M12 14c-3-1-5.5.5-6 3.5 2.5 1.5 5 .5 6-3.5Z" />
+      <path d="M15 11c2.5-2.5 5-2 6 .5-1.5 2-4 2-6-.5Z" />
+      <path d="M16 10c0-3.5 1.5-6 4-7-1 3-1 5.5 0 7" />
+    </svg>
+  );
+}
+
+function renderSpaceIcon(type: string) {
+  switch (type) {
+    case 'leaf':
+      return <SpaceLeafIcon className="w-5 h-5 text-[#8D381B]" />;
+    case 'lotus':
+      return <SpaceLotusIcon className="w-5 h-5 text-[#8D381B]" />;
+    case 'hearthands':
+      return <SpaceHeartHandsIcon className="w-5 h-5 text-[#8D381B]" />;
+    case 'herb':
+      return <SpaceHerbIcon className="w-5 h-5 text-[#8D381B]" />;
+    default:
+      return <Leaf className="w-5 h-5 text-[#8D381B]" />;
+  }
+}
+
+// Space Gallery (Matching Mockup Hình 1)
 const SPACES = [
   {
-    title: 'Phòng trị liệu đôi ấm cúng',
-    desc: 'Thiết kế riêng cho cặp đôi, mẹ con hoặc bạn thân cùng chia sẻ khoảng thời gian thư thái bên nhau.',
-    img: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=800&auto=format&fit=crop&q=80',
+    title: 'Không gian thư giãn tinh tế',
+    desc: 'Thiết kế theo phong cách hiện đại, ấm cúng và gần gũi thiên nhiên, mang lại cảm giác bình yên ngay từ khi bạn bước vào.',
+    img: '/about-space-1-new.jpg',
+    iconType: 'leaf',
   },
   {
-    title: 'Phòng đơn VIP tĩnh lặng',
-    desc: 'Không gian tách biệt tuyệt đối, rèm che kín đáo cùng ánh sáng dịu nhẹ để bạn tận hưởng sự yên ả của riêng mình.',
-    img: 'https://images.unsplash.com/photo-1515377905703-c4788e51af15?w=800&auto=format&fit=crop&q=80',
+    title: 'Liệu trình cá nhân hóa',
+    desc: 'Mỗi liệu trình được thiết kế riêng theo tình trạng cơ thể và nhu cầu của bạn, đảm bảo hiệu quả tối ưu và an toàn tuyệt đối.',
+    img: '/about-space-2.jpg',
+    iconType: 'lotus',
   },
   {
-    title: 'Khu gội đầu dưỡng sinh thảo dược',
-    desc: 'Giường gội bọc da êm ái kết hợp vòm nước tuần hoàn và nước thảo dược nấu tươi ấm nóng mỗi ngày.',
-    img: 'https://images.unsplash.com/photo-1519823551278-64ac92734fb1?w=800&auto=format&fit=crop&q=80',
+    title: 'Kỹ thuật chuyên nghiệp',
+    desc: 'Đội ngũ kỹ thuật viên giàu kinh nghiệm, thành thạo các liệu pháp trị liệu hiện đại, giúp thư giãn sâu và phục hồi năng lượng tự nhiên.',
+    img: '/about-space-3.jpg',
+    iconType: 'hearthands',
   },
   {
-    title: 'Khu vực ngâm chân & Thưởng trà',
-    desc: 'Góc ngồi thanh nhã ngập tràn ánh sáng tự nhiên và cây xanh, nơi bạn nhâm nhi tách trà hoa cúc ấm trước buổi hẹn.',
-    img: 'https://images.unsplash.com/photo-1512290900672-1f486ff54cf5?w=800&auto=format&fit=crop&q=80',
+    title: 'Thảo mộc thiên nhiên',
+    desc: 'Sử dụng các sản phẩm từ thảo mộc thuần khiết, lành tính, an toàn cho da và tốt cho sức khỏe, mang lại trải nghiệm chăm sóc trọn vẹn.',
+    img: '/about-step-4.jpg',
+    iconType: 'herb',
   },
 ];
 
@@ -323,139 +388,460 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Philosophy: Hồn Lumière trong từng chi tiết nhỏ */}
-      <section className="py-20 lg:py-24">
-        <div className="mx-auto max-w-[1200px] px-6">
+      {/* Philosophy: Hồn Lumière trong từng chi tiết nhỏ (Matching Mockup Hình 1) */}
+      <section
+        className="relative overflow-hidden py-20 sm:py-24 lg:py-28 bg-[#FAF6F0] bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: "url('/about-hon-bg.jpg')" }}
+      >
+        {/* Subtle warm wash overlay to guarantee crisp readability */}
+        <div className="absolute inset-0 bg-[#FAF6F0]/25 pointer-events-none" />
+
+        <div className="relative mx-auto max-w-[1220px] px-6">
+          {/* Header */}
           <div className="mx-auto max-w-3xl text-center">
-            <span className="eyebrow">Hồn Lumière · Trong từng chi tiết nhỏ</span>
-            <h2 className="section-heading mt-3">Một khoảng dừng chân an yên giữa phố thị.</h2>
-            <p className="mt-4 text-base leading-relaxed text-muted-foreground sm:text-lg">
+            {/* Eyebrow with gold accent rules */}
+            <div className="flex items-center justify-center gap-3">
+              <span className="h-[1px] w-8 sm:w-16 bg-[#B88E5B]/70" />
+              <span className="text-[11px] sm:text-xs font-semibold uppercase tracking-[0.22em] text-[#8D381B]">
+                HỒN LUMIÈRE · TRONG TỪNG CHI TIẾT NHỎ
+              </span>
+              <span className="h-[1px] w-8 sm:w-16 bg-[#B88E5B]/70" />
+            </div>
+
+            {/* Main Heading */}
+            <h2 className="mt-4 font-serif text-3xl sm:text-4xl lg:text-[46px] font-normal leading-[1.25] text-[#20140D]">
+              <span className="font-semibold block sm:inline">Một khoảng dừng chân an yên </span>
+              <span className="font-serif italic font-normal text-[#8D381B] block sm:inline">giữa phố thị.</span>
+            </h2>
+
+            {/* Subtext description */}
+            <p className="mx-auto mt-4 max-w-2xl text-[14px] sm:text-[15.5px] leading-relaxed text-[#554238]">
               Ở Lumière Spa, chúng tôi không xem việc chăm sóc cơ thể chỉ là một dịch vụ thông thường. Đó là một nghi thức chữa lành tinh tế, nơi từng ngọn nến ấm, tách trà hoa, tấm khăn bông tiệt trùng cho đến kỹ thuật day ấn huyệt đều được chăm chút bằng tất cả tấm lòng.
             </p>
           </div>
 
-          <div className="mt-14 grid grid-cols-1 gap-8 md:grid-cols-3">
-            <div className="card-base flex flex-col p-8 transition-all hover:shadow-lg">
-              <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary mb-6">
-                <Sparkles className="h-6 w-6" />
-              </span>
-              <h3 className="font-serif text-2xl font-semibold text-foreground">Không gian tĩnh tại</h3>
-              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                Tách biệt hoàn toàn khỏi tiếng còi xe và nhịp sống hối hả. Không gian tại Lumière Spa được thiết kế mộc mạc với ánh sáng vàng êm ái, mang lại cảm giác bình yên như bạn vừa trở về ngôi nhà của chính mình.
-              </p>
+          {/* 3 Luxury Cards */}
+          <div className="mt-14 grid grid-cols-1 gap-7 md:grid-cols-3 lg:gap-8">
+            {/* Card 1: Không gian tĩnh tại */}
+            <div className="group relative flex flex-col rounded-[26px] bg-white border border-[#EFE5D8] shadow-[0_12px_36px_rgba(40,20,10,0.06)] overflow-hidden transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_20px_45px_rgba(40,20,10,0.12)]">
+              {/* Card Image */}
+              <div className="relative aspect-[16/10] w-full overflow-hidden bg-[#F5ECE1]">
+                <Image
+                  src="/about-hon-space.jpg"
+                  alt="Không gian tĩnh tại tại Lumière Spa"
+                  fill
+                  className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                />
+              </div>
+
+              {/* Overlapping Curved Badge Notch */}
+              <div className="relative z-10 -mt-7 ml-5 inline-flex p-1.5 rounded-2xl bg-white shadow-sm self-start">
+                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#F6ECE1] text-[#8D381B]">
+                  <Sparkles className="h-5 w-5" />
+                </div>
+              </div>
+
+              {/* Card Content */}
+              <div className="relative flex flex-1 flex-col px-6 pb-8 pt-2 sm:px-7 sm:pb-9">
+                <h3 className="font-serif text-xl sm:text-2xl font-semibold text-[#20140D] tracking-tight">
+                  Không gian tĩnh tại
+                </h3>
+                <p className="mt-3 text-[13.5px] sm:text-[14px] leading-relaxed text-[#5C4A3E]">
+                  Tách biệt hoàn toàn khỏi tiếng còi xe và nhịp sống hối hả. Không gian tại Lumière Spa được thiết kế mộc mạc với ánh sáng vàng êm ái, mang lại cảm giác bình yên như bạn vừa trở về ngôi nhà của chính mình.
+                </p>
+
+                {/* Delicate botanical watermark at bottom right */}
+                <svg
+                  className="pointer-events-none absolute -bottom-2 -right-2 h-20 w-20 text-[#C49A62]/20 transition-transform duration-500 group-hover:scale-110"
+                  viewBox="0 0 100 100"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.2"
+                >
+                  <path d="M90 90 C 70 80, 50 65, 35 45 C 30 38, 25 25, 20 10" />
+                  <path d="M35 45 C 28 40, 18 42, 12 48 C 22 55, 30 50, 35 45 Z" fill="currentColor" fillOpacity="0.08" />
+                  <path d="M50 65 C 42 62, 34 67, 30 75 C 40 78, 48 72, 50 65 Z" fill="currentColor" fillOpacity="0.08" />
+                  <path d="M68 78 C 60 76, 52 82, 50 90 C 60 92, 66 86, 68 78 Z" fill="currentColor" fillOpacity="0.08" />
+                </svg>
+              </div>
             </div>
 
-            <div className="card-base flex flex-col p-8 transition-all hover:shadow-lg">
-              <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary mb-6">
-                <Leaf className="h-6 w-6" />
-              </span>
-              <h3 className="font-serif text-2xl font-semibold text-foreground">Dược liệu thuần khiết</h3>
-              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                Chúng tôi tin vào sức mạnh chữa lành nguyên bản từ mẹ thiên nhiên. 100% thảo mộc được thu hái tươi mới và tinh dầu thực vật ép lạnh, không chứa hương liệu hóa học hay chất bảo quản độc hại.
-              </p>
+            {/* Card 2: Dược liệu thuần khiết */}
+            <div className="group relative flex flex-col rounded-[26px] bg-white border border-[#EFE5D8] shadow-[0_12px_36px_rgba(40,20,10,0.06)] overflow-hidden transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_20px_45px_rgba(40,20,10,0.12)]">
+              {/* Card Image */}
+              <div className="relative aspect-[16/10] w-full overflow-hidden bg-[#F5ECE1]">
+                <Image
+                  src="/about-hon-herbs.jpg"
+                  alt="Dược liệu thuần khiết tại Lumière Spa"
+                  fill
+                  className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                />
+              </div>
+
+              {/* Overlapping Curved Badge Notch */}
+              <div className="relative z-10 -mt-7 ml-5 inline-flex p-1.5 rounded-2xl bg-white shadow-sm self-start">
+                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#F6ECE1] text-[#8D381B]">
+                  <Leaf className="h-5 w-5" />
+                </div>
+              </div>
+
+              {/* Card Content */}
+              <div className="relative flex flex-1 flex-col px-6 pb-8 pt-2 sm:px-7 sm:pb-9">
+                <h3 className="font-serif text-xl sm:text-2xl font-semibold text-[#20140D] tracking-tight">
+                  Dược liệu thuần khiết
+                </h3>
+                <p className="mt-3 text-[13.5px] sm:text-[14px] leading-relaxed text-[#5C4A3E]">
+                  Chúng tôi tin vào sức mạnh chữa lành nguyên bản từ mẹ thiên nhiên. 100% thảo mộc được thu hái tươi mới và tinh dầu thực vật ép lạnh, không chứa hương liệu hóa học hay chất bảo quản độc hại.
+                </p>
+
+                {/* Delicate botanical watermark at bottom right */}
+                <svg
+                  className="pointer-events-none absolute -bottom-2 -right-2 h-20 w-20 text-[#C49A62]/20 transition-transform duration-500 group-hover:scale-110"
+                  viewBox="0 0 100 100"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.2"
+                >
+                  <path d="M90 90 C 70 80, 50 65, 35 45 C 30 38, 25 25, 20 10" />
+                  <path d="M35 45 C 28 40, 18 42, 12 48 C 22 55, 30 50, 35 45 Z" fill="currentColor" fillOpacity="0.08" />
+                  <path d="M50 65 C 42 62, 34 67, 30 75 C 40 78, 48 72, 50 65 Z" fill="currentColor" fillOpacity="0.08" />
+                  <path d="M68 78 C 60 76, 52 82, 50 90 C 60 92, 66 86, 68 78 Z" fill="currentColor" fillOpacity="0.08" />
+                </svg>
+              </div>
             </div>
 
-            <div className="card-base flex flex-col p-8 transition-all hover:shadow-lg">
-              <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary mb-6">
-                <Heart className="h-6 w-6" />
-              </span>
-              <h3 className="font-serif text-2xl font-semibold text-foreground">Đôi bàn tay thấu cảm</h3>
-              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                Kỹ thuật viên tại Lumière không chỉ thành thạo xoa bóp bấm huyệt Đông y mà còn phục vụ bằng sự thấu hiểu. Chúng tôi lắng nghe nhịp thở của bạn, tôn trọng sự tĩnh lặng và điều chỉnh lực ấn êm ái nhất.
-              </p>
+            {/* Card 3: Đôi bàn tay thấu cảm */}
+            <div className="group relative flex flex-col rounded-[26px] bg-white border border-[#EFE5D8] shadow-[0_12px_36px_rgba(40,20,10,0.06)] overflow-hidden transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_20px_45px_rgba(40,20,10,0.12)]">
+              {/* Card Image */}
+              <div className="relative aspect-[16/10] w-full overflow-hidden bg-[#F5ECE1]">
+                <Image
+                  src="/about-hon-touch.jpg"
+                  alt="Đôi bàn tay thấu cảm tại Lumière Spa"
+                  fill
+                  className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                />
+              </div>
+
+              {/* Overlapping Curved Badge Notch */}
+              <div className="relative z-10 -mt-7 ml-5 inline-flex p-1.5 rounded-2xl bg-white shadow-sm self-start">
+                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#F6ECE1] text-[#8D381B]">
+                  <Heart className="h-5 w-5" />
+                </div>
+              </div>
+
+              {/* Card Content */}
+              <div className="relative flex flex-1 flex-col px-6 pb-8 pt-2 sm:px-7 sm:pb-9">
+                <h3 className="font-serif text-xl sm:text-2xl font-semibold text-[#20140D] tracking-tight">
+                  Đôi bàn tay thấu cảm
+                </h3>
+                <p className="mt-3 text-[13.5px] sm:text-[14px] leading-relaxed text-[#5C4A3E]">
+                  Kỹ thuật viên tại Lumière không chỉ thành thạo xoa bóp bấm huyệt Đông y mà còn phục vụ bằng sự thấu hiểu. Chúng tôi lắng nghe nhịp thở của bạn, tôn trọng sự tĩnh lặng và điều chỉnh lực ấn êm ái nhất.
+                </p>
+
+                {/* Delicate botanical watermark at bottom right */}
+                <svg
+                  className="pointer-events-none absolute -bottom-2 -right-2 h-20 w-20 text-[#C49A62]/20 transition-transform duration-500 group-hover:scale-110"
+                  viewBox="0 0 100 100"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.2"
+                >
+                  <path d="M90 90 C 70 80, 50 65, 35 45 C 30 38, 25 25, 20 10" />
+                  <path d="M35 45 C 28 40, 18 42, 12 48 C 22 55, 30 50, 35 45 Z" fill="currentColor" fillOpacity="0.08" />
+                  <path d="M50 65 C 42 62, 34 67, 30 75 C 40 78, 48 72, 50 65 Z" fill="currentColor" fillOpacity="0.08" />
+                  <path d="M68 78 C 60 76, 52 82, 50 90 C 60 92, 66 86, 68 78 Z" fill="currentColor" fillOpacity="0.08" />
+                </svg>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Signature Highlight: The 5-Senses Therapy */}
-      <section className="border-y border-border bg-[hsl(var(--cream-soft))] py-20 lg:py-24">
-        <div className="mx-auto max-w-[1200px] px-6">
+      {/* Signature Highlight: The 5-Senses Therapy (Matching Mockup Hình 1) */}
+      <section
+        className="relative overflow-hidden py-20 sm:py-24 lg:py-28 bg-[#FAF6F0] bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: "url('/about-senses-backdrop.jpg')" }}
+      >
+        {/* Soft subtle tint overlay */}
+        <div className="absolute inset-0 bg-[#FAF6F0]/20 pointer-events-none" />
+
+        <div className="relative mx-auto max-w-[1220px] px-6">
+          {/* Header */}
           <div className="mx-auto max-w-3xl text-center">
-            <span className="eyebrow">Trải nghiệm độc bản</span>
-            <h2 className="section-heading mt-3">Hành Trình Ngũ Quan Dưỡng Sinh.</h2>
-            <p className="mt-4 text-base leading-relaxed text-muted-foreground sm:text-lg">
+            {/* Top Lotus Icon Ornament */}
+            <div className="flex justify-center text-[#C49A62]">
+              <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <path d="M12 3c-1.5 3-4 6-8 7 3.5 1 6.5 3.5 8 9 1.5-5.5 4.5-8 8-9-4-1-6.5-4-8-7z" />
+                <path d="M12 9c-1 2-2.5 4-5 4.5 2 .8 4 2.5 5 5.5 1-3 3-4.7 5-5.5-2.5-.5-4-2.5-5-4.5z" />
+              </svg>
+            </div>
+
+            {/* Eyebrow with gold accent rules */}
+            <div className="mt-2.5 flex items-center justify-center gap-3">
+              <span className="h-[1px] w-8 sm:w-16 bg-[#B88E5B]/70" />
+              <span className="text-[11px] sm:text-xs font-semibold uppercase tracking-[0.22em] text-[#8D381B]">
+                TRẢI NGHIỆM ĐỘC BẢN
+              </span>
+              <span className="h-[1px] w-8 sm:w-16 bg-[#B88E5B]/70" />
+            </div>
+
+            {/* Main Heading */}
+            <h2 className="mt-3.5 font-serif text-3xl sm:text-4xl lg:text-[46px] font-bold leading-[1.2] text-[#20140D]">
+              Hành Trình Ngũ Quan Dưỡng Sinh.
+            </h2>
+
+            {/* Small subtle floral separator icon */}
+            <div className="mt-3 flex justify-center text-[#C49A62]">
+              <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <path d="M12 5c-1 2-3 4-6 4.5 2.5.7 4.5 2.5 6 6.5 1.5-4 3.5-5.8 6-6.5-3-.5-5-2.5-6-4.5z" />
+              </svg>
+            </div>
+
+            {/* Subtext description */}
+            <p className="mx-auto mt-3.5 max-w-2xl text-[14px] sm:text-[15.5px] leading-relaxed text-[#554238]">
               Khi bước qua ngưỡng cửa Lumière Spa, cả 5 giác quan của bạn sẽ được đánh thức và nâng niu một cách dịu dàng nhất.
             </p>
           </div>
 
-          <div className="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {SENSES.map((sense, idx) => {
-              const Icon = sense.icon;
+          {/* Top Row: First 3 Cards (Khứu giác, Thính giác, Thị giác) */}
+          <div className="mt-14 grid grid-cols-1 gap-7 md:grid-cols-3 lg:gap-8">
+            {SENSES.slice(0, 3).map((item, idx) => {
+              const Icon = item.icon;
               return (
                 <div
                   key={idx}
-                  className={`card-base flex flex-col p-7 transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:shadow-xl ${
-                    idx === 4 ? 'sm:col-span-2 lg:col-span-1' : ''
-                  }`}
+                  className="group relative flex flex-col rounded-[26px] bg-white border border-[#EFE5D8] shadow-[0_10px_30px_rgba(40,20,10,0.06)] overflow-hidden transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_20px_45px_rgba(40,20,10,0.12)]"
                 >
-                  <div className="flex items-center justify-between">
-                    <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-                      <Icon className="h-6 w-6" />
-                    </span>
-                    <span className="rounded-full bg-secondary px-3 py-1 text-[11px] font-semibold text-secondary-foreground">
-                      {sense.tag}
-                    </span>
+                  {/* Card Image */}
+                  <div className="relative aspect-[16/9] w-full overflow-hidden bg-[#F5ECE1]">
+                    <Image
+                      src={item.image}
+                      alt={item.sense}
+                      fill
+                      className="object-cover transition-transform duration-700 group-hover:scale-105"
+                      sizes="(max-width: 768px) 100vw, 33vw"
+                    />
+                    {/* Floating Pill Tag at Bottom-Right of Image */}
+                    <div className="absolute bottom-2.5 right-3 z-10">
+                      <span className="inline-flex items-center rounded-full bg-white/95 px-3 py-1 text-[11px] font-medium text-[#20140D] shadow-sm backdrop-blur-sm border border-[#EFE5D8]/80">
+                        {item.tag}
+                      </span>
+                    </div>
                   </div>
-                  <h3 className="mt-6 font-serif text-xl font-semibold text-foreground">
-                    {sense.title}
-                  </h3>
-                  <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{sense.desc}</p>
+
+                  {/* Overlapping Curved Badge Notch */}
+                  <div className="relative z-10 -mt-7 ml-5 inline-flex p-1.5 rounded-2xl bg-white shadow-sm self-start">
+                    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#F6ECE1] text-[#8D381B]">
+                      <Icon className="h-5 w-5" />
+                    </div>
+                  </div>
+
+                  {/* Card Content */}
+                  <div className="relative flex flex-1 flex-col px-6 pb-7 pt-2 sm:px-7 sm:pb-8">
+                    <h3 className="font-serif text-lg sm:text-[19px] leading-snug tracking-tight">
+                      <span className="font-semibold text-[#20140D]">{item.sense}</span>
+                      <span className="text-[#C49A62] mx-1.5">·</span>
+                      <span className="font-normal text-[#8D381B]">{item.detail}</span>
+                    </h3>
+                    <p className="mt-3 text-[13px] sm:text-[13.5px] leading-relaxed text-[#5C4A3E]">
+                      {item.desc}
+                    </p>
+                  </div>
                 </div>
               );
             })}
           </div>
-        </div>
-      </section>
 
-      {/* Cam kết "3 Không" Minh Bạch */}
-      <section className="py-20 lg:py-24">
-        <div className="mx-auto max-w-[1200px] px-6">
-          <div className="mx-auto max-w-3xl text-center">
-            <span className="eyebrow">Sự an tâm tuyệt đối</span>
-            <h2 className="section-heading mt-3">Cam kết &ldquo;3 Không&rdquo; tại Lumière Spa.</h2>
-            <p className="mt-4 text-base leading-relaxed text-muted-foreground sm:text-lg">
-              Chúng tôi bảo vệ trọn vẹn khoảng thời gian nghỉ ngơi của bạn bằng những nguyên tắc dịch vụ minh bạch nhất.
-            </p>
-          </div>
+          {/* Bottom Row: 2 Cards Centered (Xúc giác, Vị giác) */}
+          <div className="mt-7 flex flex-col md:flex-row justify-center gap-7 lg:gap-8">
+            {SENSES.slice(3, 5).map((item, idx) => {
+              const Icon = item.icon;
+              return (
+                <div
+                  key={idx}
+                  className="group relative flex flex-col w-full md:w-[calc((100%-2*1.75rem)/3)] rounded-[26px] bg-white border border-[#EFE5D8] shadow-[0_10px_30px_rgba(40,20,10,0.06)] overflow-hidden transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_20px_45px_rgba(40,20,10,0.12)]"
+                >
+                  {/* Card Image */}
+                  <div className="relative aspect-[16/9] w-full overflow-hidden bg-[#F5ECE1]">
+                    <Image
+                      src={item.image}
+                      alt={item.sense}
+                      fill
+                      className="object-cover transition-transform duration-700 group-hover:scale-105"
+                      sizes="(max-width: 768px) 100vw, 33vw"
+                    />
+                    {/* Floating Pill Tag at Bottom-Right of Image */}
+                    <div className="absolute bottom-2.5 right-3 z-10">
+                      <span className="inline-flex items-center rounded-full bg-white/95 px-3 py-1 text-[11px] font-medium text-[#20140D] shadow-sm backdrop-blur-sm border border-[#EFE5D8]/80">
+                        {item.tag}
+                      </span>
+                    </div>
+                  </div>
 
-          <div className="mt-14 grid grid-cols-1 gap-8 md:grid-cols-3">
-            {THREE_NO_COMMITMENTS.map((item, i) => (
-              <div
-                key={i}
-                className="relative flex flex-col rounded-3xl border border-border bg-card p-8 shadow-sm transition-all hover:border-primary/40 hover:shadow-lg"
-              >
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary mb-6">
-                  <ShieldCheck className="h-6 w-6" />
+                  {/* Overlapping Curved Badge Notch */}
+                  <div className="relative z-10 -mt-7 ml-5 inline-flex p-1.5 rounded-2xl bg-white shadow-sm self-start">
+                    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#F6ECE1] text-[#8D381B]">
+                      <Icon className="h-5 w-5" />
+                    </div>
+                  </div>
+
+                  {/* Card Content */}
+                  <div className="relative flex flex-1 flex-col px-6 pb-7 pt-2 sm:px-7 sm:pb-8">
+                    <h3 className="font-serif text-lg sm:text-[19px] leading-snug tracking-tight">
+                      <span className="font-semibold text-[#20140D]">{item.sense}</span>
+                      <span className="text-[#C49A62] mx-1.5">·</span>
+                      <span className="font-normal text-[#8D381B]">{item.detail}</span>
+                    </h3>
+                    <p className="mt-3 text-[13px] sm:text-[13.5px] leading-relaxed text-[#5C4A3E]">
+                      {item.desc}
+                    </p>
+                  </div>
                 </div>
-                <span className="text-xs font-bold uppercase tracking-wider text-primary">{item.subtitle}</span>
-                <h3 className="mt-2 font-serif text-2xl font-bold text-foreground">{item.title}</h3>
-                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{item.desc}</p>
-              </div>
-            ))}
+              );
+            })}
+          </div>
+
+          {/* Bottom Lotus Ornament */}
+          <div className="mt-14 flex justify-center text-[#C49A62]">
+            <svg className="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <path d="M12 3c-1.5 3-4 6-8 7 3.5 1 6.5 3.5 8 9 1.5-5.5 4.5-8 8-9-4-1-6.5-4-8-7z" />
+              <path d="M12 9c-1 2-2.5 4-5 4.5 2 .8 4 2.5 5 5.5 1-3 3-4.7 5-5.5-2.5-.5-4-2.5-5-4.5z" />
+            </svg>
           </div>
         </div>
       </section>
 
-      {/* 4-Step Guest Journey */}
-      <section className="border-y border-border bg-[hsl(var(--cream-soft))] py-20 lg:py-24">
-        <div className="mx-auto max-w-[1200px] px-6">
-          <div className="mx-auto max-w-3xl text-center">
-            <span className="eyebrow">Quy trình đón tiếp chu đáo</span>
-            <h2 className="section-heading mt-3">Đến Lumière, gác lại vội vàng.</h2>
-            <p className="mt-4 text-base leading-relaxed text-muted-foreground sm:text-lg">
-              Mỗi buổi hẹn được thiết kế như một hành trình khép kín, đưa bạn từ trạng thái căng thẳng về sự an yên trọn vẹn.
+
+
+      {/* 4-Step Guest Experience Journey (Matching Mockup Hình 2) */}
+      <section
+        className="relative overflow-hidden py-24 sm:py-28 lg:py-32 bg-[#FAF6F0] bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: "url('/about-hon-bg.jpg')" }}
+      >
+        {/* Subtle warm wash overlay */}
+        <div className="absolute inset-0 bg-[#FAF6F0]/25 pointer-events-none" />
+
+        <div className="relative mx-auto max-w-[1240px] px-6">
+          {/* Header */}
+          <div className="relative mx-auto max-w-3xl text-center">
+            {/* Eyebrow with gold accent rules */}
+            <div className="flex items-center justify-center gap-3">
+              <span className="h-[1px] w-8 sm:w-16 bg-[#B88E5B]/70" />
+              <span className="text-[11px] sm:text-xs font-semibold uppercase tracking-[0.22em] text-[#8D381B]">
+                QUY TRÌNH TRẢI NGHIỆM
+              </span>
+              <span className="h-[1px] w-8 sm:w-16 bg-[#B88E5B]/70" />
+            </div>
+
+            {/* Main Heading */}
+            <h2 className="mt-4 font-serif text-3xl sm:text-4xl lg:text-[46px] font-normal leading-[1.25] text-[#20140D]">
+              <span className="font-bold">Đến Lumière, </span>
+              <span className="font-serif italic font-normal text-[#8D381B]">gác lại vội vàng.</span>
+            </h2>
+
+            {/* Subtext description */}
+            <p className="mx-auto mt-4 max-w-2xl text-[14px] sm:text-[15.5px] leading-relaxed text-[#554238]">
+              Mỗi bước trong hành trình tại Lumière được thiết kế tỉ mỉ, giúp bạn thả lỏng cơ thể và cân bằng tâm trí một cách trọn vẹn.
             </p>
+
+            {/* Side Floating Badge (Desktop) */}
+            <div className="hidden xl:flex items-center gap-3 rounded-2xl border border-[#EAE0D3] bg-white/80 px-4 py-2.5 backdrop-blur-sm shadow-sm absolute right-[-140px] top-1/2 -translate-y-1/2">
+              <span className="text-[#C49A62]">
+                <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <circle cx="12" cy="12" r="9" />
+                  <path d="M12 3v18M3 12h18" strokeDasharray="2 2" />
+                  <path d="M12 7c-2 2-3 4-3 5s1 3 3 5c2-2 3-4 3-5s-1-3-3-5z" />
+                </svg>
+              </span>
+              <div className="text-left text-[11px] leading-tight text-[#8D381B] font-serif">
+                <p className="font-medium">Hành trình nhỏ</p>
+                <p className="italic text-[#5C4A3E]">cho một phiên bản</p>
+                <p className="font-medium">rạng rỡ hơn</p>
+              </div>
+            </div>
           </div>
 
-          <div className="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {EXPERIENCE_STEPS.map((step) => (
-              <div key={step.step} className="rounded-2xl border border-border bg-card p-7 shadow-sm">
-                <span className="font-serif text-3xl font-bold text-accent">{step.step}</span>
-                <h3 className="mt-4 font-serif text-xl font-semibold text-foreground">{step.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{step.desc}</p>
-              </div>
-            ))}
+          {/* Connected Steps Grid */}
+          <div className="relative mt-14">
+            {/* Graceful Connecting Flowing Line across the 4 steps (Desktop) */}
+            <svg
+              className="hidden lg:block absolute top-[48%] left-0 right-0 w-full h-16 pointer-events-none z-0"
+              viewBox="0 0 1200 60"
+              fill="none"
+              preserveAspectRatio="none"
+            >
+              <path
+                d="M 150 30 C 240 65, 330 0, 420 30 C 510 65, 600 0, 690 30 C 780 65, 870 0, 960 30 C 1020 45, 1080 30, 1120 30"
+                stroke="#C49A62"
+                strokeWidth="1.5"
+                strokeOpacity="0.4"
+              />
+            </svg>
+
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
+              {EXPERIENCE_STEPS.map((step) => {
+                const Icon = step.icon;
+                return (
+                  <div
+                    key={step.step}
+                    className="group relative flex flex-col rounded-[26px] bg-white border border-[#EFE5D8] shadow-[0_10px_30px_rgba(40,20,10,0.06)] overflow-hidden transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_20px_45px_rgba(40,20,10,0.12)] z-10"
+                  >
+                    {/* Step Card Photo */}
+                    <div className="relative aspect-[16/10] w-full overflow-hidden bg-[#F5ECE1]">
+                      <Image
+                        src={step.image}
+                        alt={step.title}
+                        fill
+                        className="object-cover transition-transform duration-700 group-hover:scale-105"
+                        sizes="(max-width: 768px) 100vw, 25vw"
+                      />
+                    </div>
+
+                    {/* Overlapping Curved Badge Notch */}
+                    <div className="relative z-10 -mt-7 ml-5 inline-flex p-1.5 rounded-2xl bg-white shadow-sm self-start">
+                      <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#F6ECE1] text-[#8D381B]">
+                        <Icon className="h-5 w-5" />
+                      </div>
+                    </div>
+
+                    {/* Step Content */}
+                    <div className="relative flex flex-1 flex-col px-5 pb-7 pt-2 sm:px-6 sm:pb-8">
+                      {/* Step Number + Title */}
+                      <div className="flex items-center gap-2">
+                        <span className="inline-flex items-center justify-center rounded-md bg-[#F6ECE1] px-2 py-0.5 text-xs font-bold font-serif text-[#8D381B]">
+                          {step.step}
+                        </span>
+                        <h3 className="font-serif text-[16.5px] font-semibold text-[#20140D] tracking-tight">
+                          {step.title}
+                        </h3>
+                      </div>
+
+                      {/* Description */}
+                      <p className="mt-3 text-[12.5px] sm:text-[13px] leading-relaxed text-[#5C4A3E]">
+                        {step.desc}
+                      </p>
+
+                      {/* Delicate botanical watermark at bottom right */}
+                      <svg
+                        className="pointer-events-none absolute -bottom-2 -right-2 h-16 w-16 text-[#C49A62]/20 transition-transform duration-500 group-hover:scale-110"
+                        viewBox="0 0 100 100"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.2"
+                      >
+                        <path d="M90 90 C 70 80, 50 65, 35 45 C 30 38, 25 25, 20 10" />
+                        <path d="M35 45 C 28 40, 18 42, 12 48 C 22 55, 30 50, 35 45 Z" fill="currentColor" fillOpacity="0.08" />
+                        <path d="M50 65 C 42 62, 34 67, 30 75 C 40 78, 48 72, 50 65 Z" fill="currentColor" fillOpacity="0.08" />
+                        <path d="M68 78 C 60 76, 52 82, 50 90 C 60 92, 66 86, 68 78 Z" fill="currentColor" fillOpacity="0.08" />
+                      </svg>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
       </section>
@@ -509,38 +895,110 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Spa Spaces Gallery */}
-      <section className="border-t border-border bg-[hsl(var(--cream-soft))] py-20 lg:py-24">
-        <div className="mx-auto max-w-[1200px] px-6">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between mb-12">
+      {/* Spa Spaces Gallery (Matching Mockup Hình 1) */}
+      <section className="relative overflow-hidden bg-[#FAF7F2] py-20 lg:py-24 border-t border-[#F0E6D8]">
+        {/* Delicate background wash & sketch */}
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-25 pointer-events-none"
+          style={{ backgroundImage: "url('/about-hon-bg.jpg')" }}
+        />
+
+        {/* Left Botanical Flourish */}
+        <div className="absolute -left-4 top-1/2 -translate-y-1/2 pointer-events-none opacity-40 lg:opacity-75 hidden md:block">
+          <svg width="220" height="420" viewBox="0 0 220 420" fill="none" stroke="#CBB49C" strokeWidth="1.2">
+            <circle cx="85" cy="110" r="8" fill="#E8D7C5" stroke="none" />
+            <path d="M-20 280 C60 260 120 180 85 110 C60 60 10 20 -30 10" />
+            <path d="M85 110 C130 90 180 130 160 180 C140 220 90 200 80 170" />
+            <path d="M40 220 C90 220 110 270 80 300 C50 330 20 300 30 260" />
+            <path d="M85 110 Q 115 80 125 105 Q 105 125 85 110 Z" fill="#F4EBE0" fillOpacity="0.4" />
+            <path d="M60 160 Q 80 130 100 150 Q 85 175 60 160 Z" fill="#F4EBE0" fillOpacity="0.4" />
+            <path d="M45 230 Q 75 210 85 235 Q 65 255 45 230 Z" fill="#F4EBE0" fillOpacity="0.4" />
+          </svg>
+        </div>
+
+        {/* Right Botanical Flourish */}
+        <div className="absolute -right-4 top-1/2 -translate-y-1/2 pointer-events-none opacity-40 lg:opacity-75 hidden md:block">
+          <svg width="220" height="420" viewBox="0 0 220 420" fill="none" stroke="#CBB49C" strokeWidth="1.2">
+            <path d="M240 80 C160 120 100 200 135 290 C160 350 210 390 250 400" />
+            <path d="M135 290 C90 310 40 270 60 220 C80 180 130 200 140 230" />
+            <path d="M180 180 C130 180 110 130 140 100 C170 70 200 100 190 140" />
+            <path d="M135 290 Q 105 320 95 295 Q 115 275 135 290 Z" fill="#F4EBE0" fillOpacity="0.4" />
+            <path d="M160 240 Q 140 270 120 250 Q 135 225 160 240 Z" fill="#F4EBE0" fillOpacity="0.4" />
+            <path d="M175 170 Q 145 190 135 165 Q 155 145 175 170 Z" fill="#F4EBE0" fillOpacity="0.4" />
+          </svg>
+        </div>
+
+        <div className="relative z-10 mx-auto max-w-[1240px] px-6">
+          {/* Header Row: Dual Title on Left, Description + Link on Right */}
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between mb-12 lg:mb-14">
             <div>
-              <span className="eyebrow">Không gian Lumière Spa</span>
-              <h2 className="section-heading mt-2">Chốn tĩnh lặng giữa lòng đô thị.</h2>
+              <span className="text-[11px] sm:text-xs font-semibold uppercase tracking-[0.22em] text-[#9B3E1F]">
+                KHÔNG GIAN LUMIÈRE SPA
+              </span>
+              <h2 className="mt-2.5 font-serif text-3xl sm:text-4xl lg:text-[42px] leading-tight">
+                <span className="italic font-normal text-[#8D381B]">Chốn tĩnh lặng</span>{' '}
+                <span className="font-bold text-[#20140D]">giữa lòng đô thị.</span>
+              </h2>
             </div>
-            <Link href="/services" className="font-semibold text-primary hover:underline text-sm">
-              Khám phá toàn bộ dịch vụ →
-            </Link>
+
+            <div className="max-w-[440px] lg:text-left">
+              <p className="text-xs sm:text-[13px] leading-relaxed text-[#6B5E55]">
+                Lumière Spa mang đến những dịch vụ chăm sóc toàn diện, giúp bạn cân bằng thân - tâm - trí và tìm lại nguồn năng lượng tích cực trong cuộc sống bận rộn.
+              </p>
+              <Link
+                href="/services"
+                className="mt-2.5 inline-flex items-center gap-1.5 text-xs sm:text-[13px] font-semibold text-[#8D381B] hover:text-[#6e2912] transition-colors group"
+              >
+                <span>Khám phá không gian của chúng tôi</span>
+                <span className="transition-transform duration-200 group-hover:translate-x-1">→</span>
+              </Link>
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          {/* 4 Cards Grid */}
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {SPACES.map((space, i) => (
               <div
                 key={i}
-                className="group relative flex flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-all hover:shadow-xl"
+                className="group flex flex-col rounded-[26px] sm:rounded-[28px] bg-white p-2.5 pb-6 sm:pb-7 border border-[#EFE5D8] shadow-[0_8px_30px_rgba(40,20,10,0.04)] hover:shadow-[0_16px_36px_rgba(40,20,10,0.09)] hover:-translate-y-1 transition-all duration-300"
               >
-                <div className="relative aspect-[4/3] w-full overflow-hidden bg-muted">
+                {/* Image Container with Organic Wave Silhouette at bottom */}
+                <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[20px] bg-[#F5ECE1]">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={space.img}
                     alt={space.title}
                     loading="lazy"
-                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-70" />
+                  {/* Organic bottom wave shape */}
+                  <svg
+                    className="absolute -bottom-[1px] left-0 w-full h-8 text-white fill-current pointer-events-none"
+                    viewBox="0 0 240 32"
+                    preserveAspectRatio="none"
+                  >
+                    <path d="M0,16 C40,28 75,6 125,18 C175,30 205,10 240,14 L240,32 L0,32 Z" />
+                  </svg>
                 </div>
-                <div className="p-6">
-                  <h3 className="font-serif text-lg font-semibold text-foreground">{space.title}</h3>
-                  <p className="mt-2 text-xs sm:text-sm text-muted-foreground leading-relaxed">{space.desc}</p>
+
+                {/* Overlapping Icon Badge */}
+                <div className="relative z-10 -mt-5 ml-4 flex h-11 w-11 items-center justify-center rounded-2xl border border-[#E8DACB] bg-[#FFF8F0] shadow-sm">
+                  {renderSpaceIcon(space.iconType)}
+                </div>
+
+                {/* Card Content */}
+                <div className="flex flex-1 flex-col px-4 pt-3">
+                  <div className="flex items-start justify-between gap-2.5">
+                    <h3 className="font-sans text-[15px] sm:text-[16px] font-bold leading-snug text-[#1F1713] transition-colors group-hover:text-[#8D381B]">
+                      {space.title}
+                    </h3>
+                    <span className="flex h-7 w-7 sm:h-8 sm:w-8 shrink-0 items-center justify-center rounded-full bg-[#F5ECE1] text-[#3A2218] shadow-sm transition-all group-hover:bg-[#8D381B] group-hover:text-white">
+                      <ArrowRight className="h-3.5 w-3.5" />
+                    </span>
+                  </div>
+                  <p className="mt-3 text-xs sm:text-[12.5px] leading-relaxed text-[#706359]">
+                    {space.desc}
+                  </p>
                 </div>
               </div>
             ))}
@@ -548,30 +1006,130 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Call to Action Banner */}
-      <section className="py-20 lg:py-24 bg-background">
-        <div className="mx-auto max-w-[1000px] px-6">
-          <div className="relative overflow-hidden rounded-3xl bg-[hsl(var(--deep-footer))] px-8 py-14 text-center text-white sm:px-14 sm:py-16 shadow-2xl">
-            <Sparkles className="mx-auto h-10 w-10 text-[hsl(var(--gold-light))] mb-4 opacity-90" />
-            <h2 className="font-serif text-3xl font-medium sm:text-4xl lg:text-5xl text-white">
-              Hôm nay, hãy để Lumière chăm sóc bạn.
-            </h2>
-            <p className="mx-auto mt-4 max-w-lg text-sm sm:text-base text-white/80 leading-relaxed">
-              Đặt lịch online ngay để tận hưởng ưu đãi <strong>giảm 10% cho lần trải nghiệm đầu tiên</strong>. Lịch hẹn được xác nhận tức thì, không cần thanh toán trước.
-            </p>
-            <div className="mt-8 flex flex-wrap justify-center gap-4">
-              <Link href="/booking" className="btn-primary h-12 px-7 text-sm font-bold shadow-lg">
-                Đặt lịch hẹn ngay <ArrowRight className="h-4 w-4" />
-              </Link>
-              <LeadDialog source="about_cta" interest="Tư vấn trải nghiệm">
-                <Button size="lg" variant="outline" className="h-12 px-7 border-white/30 text-white hover:bg-white/10 font-semibold">
-                  Để lại SĐT tư vấn
-                </Button>
-              </LeadDialog>
+      {/* Call to Action Banner (Matching Mockup Hình 1) */}
+      <section
+        className="relative overflow-hidden py-20 sm:py-24 lg:py-28 bg-[#FAF6F0] bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: "url('/about-hon-bg.jpg')" }}
+      >
+        {/* Subtle warm wash */}
+        <div className="absolute inset-0 bg-[#FAF6F0]/25 pointer-events-none" />
+
+        <div className="relative mx-auto max-w-[1240px] px-6">
+          <div className="relative overflow-hidden rounded-[32px] sm:rounded-[36px] bg-[#FAF5EE] border border-[#EFE5D8] shadow-[0_20px_60px_rgba(40,20,10,0.08)]">
+            <div className="grid grid-cols-1 items-stretch lg:grid-cols-12">
+              {/* Left Column: Content */}
+              <div className="relative z-10 flex flex-col justify-center p-8 sm:p-12 lg:col-span-7 lg:py-14 lg:pl-14 lg:pr-8">
+                {/* Eyebrow */}
+                <div className="flex items-center gap-2.5 text-[#8D381B]">
+                  <Sparkles className="h-4 w-4 text-[#C49A62]" />
+                  <span className="h-[1px] w-6 bg-[#C49A62]/60" />
+                  <span className="text-[11px] sm:text-xs font-semibold uppercase tracking-[0.22em]">
+                    LUMIÈRE SPA
+                  </span>
+                </div>
+
+                {/* Main Heading */}
+                <h2 className="mt-4 font-serif text-3xl sm:text-4xl lg:text-[44px] font-normal leading-[1.2] text-[#20140D]">
+                  <span className="font-bold block">Hôm nay, hãy để</span>
+                  <span className="font-bold">
+                    <span className="text-[#8D381B]">Lumière</span> chăm sóc bạn.
+                  </span>
+                </h2>
+
+                {/* Subtext description with highlight badge */}
+                <p className="mt-4 max-w-lg text-[13.5px] sm:text-[14.5px] leading-relaxed text-[#554238]">
+                  Đặt lịch online ngay để tận hưởng ưu đãi{' '}
+                  <span className="inline-block rounded-md bg-[#F6ECE1] px-2 py-0.5 font-bold text-[#8D381B]">
+                    giảm 10%
+                  </span>{' '}
+                  cho lần trải nghiệm đầu tiên. Lịch hẹn được xác nhận tức thì, không cần thanh toán trước.
+                </p>
+
+                {/* Action Buttons */}
+                <div className="mt-7 flex flex-wrap items-center gap-4">
+                  <Link
+                    href="/booking"
+                    className="inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-[#8D381B] px-7 text-sm font-semibold text-white shadow-[0_8px_20px_rgba(141,56,27,0.25)] transition-all hover:bg-[#722C14] hover:shadow-[0_12px_24px_rgba(141,56,27,0.35)]"
+                  >
+                    Đặt lịch hẹn ngay <ArrowRight className="h-4 w-4" />
+                  </Link>
+
+                  <LeadDialog source="about_cta" interest="Tư vấn trải nghiệm">
+                    <Button
+                      size="lg"
+                      variant="outline"
+                      className="h-12 rounded-xl border-[#E2D4C3] bg-[#F5ECE1]/70 px-7 text-sm font-semibold text-[#8D381B] hover:bg-[#F5ECE1] hover:border-[#D5C2AD]"
+                    >
+                      Để lại SĐT tư vấn
+                    </Button>
+                  </LeadDialog>
+                </div>
+
+                {/* Bottom Divider & Contact/Hours Meta */}
+                <div className="mt-8 border-t border-[#EFE5D8] pt-6 flex flex-wrap items-center gap-6 sm:gap-10">
+                  {/* Hotline */}
+                  <div className="flex items-center gap-3">
+                    <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#F5ECE1] text-[#8D381B]">
+                      <Phone className="h-4 w-4" />
+                    </span>
+                    <div className="text-left text-xs text-[#7A6658]">
+                      <p>Hotline hỗ trợ</p>
+                      <a
+                        href={telHref(SITE.phone)}
+                        className="text-sm sm:text-base font-bold text-[#20140D] hover:text-[#8D381B] transition-colors"
+                      >
+                        {SITE.phone}
+                      </a>
+                    </div>
+                  </div>
+
+                  {/* Hours */}
+                  <div className="flex items-center gap-3">
+                    <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#F5ECE1] text-[#8D381B]">
+                      <Clock className="h-4 w-4" />
+                    </span>
+                    <div className="text-left text-xs text-[#7A6658]">
+                      <p>Mở cửa</p>
+                      <p className="text-xs sm:text-sm font-medium text-[#20140D]">
+                        {SITE.hours}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Column: Organic Arch Spa Photography */}
+              <div className="relative min-h-[320px] sm:min-h-[400px] lg:col-span-5 lg:min-h-full overflow-hidden">
+                {/* Organic Parabolic Arch Cut-out Wrapper */}
+                <div className="relative h-full w-full lg:rounded-l-[160px] overflow-hidden shadow-inner bg-[#F5ECE1]">
+                  <Image
+                    src="/about-cta-spa.jpg"
+                    alt="Lumière Spa Sanctuary"
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 1024px) 100vw, 42vw"
+                  />
+                  {/* Soft subtle warm gradient overlay on image */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none" />
+                </div>
+
+                {/* Botanical Blooming Rose/Lotus Sketch Overlay at the Curve */}
+                <svg
+                  className="pointer-events-none absolute bottom-0 left-[-20px] z-20 hidden lg:block h-44 w-44 text-[#C49A62]/45"
+                  viewBox="0 0 160 160"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.2"
+                >
+                  <path d="M40 140 C 50 110, 70 90, 90 70 C 100 60, 115 50, 130 45" />
+                  <path d="M90 70 C 75 60, 60 65, 55 75 C 65 85, 80 80, 90 70 Z" fill="currentColor" fillOpacity="0.06" />
+                  <path d="M105 85 C 95 95, 95 110, 105 120 C 115 110, 115 95, 105 85 Z" fill="currentColor" fillOpacity="0.06" />
+                  <path d="M130 45 C 120 30, 105 32, 95 42 C 100 55, 115 52, 130 45 Z" fill="currentColor" fillOpacity="0.08" />
+                  <path d="M130 45 C 145 35, 155 45, 150 58 C 138 60, 132 50, 130 45 Z" fill="currentColor" fillOpacity="0.08" />
+                  <path d="M115 25 C 125 15, 140 20, 142 32 C 132 36, 122 30, 115 25 Z" fill="currentColor" fillOpacity="0.08" />
+                </svg>
+              </div>
             </div>
-            <p className="mt-6 text-xs text-white/60">
-              Hotline hỗ trợ: <a href={telHref(SITE.phone)} className="underline hover:text-white">{SITE.phone}</a> · Mở cửa {SITE.hours}
-            </p>
           </div>
         </div>
       </section>

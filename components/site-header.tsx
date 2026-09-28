@@ -27,8 +27,8 @@ const NAV_LINKS = [
   { href: '/', label: 'Trang chủ' },
   { href: '/about', label: 'Giới thiệu' },
   { href: '/services', label: 'Dịch vụ' },
-  { href: '/#uu-dai', label: 'Ưu đãi' },
-  { href: '/#lien-he', label: 'Liên hệ' },
+  { href: '/offers', label: 'Ưu đãi' },
+  { href: '/contact', label: 'Liên hệ' },
 ];
 
 const sheetLink = 'flex items-center gap-3 rounded-lg px-3 py-3 text-[15px] font-semibold text-foreground hover:bg-muted';

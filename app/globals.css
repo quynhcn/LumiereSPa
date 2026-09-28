@@ -92,13 +92,21 @@
   * {
     @apply border-border;
   }
+  html,
   body {
     @apply bg-background text-foreground font-sans;
-    font-family: var(--font-quicksand), Quicksand, sans-serif;
+    font-family: var(--font-quicksand), 'Quicksand', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     font-weight: 500;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+  }
+  input,
+  button,
+  textarea,
+  select,
+  optgroup {
+    font-family: var(--font-quicksand), 'Quicksand', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   }
 }
 

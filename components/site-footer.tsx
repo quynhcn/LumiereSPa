@@ -102,7 +102,7 @@ export function SiteFooter() {
                 </Link>
               </li>
               <li>
-                <Link href="/#uu-dai" className="text-[#C8BCB3] transition-colors duration-200 hover:text-[#F3D7AC] font-light block">
+                <Link href="/offers" className="text-[#C8BCB3] transition-colors duration-200 hover:text-[#F3D7AC] font-light block">
                   Ưu đãi & quà tặng
                 </Link>
               </li>
@@ -121,12 +121,12 @@ export function SiteFooter() {
                 </Link>
               </li>
               <li>
-                <Link href="/#lien-he" className="text-[#C8BCB3] transition-colors duration-200 hover:text-[#F3D7AC] font-light block">
-                  Tư vấn liệu trình
+                <Link href="/contact" className="text-[#C8BCB3] transition-colors duration-200 hover:text-[#F3D7AC] font-light block">
+                  Tư vấn liệu trình & Liên hệ
                 </Link>
               </li>
               <li>
-                <Link href="/about#faq" className="text-[#C8BCB3] transition-colors duration-200 hover:text-[#F3D7AC] font-light block">
+                <Link href="/contact" className="text-[#C8BCB3] transition-colors duration-200 hover:text-[#F3D7AC] font-light block">
                   Câu hỏi thường gặp
                 </Link>
               </li>

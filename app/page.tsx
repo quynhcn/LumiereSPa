@@ -3,6 +3,7 @@ import {
   ArrowRight,
   Cake,
   Calendar,
+  CalendarCheck,
   Check,
   CheckCircle2,
   Crown,
@@ -20,6 +21,7 @@ import {
   ShieldCheck,
   Sparkles,
   Star,
+  Tag,
   Users,
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
@@ -680,34 +682,182 @@ export default async function HomePage() {
         </section>
       )}
 
-      {/* Feature */}
-      <section className="bg-[hsl(var(--deep))] py-20 text-white lg:py-24">
-        <div className="mx-auto max-w-[1200px] px-6">
-          <div className="grid grid-cols-1 items-center gap-16 lg:grid-cols-2">
-            <div>
-              <span className="eyebrow text-[hsl(var(--gold-light))]">Tận hưởng theo cách của bạn</span>
-              <h2 className="section-heading mt-3 max-w-[520px] text-white">Thời gian nghỉ ngơi cũng xứng đáng được chăm chút.</h2>
-              <p className="mt-5 max-w-[520px] text-[15px] leading-[1.75] text-white/70">
+      {/* Feature Banner - Relax in Your Own Way */}
+      <section className="relative overflow-hidden bg-[#1E130D] py-16 sm:py-20 lg:py-24 text-white">
+        {/* Atmospheric Spa Still-life Background */}
+        <div
+          className="absolute inset-0 bg-cover bg-left bg-no-repeat opacity-50 sm:opacity-75 lg:opacity-90"
+          style={{ backgroundImage: "url('/spa-banner-relax.jpg')" }}
+        />
+        {/* Dark Gradient Overlay for optimal text legibility */}
+        <div className="absolute inset-0 bg-gradient-to-r from-[#1E130D]/75 via-[#1E130D]/90 to-[#1E130D] lg:from-[#1E130D]/30 lg:via-[#1E130D]/80 lg:to-[#1E130D]" />
+
+        <div className="relative z-10 mx-auto max-w-[1360px] px-6 sm:px-8 lg:px-12">
+          <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-12 lg:gap-14">
+            {/* Left Column: Heading & CTA */}
+            <div className="lg:col-span-6 xl:col-span-6">
+              <span className="text-xs sm:text-sm font-semibold tracking-[0.2em] text-[#E8A87C] uppercase">
+                TẬN HƯỞNG THEO CÁCH CỦA BẠN
+              </span>
+              <h2 className="mt-4 font-serif text-3xl sm:text-4xl lg:text-5xl font-normal leading-[1.2] text-[#FAF6F0]">
+                Thời gian nghỉ ngơi<br />
+                cũng xứng đáng được<br />
+                <span className="font-serif italic text-[#E8A87C]">chăm chút.</span>
+              </h2>
+              <p className="mt-6 max-w-[490px] text-sm sm:text-base leading-relaxed text-[#D8CCC4] font-light">
                 Dành cho những buổi nghỉ ngắn giữa tuần hay một khoảng thư giãn cuối tuần. Chỉ cần chọn dịch vụ, chọn thời gian và để chúng tôi chuẩn bị phần còn lại.
               </p>
-              <Link href="/booking" className="btn-cream mt-7">
-                Giữ chỗ cho tôi <ArrowRight className="h-4 w-4" />
-              </Link>
+              <div className="mt-8">
+                <Link
+                  href="/booking"
+                  className="group inline-flex items-center gap-3 rounded-full bg-[#F5EBE1] px-7 py-3.5 text-sm font-semibold text-[#5A2510] shadow-lg shadow-black/25 transition-all duration-300 hover:bg-white hover:shadow-xl hover:-translate-y-0.5"
+                >
+                  <span>Giữ chỗ cho tôi</span>
+                  <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+                </Link>
+              </div>
             </div>
-            <div className="border-t border-white/30">
+
+            {/* Right Column: 3 Horizontal Glass Cards */}
+            <div className="flex flex-col gap-4 sm:gap-5 lg:col-span-6 xl:col-span-6">
               {[
-                { num: '01', title: 'Lựa chọn linh hoạt', desc: 'Liệu trình từ 30 đến 90 phút, dễ sắp xếp trong lịch trình của bạn.' },
-                { num: '02', title: 'Giá rõ ràng', desc: 'Giá niêm yết trên web, không phát sinh chi phí ẩn.' },
-                { num: '03', title: 'Đặt lịch thuận tiện', desc: 'Chọn giờ trống và nhận mã đặt lịch ngay, không cần chờ gọi lại.' },
-              ].map((item) => (
-                <div key={item.num} className="flex gap-6 border-b border-white/30 py-7">
-                  <b className="font-serif text-2xl text-[hsl(var(--gold-light))]">{item.num}</b>
-                  <div>
-                    <h3 className="mb-1 text-base font-bold">{item.title}</h3>
-                    <p className="text-sm text-white/70">{item.desc}</p>
+                {
+                  num: '01',
+                  title: 'Lựa chọn linh hoạt',
+                  desc: 'Liệu trình từ 30 đến 90 phút, dễ sắp xếp trong lịch trình của bạn.',
+                  icon: Calendar,
+                },
+                {
+                  num: '02',
+                  title: 'Giá rõ ràng',
+                  desc: 'Giá niêm yết trên web, không phát sinh chi phí ẩn.',
+                  icon: Tag,
+                },
+                {
+                  num: '03',
+                  title: 'Đặt lịch thuận tiện',
+                  desc: 'Chọn giờ trống và nhận mã đặt lịch ngay, không cần chờ gọi lại.',
+                  icon: CalendarCheck,
+                },
+              ].map((item) => {
+                const Icon = item.icon;
+                return (
+                  <div
+                    key={item.num}
+                    className="group relative flex items-center gap-5 sm:gap-6 rounded-2xl border border-white/10 bg-[#281810]/70 p-5 sm:p-6 backdrop-blur-md transition-all duration-300 hover:border-white/20 hover:bg-[#342016]/85 hover:shadow-xl"
+                  >
+                    {/* Serif Number */}
+                    <span className="shrink-0 font-serif text-2xl sm:text-3xl font-light text-[#E8A87C]/90 w-8">
+                      {item.num}
+                    </span>
+
+                    {/* Icon in Rounded Box */}
+                    <span className="flex h-11 w-11 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-xl border border-white/15 bg-white/[0.06] text-[#E8A87C] transition-colors duration-300 group-hover:bg-[#E8A87C]/20 group-hover:border-[#E8A87C]/40">
+                      <Icon className="h-5 w-5" />
+                    </span>
+
+                    {/* Text Content */}
+                    <div className="min-w-0 flex-1">
+                      <h3 className="text-base sm:text-lg font-semibold text-white">
+                        {item.title}
+                      </h3>
+                      <p className="mt-1 text-xs sm:text-sm text-[#C8BCB3] leading-relaxed font-light">
+                        {item.desc}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Journey - 3 Steps to Begin */}
+      <section id="trai-nghiem" className="relative scroll-mt-20 overflow-hidden bg-[#FAF6F0] py-20 lg:py-24">
+        {/* Subtle decorative background accents */}
+        <div className="pointer-events-none absolute -left-20 top-0 h-64 w-64 rounded-full bg-[#EFE6DC]/50 blur-3xl" />
+        <div className="pointer-events-none absolute -right-20 bottom-0 h-64 w-64 rounded-full bg-[#EADCCB]/40 blur-3xl" />
+
+        <div className="relative mx-auto max-w-[1360px] px-6 sm:px-8 lg:px-12">
+          {/* Section Header */}
+          <div className="text-center">
+            <span className="text-xs sm:text-sm font-semibold uppercase tracking-[0.2em] text-[#8D381B]">
+              MỘT BUỔI HẸN THẬT NHẸ NHÀNG
+            </span>
+            <h2 className="mt-3 font-serif text-3xl sm:text-4xl lg:text-5xl font-normal text-[#1E130D]">
+              Ba bước để <span className="italic font-serif text-[#8D381B]">bắt đầu.</span>
+            </h2>
+          </div>
+
+          {/* Steps Cards Grid with Connecting Horizontal Guide */}
+          <div className="relative mt-12 sm:mt-16">
+            {/* Desktop connecting guide line */}
+            <div className="pointer-events-none absolute left-[15%] right-[15%] top-1/2 hidden -translate-y-1/2 border-t border-[#DFD3C4] lg:block" />
+
+            <div className="relative grid grid-cols-1 gap-6 sm:grid-cols-3 lg:gap-8">
+              {[
+                {
+                  step: '01 / Chọn',
+                  title: 'Tìm liệu trình',
+                  desc: 'Xem dịch vụ, thời lượng và mức giá phù hợp với bạn.',
+                  icon: Flower2,
+                  href: '#dich-vu',
+                },
+                {
+                  step: '02 / Hẹn',
+                  title: 'Chọn giờ còn trống',
+                  desc: 'Xem khung giờ trống theo thời gian thực, lịch được xác nhận ngay.',
+                  icon: Calendar,
+                  href: '/booking',
+                },
+                {
+                  step: '03 / Thư giãn',
+                  title: 'Đến Lumière Spa',
+                  desc: 'Đến trước giờ hẹn 10 phút và dành thời gian cho chính mình.',
+                  icon: Leaf,
+                  href: '/about',
+                },
+              ].map((item) => {
+                const Icon = item.icon;
+                return (
+                  <div
+                    key={item.step}
+                    className="group relative flex flex-col justify-between rounded-[24px] border border-[#EFE5D8] bg-[#FDFBF7] p-7 sm:p-8 shadow-[0_4px_24px_rgba(30,19,13,0.04)] transition-all duration-300 hover:-translate-y-1 hover:border-[#DCC6B3] hover:shadow-[0_12px_32px_rgba(30,19,13,0.08)]"
+                  >
+                    <div>
+                      {/* Top Row: Icon Badge & Step Label */}
+                      <div className="flex items-center justify-between">
+                        <span className="flex h-12 w-12 items-center justify-center rounded-full bg-[#F5ECE1] text-[#8D381B] shadow-inner transition-transform duration-300 group-hover:scale-105">
+                          <Icon className="h-5 w-5" />
+                        </span>
+                        <span className="text-xs font-semibold uppercase tracking-wider text-[#A8988A]">
+                          {item.step}
+                        </span>
+                      </div>
+
+                      {/* Title & Description */}
+                      <h3 className="mt-5 font-serif text-xl sm:text-2xl font-medium text-[#1E130D]">
+                        {item.title}
+                      </h3>
+                      <p className="mt-2.5 text-xs sm:text-sm leading-relaxed text-[#736357] font-light min-h-[42px]">
+                        {item.desc}
+                      </p>
+                    </div>
+
+                    {/* Bottom Row: Arrow action button */}
+                    <div className="mt-6 flex justify-end">
+                      <Link
+                        href={item.href}
+                        className="flex h-8 w-8 items-center justify-center rounded-full bg-[#EFE6DC] text-[#736357] transition-all duration-300 group-hover:bg-[#8D381B] group-hover:text-white group-hover:scale-110"
+                        aria-label={item.title}
+                      >
+                        <ArrowRight className="h-4 w-4" />
+                      </Link>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
@@ -744,27 +894,6 @@ export default async function HomePage() {
           </div>
         </section>
       )}
-
-      {/* Journey */}
-      <section id="trai-nghiem" className="scroll-mt-20 bg-card py-20 lg:py-24">
-        <div className="mx-auto max-w-[1200px] px-6">
-          <span className="eyebrow">Một buổi hẹn thật nhẹ nhàng</span>
-          <h2 className="section-heading mt-3">Ba bước để bắt đầu.</h2>
-          <div className="mt-12 grid grid-cols-1 gap-11 sm:grid-cols-3">
-            {[
-              { n: '01 / Chọn', title: 'Tìm liệu trình', desc: 'Xem dịch vụ, thời lượng và mức giá phù hợp với bạn.' },
-              { n: '02 / Hẹn', title: 'Chọn giờ còn trống', desc: 'Xem khung giờ trống theo thời gian thực, lịch được xác nhận ngay.' },
-              { n: '03 / Thư giãn', title: 'Đến Lumière Spa', desc: 'Đến trước giờ hẹn 10 phút và dành thời gian cho chính mình.' },
-            ].map((step) => (
-              <div key={step.n} className="border-t border-border pt-6">
-                <span className="text-base font-bold text-accent">{step.n}</span>
-                <h3 className="mb-2 mt-6 font-serif text-2xl font-medium text-foreground">{step.title}</h3>
-                <p className="text-[15px] leading-[1.75] text-muted-foreground">{step.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* Contact + callback form */}
       <section id="lien-he" className="scroll-mt-20 bg-[hsl(30_42%_90%)] py-20 lg:py-24">

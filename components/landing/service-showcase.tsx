@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import { ArrowRight, ChevronLeft, ChevronRight, Clock, Flower2, Leaf, Sparkles, Star } from 'lucide-react';
+import { ArrowRight, ChevronLeft, ChevronRight, Clock, Flower2, Leaf } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 export interface ServiceShowcaseItem {
@@ -75,17 +75,48 @@ const SERVICES: ServiceShowcaseItem[] = [
 
 export function ServiceShowcase() {
   const [activeIdx, setActiveIdx] = useState(2); // Gội đầu dưỡng sinh active by default (center)
+  const [touchStartX, setTouchStartX] = useState<number | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const total = SERVICES.length;
 
   const handlePrev = () => {
-    setActiveIdx((prev) => (prev - 1 + SERVICES.length) % SERVICES.length);
+    setActiveIdx((prev) => (prev - 1 + total) % total);
   };
 
   const handleNext = () => {
-    setActiveIdx((prev) => (prev + 1) % SERVICES.length);
+    setActiveIdx((prev) => (prev + 1) % total);
+  };
+
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowLeft') handlePrev();
+      if (e.key === 'ArrowRight') handleNext();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  // Touch Swipe support
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchStartX(e.touches[0].clientX);
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX === null) return;
+    const touchEndX = e.changedTouches[0].clientX;
+    const diff = touchEndX - touchStartX;
+    if (diff > 45) {
+      handlePrev();
+    } else if (diff < -45) {
+      handleNext();
+    }
+    setTouchStartX(null);
   };
 
   return (
-    <section id="dich-vu" className="relative scroll-mt-20 overflow-hidden bg-[#FAF6F0] py-20 lg:py-28">
+    <section id="dich-vu" className="relative scroll-mt-20 overflow-hidden bg-[#FAF6F0] py-20 lg:py-28 select-none">
       {/* Background Ambience & Dappled Light */}
       <div className="pointer-events-none absolute -left-20 -top-20 h-96 w-96 rounded-full bg-[#EFE3D5]/60 blur-3xl" />
       <div className="pointer-events-none absolute -right-20 bottom-0 h-96 w-96 rounded-full bg-[#EBDDCF]/50 blur-3xl" />
@@ -95,7 +126,7 @@ export function ServiceShowcase() {
         <Flower2 className="h-full w-full rotate-12" />
       </div>
 
-      <div className="relative mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
+      <div className="relative mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center max-w-2xl mx-auto">
           {/* Eyebrow */}
@@ -119,47 +150,68 @@ export function ServiceShowcase() {
           </p>
         </div>
 
-        {/* Carousel Container */}
-        <div className="relative mt-12 sm:mt-16">
-          {/* Navigation Button: Prev (<) */}
+        {/* 3D Circular Rotating Carousel Stage (NO HORIZONTAL SCROLLBAR) */}
+        <div
+          ref={containerRef}
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+          className="relative mt-12 sm:mt-16 h-[560px] sm:h-[600px] w-full overflow-hidden flex items-center justify-center"
+        >
+          {/* Circular Navigation Button: Prev (<) */}
           <button
             type="button"
             onClick={handlePrev}
-            aria-label="Dịch vụ trước"
-            className="absolute left-1 sm:left-2 lg:-left-4 top-1/2 -translate-y-1/2 z-30 flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-white/95 text-[#1F1A17] shadow-[0_8px_25px_rgba(0,0,0,0.15)] ring-1 ring-black/5 transition-all hover:bg-white hover:scale-105 active:scale-95"
+            aria-label="Xoay dịch vụ trước"
+            className="absolute left-2 sm:left-4 lg:left-8 top-1/2 -translate-y-1/2 z-40 flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-white/95 text-[#1F1A17] shadow-[0_10px_30px_rgba(40,25,15,0.18)] ring-1 ring-black/5 transition-all hover:bg-white hover:scale-110 active:scale-95 cursor-pointer"
           >
             <ChevronLeft className="h-6 w-6 stroke-[2.2]" />
           </button>
 
-          {/* Navigation Button: Next (>) */}
+          {/* Circular Navigation Button: Next (>) */}
           <button
             type="button"
             onClick={handleNext}
-            aria-label="Dịch vụ tiếp theo"
-            className="absolute right-1 sm:right-2 lg:-right-4 top-1/2 -translate-y-1/2 z-30 flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-white/95 text-[#1F1A17] shadow-[0_8px_25px_rgba(0,0,0,0.15)] ring-1 ring-black/5 transition-all hover:bg-white hover:scale-105 active:scale-95"
+            aria-label="Xoay dịch vụ tiếp theo"
+            className="absolute right-2 sm:right-4 lg:right-8 top-1/2 -translate-y-1/2 z-40 flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-white/95 text-[#1F1A17] shadow-[0_10px_30px_rgba(40,25,15,0.18)] ring-1 ring-black/5 transition-all hover:bg-white hover:scale-110 active:scale-95 cursor-pointer"
           >
             <ChevronRight className="h-6 w-6 stroke-[2.2]" />
           </button>
 
-          {/* 5 Cards Row */}
-          <div className="flex items-center justify-center gap-4 sm:gap-5 overflow-x-auto pb-4 pt-6 px-4 no-scrollbar snap-x snap-mandatory">
+          {/* 5 Rotating Carousel Cards */}
+          <div className="relative w-full h-full flex items-center justify-center">
             {SERVICES.map((item, idx) => {
-              const isActive = idx === activeIdx;
+              // Calculate circular offset relative to activeIdx (-2, -1, 0, 1, 2)
+              let offset = (idx - activeIdx) % total;
+              if (offset > total / 2) offset -= total;
+              if (offset < -total / 2) offset += total;
+
+              const isCenter = offset === 0;
 
               return (
                 <div
                   key={item.id}
                   onClick={() => setActiveIdx(idx)}
                   className={cn(
-                    'relative shrink-0 rounded-[28px] overflow-hidden transition-all duration-500 cursor-pointer snap-center select-none flex flex-col',
-                    'w-[280px] sm:w-[290px] xl:w-[305px]',
-                    isActive
-                      ? 'scale-100 lg:scale-[1.04] z-20 shadow-[0_25px_60px_rgba(40,25,15,0.18)] ring-2 ring-[#8D381B]/20 bg-white min-h-[530px] sm:min-h-[560px]'
-                      : 'scale-95 opacity-85 hover:opacity-100 hover:scale-[0.98] z-10 shadow-[0_12px_35px_rgba(40,25,15,0.08)] bg-[#FFFDF9] min-h-[500px] sm:min-h-[520px]'
+                    'carousel-card absolute top-1/2 -translate-y-1/2 rounded-[28px] overflow-hidden flex flex-col cursor-pointer',
+                    'transition-all duration-600 ease-[cubic-bezier(0.25,1,0.5,1)]',
+                    'w-[275px] sm:w-[295px] xl:w-[310px]',
+                    isCenter
+                      ? 'z-30 bg-white ring-2 ring-[#8D381B]/25 shadow-[0_30px_70px_rgba(40,25,15,0.22)] h-[530px] sm:h-[565px]'
+                      : 'bg-[#FFFDF9] ring-1 ring-black/5 hover:ring-[#8D381B]/20 h-[480px] sm:h-[505px]'
                   )}
+                  style={{
+                    // Circular 3D Coverflow positioning
+                    transform: `translateX(calc(-50% + calc(var(--card-step, 275px) * ${offset}))) translateY(-50%) scale(${
+                      isCenter ? 1.03 : Math.abs(offset) === 1 ? 0.92 : 0.84
+                    })`,
+                    left: '50%',
+                    zIndex: isCenter ? 30 : Math.abs(offset) === 1 ? 20 : 10,
+                    opacity: isCenter ? 1 : Math.abs(offset) === 1 ? 0.92 : 0.78,
+                    filter: isCenter ? 'none' : 'brightness(0.96)',
+                  }}
                 >
                   {/* Photo with Overlay */}
-                  <div className="relative h-[290px] sm:h-[310px] w-full overflow-hidden">
+                  <div className="relative h-[300px] sm:h-[325px] w-full overflow-hidden shrink-0">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={item.image}
@@ -168,12 +220,12 @@ export function ServiceShowcase() {
                     />
 
                     {/* Gradient Overlay from photo to text */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent" />
 
-                    {/* Featured Badge if present */}
+                    {/* Featured Badge */}
                     {item.badge && (
                       <div className="absolute top-4 right-4 z-10">
-                        <span className="inline-flex items-center gap-1 rounded-full bg-[#8D381B]/85 px-3 py-1 text-[11px] font-bold text-white shadow-md backdrop-blur-md">
+                        <span className="inline-flex items-center gap-1 rounded-full bg-[#8D381B]/90 px-3 py-1 text-[11px] font-bold text-white shadow-md backdrop-blur-md">
                           {item.badge}
                         </span>
                       </div>
@@ -219,7 +271,7 @@ export function ServiceShowcase() {
 
                   {/* Card Bottom / Footer Button */}
                   <div className="mt-auto p-4 sm:p-5 bg-white flex flex-col justify-end">
-                    {isActive ? (
+                    {isCenter ? (
                       <Link
                         href={item.bookingUrl}
                         className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#8D381B] py-3 text-sm font-semibold text-white shadow-md transition-all hover:bg-[#762E15] hover:shadow-lg active:scale-95"
@@ -228,54 +280,80 @@ export function ServiceShowcase() {
                         <ArrowRight className="h-4 w-4" />
                       </Link>
                     ) : (
-                      <Link
-                        href={item.detailUrl}
-                        className="inline-flex w-full items-center justify-center gap-1.5 rounded-full border border-[#D9CDC0] bg-[#FAF7F2] py-2.5 text-xs sm:text-sm font-medium text-[#782E15] transition-all hover:bg-white hover:border-[#8D381B] active:scale-95"
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setActiveIdx(idx);
+                        }}
+                        className="inline-flex w-full items-center justify-center gap-1.5 rounded-full border border-[#D9CDC0] bg-[#FAF7F2] py-2.5 text-xs sm:text-sm font-medium text-[#782E15] transition-all hover:bg-white hover:border-[#8D381B] active:scale-95 cursor-pointer"
                       >
                         <span>Xem chi tiết</span>
                         <span className="text-xs">&gt;</span>
-                      </Link>
+                      </button>
                     )}
                   </div>
                 </div>
               );
             })}
           </div>
+        </div>
 
-          {/* Progress Indicators */}
-          <div className="mt-8 flex items-center justify-center gap-2">
-            {SERVICES.map((s, idx) => (
-              <button
-                key={s.id}
-                type="button"
-                onClick={() => setActiveIdx(idx)}
-                aria-label={`Đi tới dịch vụ ${s.name}`}
-                className="group py-1 cursor-pointer"
-              >
-                <div
-                  className={cn(
-                    'h-[3px] rounded-full transition-all duration-500',
-                    idx === activeIdx
-                      ? 'w-10 bg-[#8D381B]'
-                      : 'w-5 bg-[#D8CCC0] group-hover:bg-[#8D381B]/50'
-                  )}
-                />
-              </button>
-            ))}
-          </div>
-
-          {/* View All Services Link */}
-          <div className="mt-10 text-center">
-            <Link
-              href="/services"
-              className="inline-flex items-center gap-2 rounded-full border border-[#D8C7B8] bg-white/80 px-6 py-3 text-xs sm:text-sm font-semibold text-[#8D381B] shadow-xs transition-all hover:bg-white hover:border-[#8D381B] hover:shadow-sm"
+        {/* Circular Progress Indicators */}
+        <div className="mt-6 flex items-center justify-center gap-2">
+          {SERVICES.map((s, idx) => (
+            <button
+              key={s.id}
+              type="button"
+              onClick={() => setActiveIdx(idx)}
+              aria-label={`Xoay tới dịch vụ ${s.name}`}
+              className="group py-1 cursor-pointer"
             >
-              <span>Xem đầy đủ bảng giá và chi tiết liệu trình</span>
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-          </div>
+              <div
+                className={cn(
+                  'h-[3px] rounded-full transition-all duration-500',
+                  idx === activeIdx
+                    ? 'w-10 bg-[#8D381B]'
+                    : 'w-5 bg-[#D8CCC0] group-hover:bg-[#8D381B]/50'
+                )}
+              />
+            </button>
+          ))}
+        </div>
+
+        {/* View All Services Link */}
+        <div className="mt-10 text-center">
+          <Link
+            href="/services"
+            className="inline-flex items-center gap-2 rounded-full border border-[#D8C7B8] bg-white/80 px-6 py-3 text-xs sm:text-sm font-semibold text-[#8D381B] shadow-xs transition-all hover:bg-white hover:border-[#8D381B] hover:shadow-sm"
+          >
+            <span>Xem đầy đủ bảng giá và chi tiết liệu trình</span>
+            <ArrowRight className="h-4 w-4" />
+          </Link>
         </div>
       </div>
+
+      {/* Responsive Card Step CSS Variables */}
+      <style jsx>{`
+        :global(:root) {
+          --card-step: 170px;
+        }
+        @media (min-width: 640px) {
+          :global(:root) {
+            --card-step: 220px;
+          }
+        }
+        @media (min-width: 1024px) {
+          :global(:root) {
+            --card-step: 255px;
+          }
+        }
+        @media (min-width: 1280px) {
+          :global(:root) {
+            --card-step: 280px;
+          }
+        }
+      `}</style>
     </section>
   );
 }

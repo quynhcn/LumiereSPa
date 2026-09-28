@@ -25,6 +25,7 @@ import {
   type Service,
 } from '@/lib/types';
 import { SiteHeader } from '@/components/site-header';
+import { SiteFooter } from '@/components/site-footer';
 import { Logo } from '@/components/logo';
 import { LeadDialog } from '@/components/landing/lead-form';
 import { MobileActionBar } from '@/components/landing/contact-actions';
@@ -405,36 +406,8 @@ export default function ServicesPage() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-[hsl(var(--deep-footer))] py-14 text-white">
-        <div className="mx-auto max-w-[1200px] px-6">
-          <div className="flex flex-col gap-10 lg:flex-row lg:items-start lg:justify-between">
-            <div>
-              <Logo inverted />
-              <p className="mt-4 max-w-[310px] text-sm text-white/70">Một khoảng lặng để chăm sóc cơ thể và làm mới tinh thần.</p>
-              <p className="mt-4 text-sm text-white/70">
-                {SITE.address} · {SITE.phone}
-              </p>
-            </div>
-            <div className="flex flex-wrap gap-12 text-sm">
-              <div className="flex flex-col gap-3">
-                <strong className="mb-2">Khám phá</strong>
-                <Link href="/" className="text-white/70 transition-colors hover:text-[hsl(var(--gold-light))]">Trang chủ</Link>
-                <Link href="/about" className="text-white/70 transition-colors hover:text-[hsl(var(--gold-light))]">Giới thiệu</Link>
-                <Link href="/services" className="text-white transition-colors hover:text-[hsl(var(--gold-light))] font-semibold">Tất cả dịch vụ</Link>
-                <a href="/#uu-dai" className="text-white/70 transition-colors hover:text-[hsl(var(--gold-light))]">Ưu đãi &amp; quà tặng</a>
-              </div>
-              <div className="flex flex-col gap-3">
-                <strong className="mb-2">Liên hệ</strong>
-                <a href="/#lien-he" className="text-white/70 transition-colors hover:text-[hsl(var(--gold-light))]">Địa chỉ &amp; tư vấn</a>
-                <a href={SITE.zalo} target="_blank" rel="noopener noreferrer" className="text-white/70 transition-colors hover:text-[hsl(var(--gold-light))]">Zalo</a>
-                <Link href="/booking" className="text-white/70 transition-colors hover:text-[hsl(var(--gold-light))]">Đặt lịch online</Link>
-              </div>
-            </div>
-          </div>
-          <div className="mt-14 border-t border-white/20 pt-6 text-xs text-white/50">© 2026 Lumière Spa. Dành một chút thời gian cho chính bạn.</div>
-        </div>
-      </footer>
+      {/* Synchronized Site Footer */}
+      <SiteFooter />
 
       <MobileActionBar />
     </div>

@@ -3,7 +3,20 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { ArrowRight, CalendarCheck, LayoutDashboard, LogOut, Menu, Scissors, X } from 'lucide-react';
+import {
+  ArrowRight,
+  Calendar,
+  CalendarCheck,
+  ChevronDown,
+  LayoutDashboard,
+  LogOut,
+  MapPin,
+  Menu,
+  Scissors,
+  Search,
+  User,
+  X,
+} from 'lucide-react';
 import { useAuth } from '@/lib/auth-context';
 import { LoginDialog } from '@/components/login-dialog';
 import { Logo } from '@/components/logo';
@@ -22,11 +35,6 @@ const sheetLink = 'flex items-center gap-3 rounded-lg px-3 py-3 text-[15px] font
 
 /**
  * Public header (home, booking, account, staff).
- *
- * Layout is identical for guests and signed-in users — only the right slot changes:
- *   guest:     [Đăng nhập]            [Đặt lịch ngay →]
- *   signed in: [(A) Tên ▾] (menu)     [Đặt lịch ngay →]
- * While the session is loading the right slot keeps its size (no jump / flicker).
  */
 export function SiteHeader({ showCta = true }: { showCta?: boolean }) {
   const { session, user, role, loading, signOut } = useAuth();
@@ -66,11 +74,11 @@ export function SiteHeader({ showCta = true }: { showCta?: boolean }) {
 
   return (
     <>
-    <header className="sticky top-0 z-40 border-b border-border bg-[hsl(var(--cream-soft))]/90 backdrop-blur-md">
-      <div className="mx-auto flex h-[78px] md:h-[82px] max-w-[1200px] items-center gap-4 px-4 sm:px-6 lg:gap-6">
-        <Logo className="mr-auto shrink-0" />
+    <header className="sticky top-0 z-40 border-b border-[#EFEAE2] bg-[#FAF7F2]/95 backdrop-blur-md">
+      <div className="mx-auto flex h-[80px] max-w-[1360px] items-center gap-4 px-4 sm:px-6 lg:gap-6">
+        <Logo className="shrink-0" />
 
-        <nav className="hidden items-center gap-6 lg:flex xl:gap-8" aria-label="Điều hướng chính">
+        <nav className="hidden items-center gap-6 lg:flex xl:gap-8 mx-auto" aria-label="Điều hướng chính">
           {NAV_LINKS.map((l) => {
             const active = isLinkActive(l.href);
             return (
@@ -78,10 +86,10 @@ export function SiteHeader({ showCta = true }: { showCta?: boolean }) {
                 key={l.href}
                 href={l.href}
                 className={cn(
-                  'relative whitespace-nowrap text-sm font-semibold transition-all py-1.5',
+                  'relative whitespace-nowrap text-[15px] transition-all py-1.5',
                   active
-                    ? 'text-primary font-bold after:absolute after:bottom-[-2px] after:left-0 after:right-0 after:h-[2.5px] after:rounded-full after:bg-primary'
-                    : 'text-muted-foreground hover:text-primary'
+                    ? 'text-[#8D381B] font-bold after:absolute after:bottom-[-2px] after:left-0 after:right-0 after:h-[2px] after:bg-[#8D381B]'
+                    : 'text-foreground/80 hover:text-[#8D381B] font-medium'
                 )}
               >
                 {l.label}
@@ -90,39 +98,57 @@ export function SiteHeader({ showCta = true }: { showCta?: boolean }) {
           })}
         </nav>
 
-        <span className="hidden h-6 w-px bg-border lg:block" aria-hidden />
+        <div className="flex items-center gap-2 sm:gap-3.5 ml-auto lg:ml-0">
+          {/* Search Icon */}
+          <Link
+            href="/services"
+            className="rounded-full p-2 text-foreground/80 transition-colors hover:bg-muted hover:text-foreground"
+            title="Tìm kiếm dịch vụ"
+          >
+            <Search className="h-5 w-5" />
+          </Link>
 
-        {/* Account slot — fixed min width so the header does not jump after auth resolves */}
-        <div className="hidden min-w-[92px] items-center justify-end lg:flex">
-          {loading ? (
-            <span className="h-10 w-[92px] animate-pulse rounded-full bg-muted" aria-hidden />
-          ) : session ? (
-            <UserMenu name={displayName} email={user?.email} role={role} onSignOut={handleSignOut} />
-          ) : (
-            <LoginDialog />
+          {/* Divider */}
+          <div className="hidden sm:block h-5 w-[1px] bg-[#E3DDD4]" />
+
+          {/* User Account / Profile Pill */}
+          <div className="flex items-center">
+            {loading ? (
+              <span className="h-9 w-9 animate-pulse rounded-full bg-muted" aria-hidden />
+            ) : session ? (
+              <UserMenu name={displayName} email={user?.email} role={role} onSignOut={handleSignOut} />
+            ) : (
+              <div className="flex items-center gap-1.5 rounded-full border border-[#DCD3C7] bg-white px-2.5 py-1 text-xs font-semibold text-foreground hover:bg-[#FAF7F2] transition-colors cursor-pointer shadow-xs">
+                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#8D381B] text-[11px] font-bold text-white">
+                  V
+                </span>
+                <LoginDialog className="text-xs font-semibold text-foreground hover:text-[#8D381B] p-0" />
+                <ChevronDown className="h-3 w-3 text-muted-foreground" />
+              </div>
+            )}
+          </div>
+
+          {/* Booking CTA Button (mockup style: "Đặt lịch ngay →") */}
+          {showBookingCta && (
+            <Link
+              href="/booking"
+              className="inline-flex items-center gap-1.5 rounded-xl bg-[#8D381B] px-4 py-2.5 text-xs sm:text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#782E15] hover:shadow-md active:scale-95"
+            >
+              <span>Đặt lịch ngay</span>
+              <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
           )}
+
+          {/* Mobile hamburger menu */}
+          <button
+            className="-mr-1 rounded-md p-2 text-[#8D381B] lg:hidden"
+            onClick={() => setOpen(!open)}
+            aria-label={open ? 'Đóng menu' : 'Mở menu'}
+            aria-expanded={open}
+          >
+            {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          </button>
         </div>
-
-        {showBookingCta && (
-          <>
-            <Link href="/booking" className="btn-primary hidden h-11 sm:inline-flex">
-              Đặt lịch ngay <ArrowRight className="h-4 w-4" />
-            </Link>
-            {/* Phones: keep the main action visible without opening the menu */}
-            <Link href="/booking" className="btn-primary h-9 px-3.5 text-xs sm:hidden">
-              Đặt lịch
-            </Link>
-          </>
-        )}
-
-        <button
-          className="-mr-2 rounded-md p-2 text-primary lg:hidden"
-          onClick={() => setOpen(!open)}
-          aria-label={open ? 'Đóng menu' : 'Mở menu'}
-          aria-expanded={open}
-        >
-          {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-        </button>
       </div>
     </header>
 

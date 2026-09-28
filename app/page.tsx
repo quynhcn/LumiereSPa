@@ -1,5 +1,21 @@
 import Link from 'next/link';
-import { ArrowRight, Check, Gift, Heart, Layers, Leaf, MapPin, Quote, ShieldCheck, Sparkles, Star } from 'lucide-react';
+import {
+  ArrowRight,
+  Calendar,
+  Check,
+  Flower2,
+  Gift,
+  Heart,
+  Layers,
+  Leaf,
+  MapPin,
+  Play,
+  PlayCircle,
+  Quote,
+  ShieldCheck,
+  Sparkles,
+  Star,
+} from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { SITE } from '@/lib/site-config';
 import {
@@ -15,6 +31,7 @@ import {
 import { SiteHeader } from '@/components/site-header';
 import { Logo } from '@/components/logo';
 import { PromoBar } from '@/components/landing/promo-bar';
+import { HeroCarousel } from '@/components/landing/hero-carousel';
 import { LeadDialog, LeadForm } from '@/components/landing/lead-form';
 import { ContactButtons, MobileActionBar, OpenStatus } from '@/components/landing/contact-actions';
 
@@ -71,7 +88,7 @@ export default async function HomePage() {
     '@type': 'DaySpa',
     name: SITE.name,
     url: SITE.url,
-    image: `${SITE.url}/spa-hero.webp`,
+    image: `${SITE.url}/spa-hero-new.jpg`,
     telephone: SITE.phone,
     priceRange: services.length
       ? `${formatPrice(Math.min(...services.map((s) => s.price)))} – ${formatPrice(Math.max(...services.map((s) => s.price)))}`
@@ -110,109 +127,62 @@ export default async function HomePage() {
       {offerPct > 0 && <PromoBar pct={offerPct} />}
       <SiteHeader />
 
-      {/* Hero */}
-      <section className="overflow-hidden bg-background">
-        <div className="mx-auto grid max-w-[1200px] grid-cols-1 items-center px-6 lg:grid-cols-2">
-          <div className="relative z-10 py-14 lg:py-20 lg:pr-14">
-            <span className="eyebrow">Spa &amp; wellness · {SITE.addressParts.district}</span>
-            <h1 className="mt-5 font-serif text-5xl font-medium leading-[1.09] tracking-[-0.035em] text-foreground lg:text-7xl">
-              Một khoảng lặng
-              <br />
-              <em className="font-normal text-primary">dành riêng cho bạn.</em>
-            </h1>
-            <p className="mt-6 max-w-[470px] text-[17px] leading-[1.75] text-muted-foreground">
-              Tạm gác nhịp sống vội. Chọn liệu trình phù hợp và tận hưởng thời gian chăm sóc cơ thể, làn da và tinh thần tại Lumière Spa.
-            </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Link href="/booking" className="btn-primary">
-                Đặt lịch trải nghiệm <ArrowRight className="h-4 w-4" />
-              </Link>
-              <a href="#dich-vu" className="btn-outline">
-                Xem bảng giá
-              </a>
-            </div>
-            {offerPct > 0 && (
-              <p className="mt-4 flex items-center gap-2 text-sm text-muted-foreground">
-                <Gift className="h-4 w-4 shrink-0 text-primary" />
-                <span>
-                  Giảm <b className="text-primary">{offerPct}%</b> cho lần đặt online đầu tiên, tự động áp dụng.
-                </span>
-              </p>
-            )}
-            <div className="mt-9 flex flex-wrap items-center gap-x-7 gap-y-3 text-[13px] text-muted-foreground">
-              {rating && (
-                <a href="#danh-gia" className="flex items-center gap-2 hover:text-primary">
-                  <Stars value={rating.average} />
-                  <b className="font-serif text-lg text-primary">{rating.average.toLocaleString('vi-VN')}</b>
-                  từ {rating.total} đánh giá
-                </a>
-              )}
-              <span className="flex items-center gap-2">
-                <b className="font-serif text-lg text-primary">{services.length || '—'}</b> liệu trình
-              </span>
-              <OpenStatus />
-            </div>
-          </div>
-          <div className="relative h-[350px] overflow-hidden bg-[hsl(var(--secondary))] lg:h-[650px]">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/spa-hero.webp"
-              width={1408}
-              height={768}
-              fetchPriority="high"
-              alt="Không gian spa ấm áp với giường trị liệu, khăn mềm và cây xanh"
-              className="h-full w-full object-cover"
-            />
-            <div className="absolute inset-0" style={{ background: 'linear-gradient(90deg, hsl(var(--cream)) 0%, transparent 18%)' }} />
-            <div className="absolute bottom-7 right-6 max-w-[215px] rounded-sm bg-[hsl(var(--cream-soft))]/90 p-4 text-primary">
-              <p className="font-serif text-xl leading-[1.25]">
-                Chậm lại một chút.
-                <br />
-                Thương mình nhiều hơn.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* Interactive Hero Carousel (4 slides, auto-advance, thumbnails & navigation) */}
+      <HeroCarousel offerPct={offerPct} />
 
-      {/* Quick Value Bar / Commitments Strip */}
-      <section className="border-y border-border bg-[hsl(var(--cream-soft))] py-5">
-        <div className="mx-auto max-w-[1200px] px-6">
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 lg:gap-6">
-            <div className="flex items-center gap-3">
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                <Leaf className="h-5 w-5" />
+      {/* Floating Value Bar matching mockup */}
+      <section className="relative -mt-8 sm:-mt-12 z-20 mx-auto max-w-[1360px] px-4 sm:px-6">
+        <div className="relative overflow-hidden rounded-3xl border border-[#EDE5DA] bg-[#FAF7F2] p-6 shadow-[0_15px_45px_rgba(40,25,15,0.06)] sm:p-7">
+          {/* Subtle floral watermark corner accents */}
+          <div className="pointer-events-none absolute -left-6 -bottom-6 h-28 w-28 opacity-10 text-[#8D381B]">
+            <Flower2 className="h-full w-full" />
+          </div>
+          <div className="pointer-events-none absolute -right-6 -bottom-6 h-28 w-28 opacity-10 text-[#8D381B]">
+            <Flower2 className="h-full w-full" />
+          </div>
+
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6 divide-y sm:divide-y-0 sm:divide-x divide-[#EDE5DA]">
+            {/* Feature 1: 100% Thảo Mộc Sạch */}
+            <div className="flex items-center gap-4 sm:px-4 first:pl-0">
+              <span className="flex h-12 w-12 sm:h-13 sm:w-13 shrink-0 items-center justify-center rounded-full bg-[#F5ECE2] text-[#923D20] ring-1 ring-[#E8DC CE]/60">
+                <Leaf className="h-6 w-6 stroke-[1.75]" />
               </span>
               <div>
-                <strong className="block text-xs font-bold text-foreground sm:text-sm">100% Thảo Mộc Sạch</strong>
-                <span className="text-[11px] text-muted-foreground">Dược liệu hữu cơ thiên nhiên</span>
+                <strong className="block text-sm font-bold text-[#1F1A17] sm:text-[15px]">100% Thảo Mộc Sạch</strong>
+                <span className="text-xs text-[#7A6E65]">Được lựa chọn từ thiên nhiên</span>
               </div>
             </div>
-            <div className="flex items-center gap-3">
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                <ShieldCheck className="h-5 w-5" />
+
+            {/* Feature 2: Bảng Giá Minh Bạch */}
+            <div className="flex items-center gap-4 sm:px-4 pt-4 sm:pt-0">
+              <span className="flex h-12 w-12 sm:h-13 sm:w-13 shrink-0 items-center justify-center rounded-full bg-[#F5ECE2] text-[#923D20] ring-1 ring-[#E8DCCE]/60">
+                <ShieldCheck className="h-6 w-6 stroke-[1.75]" />
               </span>
               <div>
-                <strong className="block text-xs font-bold text-foreground sm:text-sm">Cam Kết "3 Không"</strong>
-                <span className="text-[11px] text-muted-foreground">Không Tip · Không chèo kéo</span>
+                <strong className="block text-sm font-bold text-[#1F1A17] sm:text-[15px]">Bảng Giá Minh Bạch</strong>
+                <span className="text-xs text-[#7A6E65]">Không Tip - Không chèo kéo</span>
               </div>
             </div>
-            <div className="flex items-center gap-3">
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                <Sparkles className="h-5 w-5" />
+
+            {/* Feature 3: Đặt Lịch Nhanh Chóng */}
+            <div className="flex items-center gap-4 sm:px-4 pt-4 sm:pt-0">
+              <span className="flex h-12 w-12 sm:h-13 sm:w-13 shrink-0 items-center justify-center rounded-full bg-[#F5ECE2] text-[#923D20] ring-1 ring-[#E8DCCE]/60">
+                <Calendar className="h-6 w-6 stroke-[1.75]" />
               </span>
               <div>
-                <strong className="block text-xs font-bold text-foreground sm:text-sm">Giữ Chỗ Tức Thì</strong>
-                <span className="text-[11px] text-muted-foreground">Không cần trả trước</span>
+                <strong className="block text-sm font-bold text-[#1F1A17] sm:text-[15px]">Đặt Lịch Nhanh Chóng</strong>
+                <span className="text-xs text-[#7A6E65]">Chỉ vài phút, dễ dàng online</span>
               </div>
             </div>
-            <div className="flex items-center gap-3">
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                <Heart className="h-5 w-5" />
+
+            {/* Feature 4: Đội Ngũ Kỹ Thuật Viên */}
+            <div className="flex items-center gap-4 sm:px-4 pt-4 sm:pt-0">
+              <span className="flex h-12 w-12 sm:h-13 sm:w-13 shrink-0 items-center justify-center rounded-full bg-[#F5ECE2] text-[#923D20] ring-1 ring-[#E8DCCE]/60">
+                <Heart className="h-6 w-6 stroke-[1.75]" />
               </span>
               <div>
-                <strong className="block text-xs font-bold text-foreground sm:text-sm">KTV Lành Nghề</strong>
-                <span className="text-[11px] text-muted-foreground">Tận tâm &amp; giàu kinh nghiệm</span>
+                <strong className="block text-sm font-bold text-[#1F1A17] sm:text-[15px]">Đội Ngũ Kỹ Thuật Viên</strong>
+                <span className="text-xs text-[#7A6E65]">Tận tâm &amp; giàu kinh nghiệm</span>
               </div>
             </div>
           </div>

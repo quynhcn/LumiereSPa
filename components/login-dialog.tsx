@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Mail } from 'lucide-react';
+import { Mail, User } from 'lucide-react';
 import { getRedirectPath } from '@/lib/auth-context';
 import {
   Dialog,
@@ -20,10 +20,11 @@ import { cn } from '@/lib/utils';
 interface LoginDialogProps {
   className?: string;
   mobile?: boolean;
+  iconOnly?: boolean;
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
 }
 
-export function LoginDialog({ className, mobile = false, onClick }: LoginDialogProps) {
+export function LoginDialog({ className, mobile = false, iconOnly = false, onClick }: LoginDialogProps) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
 
@@ -34,14 +35,23 @@ export function LoginDialog({ className, mobile = false, onClick }: LoginDialogP
           type="button"
           onClick={onClick}
           className={cn(
-            mobile
-              ? 'text-left'
-              : 'flex items-center gap-1.5 text-sm font-semibold text-muted-foreground transition-colors hover:text-primary',
+            iconOnly
+              ? 'rounded-full p-2 text-foreground/80 transition-colors hover:bg-muted hover:text-foreground'
+              : mobile
+                ? 'text-left'
+                : 'flex items-center gap-1.5 text-sm font-semibold text-muted-foreground transition-colors hover:text-primary',
             className
           )}
+          title="Tài khoản & Đăng nhập"
         >
-          {!mobile && <Mail className="h-4 w-4" />}
-          Đăng nhập
+          {iconOnly ? (
+            <User className="h-5 w-5" />
+          ) : (
+            <>
+              {!mobile && <Mail className="h-4 w-4" />}
+              Đăng nhập
+            </>
+          )}
         </button>
       </DialogTrigger>
       <DialogContent className="max-w-[440px] rounded-2xl px-8 py-9 shadow-[0_24px_80px_hsl(var(--brand)_/_20%)]">

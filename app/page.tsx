@@ -1,14 +1,19 @@
 import Link from 'next/link';
 import {
   ArrowRight,
+  Cake,
   Calendar,
   Check,
+  CheckCircle2,
+  Crown,
+  Flame,
   Flower2,
   Gift,
   Heart,
   Layers,
   Leaf,
   MapPin,
+  Percent,
   Play,
   PlayCircle,
   Quote,
@@ -348,65 +353,277 @@ export default async function HomePage() {
       {/* 5-Card Interactive Service Showcase matching mockup */}
       <ServiceShowcase />
 
-      {/* Offers: first visit · packages · gift cards */}
-      <section id="uu-dai" className="mx-auto max-w-[1200px] scroll-mt-20 px-6 py-20 lg:py-24">
-        <span className="eyebrow">Ưu đãi &amp; quà tặng</span>
-        <h2 className="section-heading mt-3">Tiết kiệm hơn khi đến thường xuyên.</h2>
-        <div className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {offerPct > 0 && (
-            <article className="flex flex-col rounded-2xl bg-[hsl(var(--deep))] p-7 text-[hsl(var(--cream))]">
-              <Sparkles className="h-6 w-6 text-[hsl(var(--gold-light))]" />
-              <h3 className="mt-4 font-serif text-2xl">Lần đầu đặt online</h3>
-              <p className="mt-1 font-serif text-5xl text-[hsl(var(--gold-light))]">−{offerPct}%</p>
-              <p className="mb-6 mt-3 text-sm text-[hsl(var(--cream))]/75">Tự động trừ vào giá khi bạn đặt lịch online lần đầu. Không cần nhập mã.</p>
-              <Link href="/booking" className="btn-cream mt-auto w-full">
-                Đặt lịch nhận ưu đãi <ArrowRight className="h-4 w-4" />
-              </Link>
-            </article>
-          )}
+      {/* Offers: first visit · gift cards · membership */}
+      <section id="uu-dai" className="relative scroll-mt-20 overflow-hidden bg-[#FAF6F0] py-20 lg:py-28">
+        {/* Soft background foliage ambiance */}
+        <div className="pointer-events-none absolute -left-20 top-1/3 h-96 w-96 rounded-full bg-[#EFE3D5]/50 blur-3xl" />
+        <div className="pointer-events-none absolute -right-20 bottom-10 h-96 w-96 rounded-full bg-[#EBDDCF]/50 blur-3xl" />
 
-          {packages.map((p) => {
-            const single = p.services?.price ?? 0;
-            const pct = single ? Math.round((1 - p.price / (single * p.sessions)) * 100) : 0;
-            return (
-              <article key={p.id} className="card-base flex flex-col p-7">
-                <Layers className="h-6 w-6 text-primary" />
-                <h3 className="mt-4 font-serif text-2xl text-foreground">{p.name}</h3>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  {p.sessions} buổi {p.services?.name}
-                  {p.services?.duration_min ? ` · ${formatDuration(p.services.duration_min)}/buổi` : ''}
-                </p>
-                <p className="mt-4">
-                  <strong className="font-serif text-3xl text-primary">{formatPrice(p.price)}</strong>
-                  {pct > 0 && <span className="ml-2 rounded-full bg-success/10 px-2 py-0.5 text-xs font-bold text-success">Tiết kiệm {pct}%</span>}
-                </p>
-                {single > 0 && (
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    ≈ {formatPrice(Math.round(p.price / p.sessions / 1000) * 1000)}/buổi thay vì {formatPrice(single)}
-                  </p>
-                )}
-                <LeadDialog source="package" interest="Gói liệu trình nhiều buổi">
-                  <button className="btn-outline mt-auto w-full">Đăng ký tư vấn gói</button>
-                </LeadDialog>
-              </article>
-            );
-          })}
+        <div className="relative mx-auto max-w-[1360px] px-6 sm:px-10 lg:px-12">
+          {/* Header */}
+          <div className="text-center max-w-2xl mx-auto">
+            <div className="inline-flex items-center gap-3 justify-center">
+              <span className="h-[1px] w-8 sm:w-14 bg-[#8D381B]/40" />
+              <span className="text-xs sm:text-[13px] font-bold tracking-[0.25em] text-[#8D381B] uppercase">
+                ƯU ĐÃI &amp; QUÀ TẶNG
+              </span>
+              <span className="h-[1px] w-8 sm:w-14 bg-[#8D381B]/40" />
+            </div>
 
-          <article className="card-base flex flex-col p-7">
-            <Gift className="h-6 w-6 text-primary" />
-            <h3 className="mt-4 font-serif text-2xl text-foreground">Thẻ quà tặng</h3>
-            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-              Tặng người thân một buổi thư giãn dịp sinh nhật, 8/3, 20/10. Người nhận tự đặt lịch online bằng mã trên thẻ.
+            <h2 className="mt-3 font-serif text-3xl sm:text-4xl lg:text-[48px] font-medium leading-[1.15] tracking-[-0.02em] text-[#1F1A17]">
+              Nuông chiều bản thân,
+              <br />
+              nhận thêm ưu đãi.
+            </h2>
+
+            <p className="mt-3.5 text-center text-[15px] sm:text-[16px] leading-[1.75] text-[#6B5F54]">
+              Đặt lịch thông minh, tận hưởng nhiều hơn tại Lumière Spa.
+              <br className="hidden sm:inline" />
+              {' '}Những ưu đãi đặc biệt dành riêng cho bạn, để mỗi lần ghé thăm đều là một trải nghiệm trọn vẹn.
             </p>
-            <ul className="mb-6 mt-4 space-y-1.5 text-sm text-foreground">
-              <li className="flex items-center gap-2"><Check className="h-4 w-4 text-primary" /> Chọn theo mệnh giá hoặc số buổi</li>
-              <li className="flex items-center gap-2"><Check className="h-4 w-4 text-primary" /> Nhận thiệp in hoặc mã qua Zalo</li>
-              <li className="flex items-center gap-2"><Check className="h-4 w-4 text-primary" /> Hoàn lại vào thẻ nếu hủy lịch</li>
-            </ul>
-            <LeadDialog source="gift_card" interest="Thẻ quà tặng">
-              <button className="btn-primary mt-auto w-full">Mua thẻ quà tặng</button>
-            </LeadDialog>
-          </article>
+          </div>
+
+          {/* 3 Main Cards */}
+          <div className="mt-12 sm:mt-16 grid grid-cols-1 gap-6 sm:gap-7 lg:grid-cols-3 items-stretch">
+            {/* Card 1: Lần đầu đặt online - Giảm 10% */}
+            <article className="relative rounded-[28px] bg-[#241710] text-white p-7 sm:p-8 flex flex-col justify-between overflow-hidden shadow-[0_20px_50px_rgba(30,18,10,0.18)] min-h-[520px]">
+              {/* Right faded background photo of towel, plumeria & candle */}
+              <div className="absolute right-0 top-0 bottom-0 w-[55%] opacity-35 pointer-events-none">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/offer-first-visit.jpg"
+                  alt="Không gian thư giãn Lumière Spa"
+                  className="h-full w-full object-cover object-center"
+                />
+                <div className="absolute inset-0 bg-gradient-to-r from-[#241710] via-[#241710]/75 to-transparent" />
+              </div>
+
+              <div className="relative z-10">
+                {/* Eyebrow Badge */}
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 text-xs font-semibold text-[#EBD7C4] border border-white/15 backdrop-blur-md">
+                  <Leaf className="h-3 w-3 text-[#E8C296]" />
+                  <span>Dành cho khách mới</span>
+                </span>
+
+                {/* Title */}
+                <h3 className="mt-5 font-serif text-2xl sm:text-3xl font-normal leading-tight text-white">
+                  Lần đầu đặt
+                  <br />
+                  lịch online
+                </h3>
+
+                {/* Big Discount Highlight */}
+                <div className="my-5 flex items-baseline gap-2">
+                  <span className="font-serif italic text-3xl sm:text-4xl text-[#E8C296]">Giảm</span>
+                  <span className="font-serif text-5xl sm:text-6xl font-normal text-[#E8C296] tracking-tight">
+                    {offerPct > 0 ? `${offerPct}%` : '10%'}
+                  </span>
+                </div>
+
+                {/* Description */}
+                <p className="text-xs sm:text-[13px] leading-relaxed text-[#D6C7B8] max-w-[280px]">
+                  Tự động trừ vào giá khi bạn đặt lịch online lần đầu tại Lumière Spa. Không cần nhập mã.
+                </p>
+              </div>
+
+              {/* Button */}
+              <div className="relative z-10 mt-8">
+                <Link
+                  href="/booking"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#F7EFE6] hover:bg-white text-[#7A2E14] font-semibold py-3.5 px-6 text-sm shadow-md transition-all active:scale-95"
+                >
+                  <span>Đặt lịch nhận ưu đãi</span>
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              </div>
+            </article>
+
+            {/* Card 2: Thẻ quà tặng */}
+            <article className="relative rounded-[28px] bg-white border border-[#EDE4D8] p-7 sm:p-8 flex flex-col justify-between shadow-[0_15px_45px_rgba(40,25,15,0.08)] min-h-[520px]">
+              <div>
+                {/* Top Header */}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <Gift className="h-5 w-5 text-[#8D381B]" />
+                    <h3 className="font-serif text-xl sm:text-2xl font-bold text-[#1F1A17]">Thẻ quà tặng</h3>
+                  </div>
+                  <span className="inline-flex items-center gap-1 rounded-full bg-[#FAECE4] text-[#C25827] text-xs font-bold px-2.5 py-0.5">
+                    <Flame className="h-3.5 w-3.5 fill-[#C25827]" />
+                    <span>Phổ biến</span>
+                  </span>
+                </div>
+
+                <p className="mt-1 text-xs sm:text-[13px] text-[#7A6E65]">
+                  Món quà tinh tế cho những người thân yêu.
+                </p>
+
+                {/* Photo */}
+                <div className="my-4 overflow-hidden rounded-2xl border border-[#F0EAE1] h-36 sm:h-40 w-full shadow-inner">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="/offer-gift-card.jpg"
+                    alt="Thẻ quà tặng Lumière Spa"
+                    className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
+                  />
+                </div>
+
+                {/* Body */}
+                <p className="text-xs sm:text-[13px] leading-relaxed text-[#5C5248]">
+                  Tặng người thân một buổi thư giãn dịp sinh nhật, 8/3, 20/10... Người nhận tự đặt lịch online bằng mã trên thẻ.
+                </p>
+
+                {/* Checklist */}
+                <ul className="mt-3.5 space-y-1.5 text-xs sm:text-[12.5px] text-[#4A4036]">
+                  <li className="flex items-center gap-2">
+                    <span className="flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-full bg-[#F5ECE2] text-[#8D381B]">
+                      <CheckCircle2 className="h-3 w-3" />
+                    </span>
+                    <span>Linh hoạt chọn liệu trình và thời gian</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-full bg-[#F5ECE2] text-[#8D381B]">
+                      <CheckCircle2 className="h-3 w-3" />
+                    </span>
+                    <span>Nhận thiệp in hoặc mã quà tặng qua Zalo</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-full bg-[#F5ECE2] text-[#8D381B]">
+                      <CheckCircle2 className="h-3 w-3" />
+                    </span>
+                    <span>Món quà tinh tế, ý nghĩa và dễ dàng trao tặng</span>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Button */}
+              <div className="mt-6">
+                <LeadDialog source="gift_card" interest="Thẻ quà tặng">
+                  <button
+                    type="button"
+                    className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#8D381B] hover:bg-[#782E15] text-white font-semibold py-3.5 px-6 text-sm shadow-md transition-all active:scale-95 cursor-pointer"
+                  >
+                    <span>Mua thẻ quà tặng</span>
+                    <ArrowRight className="h-4 w-4" />
+                  </button>
+                </LeadDialog>
+              </div>
+            </article>
+
+            {/* Card 3: Thẻ thành viên */}
+            <article className="relative rounded-[28px] bg-white border border-[#EDE4D8] p-7 sm:p-8 flex flex-col justify-between shadow-[0_15px_45px_rgba(40,25,15,0.08)] min-h-[520px]">
+              <div>
+                {/* Top Header */}
+                <div className="flex items-center gap-2.5">
+                  <Crown className="h-5 w-5 text-[#8D381B]" />
+                  <h3 className="font-serif text-xl sm:text-2xl font-bold text-[#1F1A17]">Thẻ thành viên</h3>
+                </div>
+
+                <p className="mt-1 text-xs sm:text-[13px] text-[#7A6E65]">
+                  Tích điểm – Nhận ưu đãi – Trải nghiệm nhiều hơn.
+                </p>
+
+                {/* Photo */}
+                <div className="my-4 overflow-hidden rounded-2xl border border-[#F0EAE1] h-36 sm:h-40 w-full shadow-inner">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="/offer-member-card.jpg"
+                    alt="Thẻ thành viên Lumière Spa VIP Member"
+                    className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
+                  />
+                </div>
+
+                {/* 4 Benefit Rows */}
+                <div className="space-y-2.5 text-xs sm:text-[12.5px]">
+                  <div className="flex items-start gap-3">
+                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#FAF3EC] text-[#8D381B] mt-0.5">
+                      <Gift className="h-3.5 w-3.5" />
+                    </span>
+                    <div>
+                      <strong className="block text-[#1F1A17] font-semibold">Tích điểm cho mỗi lần trải nghiệm</strong>
+                      <span className="text-[#7A6E65] text-[11px] sm:text-xs">Quy đổi thành ưu đãi hấp dẫn</span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#FAF3EC] text-[#8D381B] mt-0.5">
+                      <Percent className="h-3.5 w-3.5" />
+                    </span>
+                    <div>
+                      <strong className="block text-[#1F1A17] font-semibold">Giá ưu đãi độc quyền</strong>
+                      <span className="text-[#7A6E65] text-[11px] sm:text-xs">Dành riêng cho thành viên</span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#FAF3EC] text-[#8D381B] mt-0.5">
+                      <Cake className="h-3.5 w-3.5" />
+                    </span>
+                    <div>
+                      <strong className="block text-[#1F1A17] font-semibold">Quà sinh nhật đặc biệt</strong>
+                      <span className="text-[#7A6E65] text-[11px] sm:text-xs">Một lời tri ân từ Lumière Spa</span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#FAF3EC] text-[#8D381B] mt-0.5">
+                      <Heart className="h-3.5 w-3.5" />
+                    </span>
+                    <div>
+                      <strong className="block text-[#1F1A17] font-semibold">Ưu tiên đặt lịch &amp; sự kiện riêng</strong>
+                      <span className="text-[#7A6E65] text-[11px] sm:text-xs">Trải nghiệm trọn vẹn và chu đáo hơn</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Button */}
+              <div className="mt-6">
+                <Link
+                  href="/account"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-[#D8C7B8] bg-[#FAF7F2] hover:bg-white text-[#7A2E14] font-semibold py-3.5 px-6 text-sm transition-all active:scale-95"
+                >
+                  <span>Xem quyền lợi</span>
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              </div>
+            </article>
+          </div>
+
+          {/* Bottom 3-Item Trust / Value Bar matching mockup */}
+          <div className="mt-12 sm:mt-16 grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-[#EDE4D8] border-t border-[#EDE4D8] pt-8">
+            {/* Item 1 */}
+            <div className="flex items-center justify-center gap-3.5 py-4 sm:py-0 px-4 text-center sm:text-left">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#FAF3EC] text-[#8D381B]">
+                <Leaf className="h-5 w-5" />
+              </span>
+              <div>
+                <strong className="block text-sm font-bold text-[#1F1A17]">Trải nghiệm tinh tế</strong>
+                <span className="text-xs text-[#7A6E65]">Không gian thư giãn đẳng cấp</span>
+              </div>
+            </div>
+
+            {/* Item 2 */}
+            <div className="flex items-center justify-center gap-3.5 py-4 sm:py-0 px-4 text-center sm:text-left">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#FAF3EC] text-[#8D381B]">
+                <Flower2 className="h-5 w-5" />
+              </span>
+              <div>
+                <strong className="block text-sm font-bold text-[#1F1A17]">Chăm sóc toàn diện</strong>
+                <span className="text-xs text-[#7A6E65]">Thân – Tâm – Làn da</span>
+              </div>
+            </div>
+
+            {/* Item 3 */}
+            <div className="flex items-center justify-center gap-3.5 py-4 sm:py-0 px-4 text-center sm:text-left">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#FAF3EC] text-[#8D381B]">
+                <Heart className="h-5 w-5" />
+              </span>
+              <div>
+                <strong className="block text-sm font-bold text-[#1F1A17]">Gắn kết lâu dài</strong>
+                <span className="text-xs text-[#7A6E65]">Nhiều ưu đãi dành riêng cho bạn</span>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 

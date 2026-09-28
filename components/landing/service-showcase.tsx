@@ -2,79 +2,89 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { ArrowRight, ChevronLeft, ChevronRight, Clock, Flower2, Leaf } from 'lucide-react';
+import { ArrowRight, CheckCircle2, ChevronLeft, ChevronRight, Clock, Flower2, Layers, Leaf, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-export interface ServiceShowcaseItem {
+export interface ServiceItem {
   id: string;
   name: string;
   badge?: string;
   description: string;
+  checklist: string[];
   duration: string;
-  feature?: string;
+  price: string;
   image: string;
   bookingUrl: string;
   detailUrl: string;
-  iconType: 'lotus' | 'leaf';
+  iconType: 'lotus' | 'zen' | 'leaf' | 'sparkle';
 }
 
-const SERVICES: ServiceShowcaseItem[] = [
-  {
-    id: 'body',
-    name: 'Chăm sóc cơ thể',
-    description: 'Thư giãn sâu, nuôi dưỡng làn da mịn màng từ thiên nhiên.',
-    duration: '60 – 90 phút',
-    image: '/service-body.jpg',
-    bookingUrl: '/booking',
-    detailUrl: '/services',
-    iconType: 'lotus',
-  },
-  {
-    id: 'facial',
-    name: 'Chăm sóc da mặt',
-    description: 'Làn da rạng rỡ, khỏe mạnh từ những liệu pháp tinh túy.',
-    duration: '60 – 75 phút',
-    image: '/service-facial.jpg',
-    bookingUrl: '/booking',
-    detailUrl: '/services',
-    iconType: 'lotus',
-  },
+const SERVICES: ServiceItem[] = [
   {
     id: 'headspa',
     name: 'Gội đầu dưỡng sinh',
-    badge: '★ ĐƯỢC YÊU THÍCH',
-    description: 'Thư giãn tâm trí, tái tạo năng lượng với thảo mộc thiên nhiên.',
+    description: 'Thư giãn tâm trí, loại bỏ căng thẳng, nuôi dưỡng tóc chắc khỏe.',
+    checklist: ['Làm sạch sâu da đầu', 'Thư giãn, giảm stress', 'Kích thích tuần hoàn máu'],
     duration: '45 – 60 phút',
-    feature: 'Thảo mộc thuần khiết',
+    price: '180.000 đ',
     image: '/service-headspa.jpg',
     bookingUrl: '/booking',
     detailUrl: '/services',
-    iconType: 'leaf',
+    iconType: 'lotus',
   },
   {
     id: 'neck',
     name: 'Massage cổ vai gáy',
-    description: 'Giải tỏa căng thẳng, phục hồi năng lượng cuộc sống.',
-    duration: '60 phút',
+    description: 'Giảm đau mỏi, thư giãn cơ bắp, phù hợp người làm việc văn phòng.',
+    checklist: ['Giảm đau mỏi hiệu quả', 'Thư giãn cơ chuyên sâu', 'Cải thiện tuần hoàn máu'],
+    duration: '30 – 60 phút',
+    price: '180.000 đ',
     image: '/service-neck.jpg',
     bookingUrl: '/booking',
     detailUrl: '/services',
-    iconType: 'leaf',
+    iconType: 'zen',
   },
   {
     id: 'special',
     name: 'Liệu trình đặc biệt',
+    badge: '★ ĐƯỢC YÊU THÍCH',
     description: 'Trải nghiệm chăm sóc toàn diện dành riêng cho bạn.',
-    duration: 'Liệu trình cá nhân hóa',
+    checklist: ['Kết hợp nhiều liệu pháp', 'Tùy chỉnh theo nhu cầu', 'Hiệu quả thư giãn sâu'],
+    duration: '90 – 120 phút',
+    price: '350.000 đ',
     image: '/service-special.jpg',
     bookingUrl: '/booking',
     detailUrl: '/services',
     iconType: 'lotus',
   },
+  {
+    id: 'body',
+    name: 'Chăm sóc cơ thể',
+    description: 'Tẩy tế bào chết, nuôi dưỡng làn da mịn màng và khỏe mạnh.',
+    checklist: ['Tẩy tế bào chết toàn thân', 'Dưỡng ẩm chuyên sâu', 'Giúp da sáng mịn, đều màu'],
+    duration: '60 – 90 phút',
+    price: '280.000 đ',
+    image: '/service-body.jpg',
+    bookingUrl: '/booking',
+    detailUrl: '/services',
+    iconType: 'leaf',
+  },
+  {
+    id: 'facial',
+    name: 'Chăm sóc da mặt',
+    description: 'Làn da rạng rỡ, khỏe mạnh với liệu trình phù hợp từng loại da.',
+    checklist: ['Làm sạch sâu', 'Dưỡng ẩm & phục hồi', 'Cải thiện độ đàn hồi'],
+    duration: '60 – 75 phút',
+    price: '250.000 đ',
+    image: '/service-facial.jpg',
+    bookingUrl: '/booking',
+    detailUrl: '/services',
+    iconType: 'sparkle',
+  },
 ];
 
 export function ServiceShowcase() {
-  // Gội đầu dưỡng sinh (index 2) is active/center by default
+  // Liệu trình đặc biệt (index 2) is active by default matching mockup
   const [activeIdx, setActiveIdx] = useState(2);
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
 
@@ -88,7 +98,7 @@ export function ServiceShowcase() {
     setActiveIdx((prev) => (prev + 1) % total);
   };
 
-  // Touch Swipe support
+  // Touch Swipe support for mobile
   const handleTouchStart = (e: React.TouchEvent) => {
     setTouchStartX(e.touches[0].clientX);
   };
@@ -116,7 +126,7 @@ export function ServiceShowcase() {
       id="dich-vu"
       className="relative scroll-mt-20 overflow-hidden bg-[#FAF6F0] py-20 lg:py-28 select-none"
     >
-      {/* Top Left: Sunlit Palm Frond Shadow Silhouette */}
+      {/* Top Left: Sunlit Palm Frond Shadow */}
       <div className="pointer-events-none absolute -left-12 -top-12 h-96 w-96 opacity-15">
         <svg viewBox="0 0 200 200" fill="#3A2C21" className="h-full w-full blur-[1px]">
           <path d="M0,0 C40,70 90,120 180,140 C140,110 110,80 80,40 C60,20 30,10 0,0 Z" />
@@ -125,7 +135,7 @@ export function ServiceShowcase() {
         </svg>
       </div>
 
-      {/* Top Right: Elegant Golden Filigree Lines */}
+      {/* Top Right: Golden Filigree Curves */}
       <div className="pointer-events-none absolute top-4 right-4 h-56 w-56 opacity-20 text-[#A27854] hidden lg:block">
         <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="0.8">
           <circle cx="90" cy="10" r="70" strokeDasharray="3 3" />
@@ -147,9 +157,9 @@ export function ServiceShowcase() {
             <span className="h-[1px] w-8 sm:w-14 bg-[#8D381B]/40" />
           </div>
 
-          {/* Heading */}
+          {/* Heading with "phù hợp" in terracotta */}
           <h2 className="mt-3 font-serif text-3xl sm:text-4xl lg:text-[48px] font-medium leading-[1.15] tracking-[-0.02em] text-[#1F1A17]">
-            Chọn dịch vụ phù hợp cho bạn
+            Chọn dịch vụ <span className="font-semibold text-[#8D381B]">phù hợp</span> cho bạn
           </h2>
 
           {/* Subtitle */}
@@ -162,7 +172,7 @@ export function ServiceShowcase() {
         <div
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
-          className="relative mt-12 sm:mt-16 w-full flex items-center justify-center min-h-[580px] sm:min-h-[620px]"
+          className="relative mt-12 sm:mt-16 w-full flex items-center justify-center min-h-[620px] sm:min-h-[660px]"
         >
           {/* Navigation Button: Prev (<) */}
           <button
@@ -196,22 +206,22 @@ export function ServiceShowcase() {
                   key={`${item.id}-${offset}`}
                   onClick={() => setActiveIdx(itemIndex)}
                   className={cn(
-                    'relative rounded-[28px] overflow-hidden flex flex-col cursor-pointer transition-all duration-500 ease-out select-none',
+                    'relative rounded-[28px] overflow-hidden flex flex-col cursor-pointer transition-all duration-500 ease-out select-none border border-[#EDE4D8]',
                     // Responsive visibility: Center always, flanking on sm+, outer on lg+
                     isOuter ? 'hidden lg:flex' : isFlanking ? 'hidden sm:flex' : 'flex',
-                    // Dimensions & hierarchy
+                    // Hierarchy & styling
                     isCenter
-                      ? 'w-[300px] sm:w-[310px] xl:w-[325px] h-[560px] sm:h-[590px] z-30 bg-white ring-2 ring-[#8D381B]/25 shadow-[0_30px_70px_rgba(40,25,15,0.22)] -translate-y-2 sm:-translate-y-3'
+                      ? 'w-[305px] sm:w-[315px] xl:w-[325px] min-h-[620px] sm:min-h-[650px] z-30 bg-white ring-2 ring-[#8D381B]/25 shadow-[0_30px_70px_rgba(40,25,15,0.2)] -translate-y-2 sm:-translate-y-4'
                       : isFlanking
-                        ? 'w-[250px] sm:w-[260px] xl:w-[275px] h-[490px] sm:h-[515px] z-20 bg-[#FFFDF9] ring-1 ring-black/5 shadow-[0_12px_35px_rgba(40,25,15,0.08)] opacity-95 hover:opacity-100'
-                        : 'w-[220px] sm:w-[235px] xl:w-[250px] h-[450px] sm:h-[475px] z-10 bg-[#FFFDF9] ring-1 ring-black/5 shadow-[0_8px_25px_rgba(40,25,15,0.05)] opacity-80 hover:opacity-100'
+                        ? 'w-[250px] sm:w-[260px] xl:w-[272px] min-h-[570px] sm:min-h-[595px] z-20 bg-white shadow-[0_14px_35px_rgba(40,25,15,0.08)] opacity-95 hover:opacity-100'
+                        : 'w-[220px] sm:w-[235px] xl:w-[248px] min-h-[540px] sm:min-h-[565px] z-10 bg-white shadow-[0_8px_25px_rgba(40,25,15,0.05)] opacity-85 hover:opacity-100'
                   )}
                 >
-                  {/* Photo with Overlay */}
+                  {/* Card Top: Photo */}
                   <div
                     className={cn(
                       'relative w-full overflow-hidden shrink-0 transition-all',
-                      isCenter ? 'h-[360px] sm:h-[390px]' : isFlanking ? 'h-[320px] sm:h-[345px]' : 'h-[290px] sm:h-[315px]'
+                      isCenter ? 'h-[235px] sm:h-[250px]' : isFlanking ? 'h-[210px] sm:h-[225px]' : 'h-[195px] sm:h-[210px]'
                     )}
                   >
                     {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -221,84 +231,101 @@ export function ServiceShowcase() {
                       className="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
                     />
 
-                    {/* Gradient Overlay from photo to text */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/45 to-transparent" />
+                    {/* Gradient Overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
 
                     {/* Featured Badge for Center card */}
-                    {isCenter && (
-                      <div className="absolute top-4 right-4 z-10">
-                        <span className="inline-flex items-center gap-1 rounded-full bg-[#B8865B]/90 px-3 py-1 text-[11px] font-bold text-white shadow-md backdrop-blur-md">
-                          ★ ĐƯỢC YÊU THÍCH
+                    {isCenter && item.badge && (
+                      <div className="absolute top-3.5 right-3.5 z-10">
+                        <span className="inline-flex items-center gap-1 rounded-full bg-[#8D381B]/95 px-3 py-1 text-[11px] font-bold text-white shadow-md backdrop-blur-md">
+                          {item.badge}
                         </span>
                       </div>
                     )}
+                  </div>
 
-                    {/* Icon Badge & Title Inside Photo Bottom */}
-                    <div className="absolute inset-x-0 bottom-0 p-5 text-white z-10">
-                      {/* Icon Circle */}
-                      <div className="flex h-9 w-9 items-center justify-center rounded-full bg-white/20 backdrop-blur-md text-white mb-2.5 shadow-sm">
-                        {item.iconType === 'lotus' ? (
-                          <Flower2 className="h-5 w-5" />
-                        ) : (
-                          <Leaf className="h-4 w-4" />
-                        )}
-                      </div>
+                  {/* Floating Circular Icon Badge Overlapping photo bottom border */}
+                  <div className="relative px-5 pt-0">
+                    <div className="-mt-6 flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-[#F5ECE2] text-[#8D381B] ring-4 ring-white shadow-md z-10">
+                      {item.iconType === 'lotus' ? (
+                        <Flower2 className="h-5 w-5 sm:h-6 sm:w-6" />
+                      ) : item.iconType === 'zen' ? (
+                        <Layers className="h-5 w-5 sm:h-6 sm:w-6" />
+                      ) : item.iconType === 'leaf' ? (
+                        <Leaf className="h-5 w-5 sm:h-6 sm:w-6" />
+                      ) : (
+                        <Sparkles className="h-5 w-5 sm:h-6 sm:w-6" />
+                      )}
+                    </div>
+                  </div>
 
+                  {/* Card Body: Rich Information that was previously empty */}
+                  <div className="flex-1 p-5 pt-3 flex flex-col justify-between">
+                    <div>
+                      {/* Service Title */}
                       <h3
                         className={cn(
-                          'font-serif font-bold leading-tight text-white drop-shadow-sm',
-                          isCenter ? 'text-2xl sm:text-[26px]' : 'text-lg sm:text-xl'
+                          'font-serif font-bold text-[#1F1A17] leading-tight',
+                          isCenter ? 'text-xl sm:text-[22px]' : 'text-lg sm:text-[19px]'
                         )}
                       >
                         {item.name}
                       </h3>
 
-                      <p className="mt-1.5 text-xs sm:text-[13px] leading-relaxed text-white/85 line-clamp-2">
+                      {/* Brief Summary */}
+                      <p className="mt-2 text-xs sm:text-[13px] leading-relaxed text-[#6B5F54] line-clamp-2">
                         {item.description}
                       </p>
 
-                      {/* Meta Tags */}
-                      <div className="mt-3 flex flex-wrap items-center gap-2 text-[11px] sm:text-xs text-white/90">
-                        <span className="inline-flex items-center gap-1">
-                          <Clock className="h-3.5 w-3.5 text-[#E58F6F]" />
+                      {/* 3 Checklist Items with warm checkmark icons */}
+                      <ul className="mt-4 space-y-2 border-t border-[#F2ECE4] pt-3 text-xs sm:text-[12.5px] text-[#4A4036]">
+                        {item.checklist.map((point, i) => (
+                          <li key={i} className="flex items-center gap-2">
+                            <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-[#F5ECE2] text-[#8D381B]">
+                              <CheckCircle2 className="h-3.5 w-3.5" />
+                            </span>
+                            <span className="truncate">{point}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    {/* Bottom Section: Duration, Price & Action Button */}
+                    <div className="mt-5 border-t border-[#F2ECE4] pt-3">
+                      {/* Meta Row: Duration on Left, Price on Right */}
+                      <div className="flex items-center justify-between text-xs sm:text-[13px] mb-3">
+                        <span className="inline-flex items-center gap-1.5 text-[#7A6E65]">
+                          <Clock className="h-3.5 w-3.5 text-[#8D381B]" />
                           <span>{item.duration}</span>
                         </span>
-                        {item.feature && isCenter && (
-                          <>
-                            <span className="text-white/40">•</span>
-                            <span className="inline-flex items-center gap-1 text-[#F0D5C3]">
-                              <Leaf className="h-3.5 w-3.5 text-[#E58F6F]" />
-                              <span>{item.feature}</span>
-                            </span>
-                          </>
-                        )}
+                        <strong className="font-bold text-[#8D381B] text-sm sm:text-base">
+                          {item.price}
+                        </strong>
                       </div>
-                    </div>
-                  </div>
 
-                  {/* Card Bottom / Footer Button */}
-                  <div className="mt-auto p-4 sm:p-5 bg-white flex flex-col justify-end">
-                    {isCenter ? (
-                      <Link
-                        href={item.bookingUrl}
-                        className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#8D381B] py-3.5 text-sm font-semibold text-white shadow-md transition-all hover:bg-[#762E15] hover:shadow-lg active:scale-95"
-                      >
-                        <span>Đặt lịch ngay</span>
-                        <ArrowRight className="h-4 w-4" />
-                      </Link>
-                    ) : (
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setActiveIdx(itemIndex);
-                        }}
-                        className="inline-flex w-full items-center justify-center gap-1.5 rounded-full border border-[#D9CDC0] bg-[#FAF7F2] py-2.5 text-xs sm:text-sm font-medium text-[#782E15] transition-all hover:bg-white hover:border-[#8D381B] active:scale-95 cursor-pointer"
-                      >
-                        <span>Xem chi tiết</span>
-                        <span className="text-xs">&gt;</span>
-                      </button>
-                    )}
+                      {/* Action Button */}
+                      {isCenter ? (
+                        <Link
+                          href={item.bookingUrl}
+                          className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#8D381B] py-3 text-sm font-semibold text-white shadow-md transition-all hover:bg-[#762E15] hover:shadow-lg active:scale-95"
+                        >
+                          <span>Đặt lịch ngay</span>
+                          <ArrowRight className="h-4 w-4" />
+                        </Link>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setActiveIdx(itemIndex);
+                          }}
+                          className="inline-flex w-full items-center justify-center gap-1.5 rounded-full border border-[#D9CDC0] bg-[#FAF7F2] py-2.5 text-xs sm:text-sm font-medium text-[#782E15] transition-all hover:bg-white hover:border-[#8D381B] active:scale-95 cursor-pointer"
+                        >
+                          <span>Xem chi tiết</span>
+                          <span className="text-xs">→</span>
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </div>
               );

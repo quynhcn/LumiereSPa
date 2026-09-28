@@ -12,6 +12,7 @@ import {
   Leaf,
   MapPin,
   Music,
+  Quote,
   ShieldCheck,
   Smile,
   Sparkles,
@@ -153,66 +154,150 @@ export default function AboutPage() {
       <SiteHeader />
 
       {/* Hero: Brand Story & Philosophy */}
-      <section className="relative overflow-hidden border-b border-border bg-[hsl(var(--cream-soft))] py-16 sm:py-24">
-        <div className="mx-auto max-w-[1200px] px-6">
-          <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2 lg:gap-16">
-            <div>
-              <span className="eyebrow">Câu chuyện thương hiệu · {SITE.name}</span>
-              <h1 className="mt-4 font-serif text-4xl font-medium leading-[1.14] tracking-tight text-foreground sm:text-5xl lg:text-6xl">
-                Nơi thời gian dừng lại,
-                <br />
-                <em className="font-normal text-primary">để bạn yêu thương chính mình.</em>
+      <section className="relative overflow-hidden bg-[#FAF6F0] pt-12 pb-20 sm:pt-16 sm:pb-28 border-b border-[#EAE0D3]/70">
+        {/* Soft botanical branch shadows on left */}
+        <div className="pointer-events-none absolute -left-12 top-0 h-96 w-96 opacity-30 select-none">
+          <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-full w-full">
+            <path d="M0 40C40 60 70 100 90 150" stroke="#7A685B" strokeWidth="2" strokeLinecap="round" />
+            <path d="M30 55C45 40 65 42 75 55C65 65 45 68 30 55Z" fill="#7A685B" fillOpacity="0.15" />
+            <path d="M50 78C70 65 90 70 98 85C85 92 68 90 50 78Z" fill="#7A685B" fillOpacity="0.15" />
+            <path d="M70 110C95 100 115 110 120 125C105 132 85 125 70 110Z" fill="#7A685B" fillOpacity="0.15" />
+          </svg>
+        </div>
+
+        {/* Delicate archway shadow & leaf accents on top right */}
+        <div className="pointer-events-none absolute -right-8 -top-8 h-80 w-80 opacity-35 select-none">
+          <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-full w-full">
+            <path d="M200 10C150 10 110 50 110 100C110 150 150 190 200 190" stroke="#8D381B" strokeWidth="1.2" strokeDasharray="4 4" />
+            <path d="M160 40C140 25 120 30 115 45C130 55 150 50 160 40Z" fill="#4B6B46" fillOpacity="0.25" />
+            <path d="M140 70C120 60 105 70 105 85C120 90 135 85 140 70Z" fill="#4B6B46" fillOpacity="0.25" />
+          </svg>
+        </div>
+
+        {/* Sculpted stone contour overlay at bottom edge */}
+        <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-[#F4EEE5]/80 to-transparent" />
+
+        <div className="relative z-10 mx-auto max-w-[1360px] px-6 sm:px-8 lg:px-12">
+          <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-12 lg:gap-14">
+            {/* Left Column: Brand Story & Values */}
+            <div className="lg:col-span-6 xl:col-span-6">
+              {/* Eyebrow */}
+              <div className="flex items-center gap-3">
+                <span className="h-px w-8 bg-[#C49A62]" />
+                <span className="text-xs font-semibold tracking-[0.2em] text-[#8D381B] uppercase">
+                  CÂU CHUYỆN THƯƠNG HIỆU · LUMIÈRE SPA
+                </span>
+              </div>
+
+              {/* Main Headline */}
+              <h1 className="mt-4 font-serif text-4xl sm:text-5xl lg:text-[54px] font-normal leading-[1.18] text-[#20140D]">
+                Nơi thời gian dừng lại,<br />
+                <span className="font-serif italic text-[#8D381B]">
+                  để bạn yêu thương<br />chính mình.
+                </span>
+                <span className="inline-block ml-3 align-middle text-[#8D381B]">
+                  <svg width="34" height="24" viewBox="0 0 34 24" fill="none" className="inline-block">
+                    <path d="M2 18C10 18 16 12 22 6C26 2 30 4 32 8C34 12 30 16 24 16C18 16 14 20 20 22" stroke="#8D381B" strokeWidth="1.5" strokeLinecap="round" />
+                  </svg>
+                </span>
               </h1>
-              <p className="mt-6 text-base leading-relaxed text-muted-foreground sm:text-lg">
-                Trong tiếng Pháp, <strong>Lumière</strong> mang ý nghĩa là <em>Ánh Sáng</em>. Chúng tôi tin rằng khi cơ thể được nghỉ ngơi sâu và tâm trí được trút bỏ muộn phiền, năng lượng tích cực và vẻ rạng ngời tự nhiên từ bên trong bạn sẽ bừng sáng.
+
+              {/* Story Paragraphs */}
+              <p className="mt-6 text-sm sm:text-base leading-relaxed text-[#5A4B41] font-light">
+                Trong tiếng Pháp, <strong className="font-semibold text-[#20140D]">Lumière</strong> mang ý nghĩa là <em>Ánh Sáng</em>. Chúng tôi tin rằng khi cơ thể được nghỉ ngơi sâu và tâm trí được trút bỏ muộn phiền, năng lượng tích cực và vẻ rạng ngời tự nhiên từ bên trong bạn sẽ bừng sáng.
               </p>
-              <p className="mt-3 text-base leading-relaxed text-muted-foreground">
+              <p className="mt-4 text-sm sm:text-base leading-relaxed text-[#5A4B41] font-light">
                 Sinh ra từ tình yêu dành cho thảo dược truyền thống Việt Nam và mong muốn kiến tạo một không gian tĩnh lặng giữa nhịp sống đô thị, Lumière Spa là nơi bạn có thể trút bỏ mọi áp lực, thả lỏng từng thớ cơ và trao gửi thân tâm cho đôi bàn tay của những người nghệ nhân lành nghề.
               </p>
 
-              <div className="mt-8 flex flex-wrap gap-3.5">
-                <Link href="/booking" className="btn-primary">
-                  Đặt lịch trải nghiệm <ArrowRight className="h-4 w-4" />
+              {/* Action Buttons */}
+              <div className="mt-8 flex flex-wrap items-center gap-4">
+                <Link
+                  href="/booking"
+                  className="group inline-flex items-center gap-2.5 rounded-full bg-[#8D381B] px-7 py-3.5 text-sm font-semibold text-white shadow-md shadow-[#8D381B]/20 transition-all duration-300 hover:bg-[#772F16] hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0"
+                >
+                  <span>Đặt lịch trải nghiệm</span>
+                  <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
                 </Link>
-                <Link href="/services" className="btn-outline">
+                <Link
+                  href="/services"
+                  className="inline-flex items-center justify-center rounded-full border border-[#D8C7B8] bg-[#FAF6F0] px-6 py-3.5 text-sm font-semibold text-[#5A4B41] transition-all duration-300 hover:border-[#8D381B] hover:text-[#8D381B] hover:bg-white"
+                >
                   Khám phá các liệu trình
                 </Link>
               </div>
 
-              {/* Stats Highlights */}
-              <div className="mt-12 grid grid-cols-3 gap-6 border-t border-border pt-8 text-center sm:text-left">
-                <div>
-                  <span className="font-serif text-3xl font-bold text-primary sm:text-4xl">5.000+</span>
-                  <p className="mt-1 text-xs text-muted-foreground">Khách hàng yêu quý</p>
+              {/* Bottom Stats Bar */}
+              <div className="mt-12 flex flex-wrap items-center gap-6 sm:gap-8 border-t border-[#EAE0D3]/80 pt-6">
+                {/* Stat 1 */}
+                <div className="flex items-center gap-3">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#F5ECE1] text-[#8D381B]">
+                    <Users className="h-4 w-4" />
+                  </span>
+                  <div>
+                    <strong className="block font-serif text-xl sm:text-2xl font-medium text-[#20140D]">5.000+</strong>
+                    <span className="text-xs text-[#8A796D]">Khách hàng yêu quý</span>
+                  </div>
                 </div>
-                <div>
-                  <span className="font-serif text-3xl font-bold text-primary sm:text-4xl">4.9 ★</span>
-                  <p className="mt-1 text-xs text-muted-foreground">Từ 1.200+ đánh giá</p>
+                <div className="hidden h-8 w-px bg-[#EAE0D3] sm:block" />
+
+                {/* Stat 2 */}
+                <div className="flex items-center gap-3">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#F5ECE1] text-[#8D381B]">
+                    <Star className="h-4 w-4 fill-[#8D381B] text-[#8D381B]" />
+                  </span>
+                  <div>
+                    <div className="flex items-center gap-1 font-serif text-xl sm:text-2xl font-medium text-[#20140D]">
+                      <span>4.9</span>
+                      <span className="text-xs text-[#8D381B]">★</span>
+                    </div>
+                    <span className="text-xs text-[#8A796D]">Từ 1200+ đánh giá</span>
+                  </div>
                 </div>
-                <div>
-                  <span className="font-serif text-3xl font-bold text-primary sm:text-4xl">100%</span>
-                  <p className="mt-1 text-xs text-muted-foreground">Thảo mộc tự nhiên</p>
+                <div className="hidden h-8 w-px bg-[#EAE0D3] sm:block" />
+
+                {/* Stat 3 */}
+                <div className="flex items-center gap-3">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#F5ECE1] text-[#8D381B]">
+                    <Leaf className="h-4 w-4" />
+                  </span>
+                  <div>
+                    <strong className="block font-serif text-xl sm:text-2xl font-medium text-[#20140D]">100%</strong>
+                    <span className="text-xs text-[#8A796D]">Thảo mộc tự nhiên</span>
+                  </div>
                 </div>
               </div>
             </div>
 
-            {/* Visual Hero Collage */}
-            <div className="relative mx-auto w-full max-w-lg lg:max-w-none">
-              <div className="relative aspect-[4/5] overflow-hidden rounded-3xl border border-border shadow-2xl">
+            {/* Right Column: Visual Collage with Treatment Photo & Quote */}
+            <div className="relative mx-auto w-full max-w-lg lg:col-span-6 lg:max-w-none">
+              <div className="relative aspect-[4/3] sm:aspect-[14/11] overflow-hidden rounded-[32px] sm:rounded-[40px] border border-[#EBE3D7] shadow-[0_20px_50px_rgba(40,20,10,0.12)]">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src="https://images.unsplash.com/photo-1600334129128-685c5582fd35?w=1000&auto=format&fit=crop&q=80"
-                  alt="Không gian thư giãn đẳng cấp tại Lumière Spa"
+                  src="/about-hero-stone.jpg"
+                  alt="Trị liệu đá nóng thư giãn chuyên sâu tại Lumière Spa"
                   className="h-full w-full object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                <div className="absolute bottom-6 left-6 right-6 rounded-2xl bg-white/95 p-5 backdrop-blur-md dark:bg-black/85">
-                  <p className="font-serif text-lg font-medium text-foreground sm:text-xl">
-                    &ldquo;Đến Lumière, gác lại vội vàng. Thư giãn không phải là sự xa xỉ, mà là điều cơ thể bạn xứng đáng nhận được.&rdquo;
-                  </p>
-                  <p className="mt-2 text-xs font-semibold uppercase tracking-wider text-primary">
+
+                {/* Top-left decorative badge */}
+                <div className="absolute left-6 top-6 rounded-full border border-white/40 bg-black/25 px-4 py-2 text-[10px] sm:text-xs font-medium uppercase tracking-[0.2em] text-white/90 backdrop-blur-md">
+                  Natural Healing · Beauty Within
+                </div>
+              </div>
+
+              {/* Floating Testimonial Quote Card (bottom right overlap) */}
+              <div className="relative -mt-14 sm:-mt-20 ml-auto mr-2 sm:mr-4 max-w-[340px] sm:max-w-[370px] rounded-[24px] border border-[#E8DFD3] bg-[#FDFBF7]/95 p-5 sm:p-6 shadow-[0_16px_40px_rgba(30,19,13,0.1)] backdrop-blur-md">
+                <Quote className="h-6 w-6 text-[#C49A62]" />
+                <p className="mt-2 font-serif text-sm sm:text-base leading-relaxed text-[#20140D] italic">
+                  &ldquo;Đến Lumière, gác lại vội vàng. Thư giãn không phải là sự xa xỉ, mà là điều cơ thể bạn xứng đáng nhận được.&rdquo;
+                </p>
+                <div className="mt-3 flex items-center justify-between border-t border-[#EAE0D3]/80 pt-3">
+                  <span className="text-[11px] font-semibold uppercase tracking-wider text-[#8D381B]">
                     Đội ngũ nghệ nhân Lumière Spa
-                  </p>
+                  </span>
+                  <span className="text-[#C49A62]">
+                    <Leaf className="h-4 w-4" />
+                  </span>
                 </div>
               </div>
             </div>

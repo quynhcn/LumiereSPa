@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { CheckCircle2, Loader2, PhoneCall } from 'lucide-react';
+import { CheckCircle2, ChevronDown, Flower2, Loader2, Lock, Pencil, Phone, PhoneCall, User } from 'lucide-react';
 import { toast } from 'sonner';
 import { supabase } from '@/lib/supabase';
 import { track } from '@/lib/analytics';
@@ -17,7 +17,16 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 
-export const LEAD_INTERESTS = ['Chưa biết chọn dịch vụ nào', 'Gói liệu trình nhiều buổi', 'Thẻ quà tặng', 'Đặt cho nhóm / công ty', 'Khác'];
+export const LEAD_INTERESTS = [
+  'Chưa biết chọn dịch vụ nào',
+  'Massage body & Thư giãn chuyên sâu',
+  'Chăm sóc & Phục hồi da mặt (Facial)',
+  'Gội đầu dưỡng sinh & Cổ vai gáy',
+  'Gói liệu trình nhiều buổi',
+  'Thẻ quà tặng / Hội viên VIP',
+  'Đặt cho nhóm / công ty',
+  'Khác',
+];
 
 interface LeadFormProps {
   interest?: string;
@@ -25,10 +34,11 @@ interface LeadFormProps {
   idPrefix: string;
   onDone?: () => void;
   compact?: boolean;
+  luxury?: boolean;
 }
 
 /** "Để lại SĐT, spa gọi tư vấn" — works without an account (public RPC create_lead). */
-export function LeadForm({ interest: initialInterest, source, idPrefix, onDone, compact }: LeadFormProps) {
+export function LeadForm({ interest: initialInterest, source, idPrefix, onDone, compact, luxury }: LeadFormProps) {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [interest, setInterest] = useState(initialInterest || LEAD_INTERESTS[0]);
@@ -135,6 +145,110 @@ export function LeadForm({ interest: initialInterest, source, idPrefix, onDone, 
         <p className="font-serif text-xl text-foreground">Cảm ơn {name.trim().split(/\s+/).pop()}!</p>
         <p className="mt-1 text-sm text-muted-foreground">Lumière Spa sẽ gọi lại cho bạn trong giờ mở cửa, thường trong vòng 30 phút.</p>
       </div>
+    );
+  }
+
+  if (luxury) {
+    return (
+      <form onSubmit={submit} className="space-y-4">
+        {/* Name and Phone Inputs */}
+        <div className="grid gap-3.5 sm:grid-cols-2">
+          <div>
+            <label htmlFor={`${idPrefix}-name`} className="mb-1.5 block text-xs sm:text-sm font-semibold text-[#20140D]">
+              Họ và tên của bạn <span className="text-[#8D381B]">*</span>
+            </label>
+            <div className="relative">
+              <User className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#A8988A]" />
+              <input
+                id={`${idPrefix}-name`}
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Nguyễn Lan"
+                autoComplete="name"
+                className="h-11 sm:h-12 w-full rounded-xl border border-[#E5DDD2] bg-[#FAF7F2] pl-10 pr-3.5 text-xs sm:text-sm text-[#20140D] placeholder:text-[#B0A296] transition-all focus:border-[#8D381B] focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#8D381B]"
+              />
+            </div>
+          </div>
+          <div>
+            <label htmlFor={`${idPrefix}-phone`} className="mb-1.5 block text-xs sm:text-sm font-semibold text-[#20140D]">
+              Số điện thoại <span className="text-[#8D381B]">*</span>
+            </label>
+            <div className="relative">
+              <Phone className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#A8988A]" />
+              <input
+                id={`${idPrefix}-phone`}
+                type="tel"
+                inputMode="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="0987 654 321"
+                autoComplete="tel"
+                className="h-11 sm:h-12 w-full rounded-xl border border-[#E5DDD2] bg-[#FAF7F2] pl-10 pr-3.5 text-xs sm:text-sm text-[#20140D] placeholder:text-[#B0A296] transition-all focus:border-[#8D381B] focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#8D381B]"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Interest Select */}
+        <div>
+          <label htmlFor={`${idPrefix}-interest`} className="mb-1.5 block text-xs sm:text-sm font-semibold text-[#20140D]">
+            Dịch vụ quan tâm
+          </label>
+          <div className="relative">
+            <Flower2 className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#A8988A]" />
+            <select
+              id={`${idPrefix}-interest`}
+              value={interest}
+              onChange={(e) => setInterest(e.target.value)}
+              className="h-11 sm:h-12 w-full appearance-none rounded-xl border border-[#E5DDD2] bg-[#FAF7F2] pl-10 pr-10 text-xs sm:text-sm text-[#20140D] transition-all focus:border-[#8D381B] focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#8D381B]"
+            >
+              {LEAD_INTERESTS.map((i) => (
+                <option key={i} value={i}>
+                  {i}
+                </option>
+              ))}
+            </select>
+            <ChevronDown className="pointer-events-none absolute right-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#A8988A]" />
+          </div>
+        </div>
+
+        {/* Note Input */}
+        <div>
+          <label htmlFor={`${idPrefix}-note`} className="mb-1.5 block text-xs sm:text-sm font-semibold text-[#20140D]">
+            Ghi chú <span className="font-normal text-[#8A796D]">(tùy chọn)</span>
+          </label>
+          <div className="relative">
+            <Pencil className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#A8988A]" />
+            <input
+              id={`${idPrefix}-note`}
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+              placeholder="Ví dụ: đau vai gáy, muốn gọi sau 18h..."
+              className="h-11 sm:h-12 w-full rounded-xl border border-[#E5DDD2] bg-[#FAF7F2] pl-10 pr-3.5 text-xs sm:text-sm text-[#20140D] placeholder:text-[#B0A296] transition-all focus:border-[#8D381B] focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#8D381B]"
+            />
+          </div>
+        </div>
+
+        {/* Submit Button */}
+        <button
+          type="submit"
+          disabled={sending}
+          className="mt-2 flex h-12 sm:h-14 w-full items-center justify-center gap-2.5 rounded-xl bg-[#8D381B] text-sm font-semibold text-white shadow-lg shadow-[#8D381B]/20 transition-all duration-300 hover:bg-[#772F16] hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-60"
+        >
+          {sending ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <PhoneCall className="h-4 w-4" />
+          )}
+          <span>Gọi lại cho tôi →</span>
+        </button>
+
+        {/* Privacy Note */}
+        <p className="pt-1 flex items-center justify-center gap-1.5 text-center text-[11px] sm:text-xs text-[#8A796D]">
+          <Lock className="h-3 w-3 shrink-0 text-[#A8988A]" />
+          <span>Không cần tạo tài khoản. Thông tin của bạn chỉ dùng để spa liên hệ tư vấn.</span>
+        </p>
+      </form>
     );
   }
 

@@ -6,6 +6,7 @@ import {
   CalendarCheck,
   Check,
   CheckCircle2,
+  Clock,
   Crown,
   Flame,
   Flower2,
@@ -14,7 +15,11 @@ import {
   Layers,
   Leaf,
   MapPin,
+  MessageCircle,
+  Navigation,
   Percent,
+  Phone,
+  PhoneCall,
   Play,
   PlayCircle,
   Quote,
@@ -896,50 +901,192 @@ export default async function HomePage() {
       )}
 
       {/* Contact + callback form */}
-      <section id="lien-he" className="scroll-mt-20 bg-[hsl(30_42%_90%)] py-20 lg:py-24">
-        <div className="mx-auto max-w-[1200px] px-6">
-          <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16">
-            <div>
-              <span className="eyebrow">Hẹn một khoảng nghỉ</span>
-              <h2 className="section-heading mt-3">Hôm nay, bạn muốn dành thời gian cho mình chứ?</h2>
-              <OpenStatus className="mt-5" />
-              <dl className="mt-7 grid grid-cols-1 gap-5 sm:grid-cols-3">
-                <div>
-                  <dt className="mb-2 text-sm text-muted-foreground">Địa chỉ</dt>
-                  <dd className="font-semibold text-foreground">{SITE.address}</dd>
+      <section id="lien-he" className="relative scroll-mt-20 overflow-hidden bg-[#FAF5EE] py-20 lg:py-28">
+        {/* Atmospheric Spa Architectural Background */}
+        <div
+          className="pointer-events-none absolute inset-0 bg-cover bg-left bg-no-repeat opacity-40 lg:opacity-70"
+          style={{ backgroundImage: "url('/spa-contact-bg.jpg')" }}
+        />
+        {/* Soft Warm Gradient Overlay for readability */}
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#FAF5EE]/50 via-[#FAF5EE]/85 to-[#FAF5EE] lg:from-[#FAF5EE]/30 lg:via-[#FAF5EE]/75 lg:to-[#FAF5EE]" />
+
+        {/* Artistic botanical line branch in top right corner */}
+        <div className="pointer-events-none absolute right-4 top-6 hidden opacity-25 lg:block">
+          <svg width="180" height="220" viewBox="0 0 180 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M40 180C70 140 110 100 160 80C140 110 110 140 70 170" stroke="#8D381B" strokeWidth="1.5" strokeLinecap="round" />
+            <path d="M90 120C120 90 150 50 170 10C140 30 110 70 80 110" stroke="#8D381B" strokeWidth="1.5" strokeLinecap="round" />
+            <path d="M20 210C60 170 110 110 150 40" stroke="#8D381B" strokeWidth="1.8" strokeLinecap="round" />
+          </svg>
+        </div>
+
+        <div className="relative z-10 mx-auto max-w-[1360px] px-6 sm:px-8 lg:px-12">
+          <div className="grid grid-cols-1 items-start gap-12 lg:grid-cols-12 lg:gap-14">
+            {/* Left Column: Contact details & directions */}
+            <div className="lg:col-span-7 xl:col-span-7">
+              {/* Eyebrow */}
+              <div className="flex items-center gap-3">
+                <span className="text-xs sm:text-sm font-semibold tracking-[0.2em] text-[#A67C52] uppercase">
+                  LIÊN HỆ & ĐẶT HẸN
+                </span>
+                <span className="h-px w-10 sm:w-16 bg-[#DECFC0]" />
+              </div>
+
+              {/* Main Headline */}
+              <h2 className="mt-4 font-serif text-3xl sm:text-4xl lg:text-5xl font-normal leading-[1.2] text-[#20140D]">
+                Hôm nay, hãy dành<br />
+                thời gian cho <span className="font-serif italic text-[#8D381B]">chính mình</span>
+                <span className="inline-block ml-2.5 align-middle text-[#8D381B]/80">
+                  <Leaf className="h-6 w-6 sm:h-7 sm:w-7 inline-block -rotate-12" />
+                </span>
+              </h2>
+
+              {/* Sub-paragraph */}
+              <p className="mt-5 max-w-[540px] text-sm sm:text-base leading-relaxed text-[#736357] font-light">
+                Lumière Spa luôn sẵn sàng đồng hành cùng bạn trên hành trình chăm sóc sức khỏe và tái tạo năng lượng. Liên hệ với chúng tôi để được tư vấn dịch vụ phù hợp nhất.
+              </p>
+
+              {/* Opening Status */}
+              <div className="mt-6 flex items-center gap-2 text-xs sm:text-sm font-medium text-[#20140D]">
+                <span className="h-2.5 w-2.5 rounded-full bg-[#2F7D32] animate-pulse" />
+                <span>Đang mở cửa · đóng lúc {SITE.close || '20:00'}</span>
+              </div>
+
+              {/* 3 Info Cards */}
+              <div className="mt-8 grid grid-cols-1 gap-3.5 sm:grid-cols-3">
+                {/* Địa chỉ */}
+                <div className="flex flex-col justify-between rounded-2xl border border-[#EAE0D3] bg-[#FDFBF7]/90 p-4 shadow-[0_2px_12px_rgba(40,20,10,0.03)] backdrop-blur-sm">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#F5ECE1] text-[#8D381B]">
+                    <MapPin className="h-4 w-4" />
+                  </div>
+                  <div className="mt-3">
+                    <span className="block text-xs text-[#8A796D]">Địa chỉ</span>
+                    <strong className="mt-1 block text-xs sm:text-sm font-semibold text-[#20140D] leading-snug">
+                      {SITE.address}
+                    </strong>
+                  </div>
                 </div>
-                <div>
-                  <dt className="mb-2 text-sm text-muted-foreground">Điện thoại</dt>
-                  <dd className="font-semibold text-foreground">{SITE.phone}</dd>
+
+                {/* Hotline */}
+                <div className="flex flex-col justify-between rounded-2xl border border-[#EAE0D3] bg-[#FDFBF7]/90 p-4 shadow-[0_2px_12px_rgba(40,20,10,0.03)] backdrop-blur-sm">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#F5ECE1] text-[#8D381B]">
+                    <Phone className="h-4 w-4" />
+                  </div>
+                  <div className="mt-3">
+                    <span className="block text-xs text-[#8A796D]">Hotline</span>
+                    <strong className="mt-1 block text-sm sm:text-base font-bold text-[#20140D]">
+                      {SITE.phone}
+                    </strong>
+                    <span className="block text-[11px] text-[#8A796D]">(8:00 - 20:00)</span>
+                  </div>
                 </div>
-                <div>
-                  <dt className="mb-2 text-sm text-muted-foreground">Giờ mở cửa</dt>
-                  <dd className="font-semibold text-foreground">{SITE.hours}</dd>
+
+                {/* Giờ mở cửa */}
+                <div className="flex flex-col justify-between rounded-2xl border border-[#EAE0D3] bg-[#FDFBF7]/90 p-4 shadow-[0_2px_12px_rgba(40,20,10,0.03)] backdrop-blur-sm">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#F5ECE1] text-[#8D381B]">
+                    <Clock className="h-4 w-4" />
+                  </div>
+                  <div className="mt-3">
+                    <span className="block text-xs text-[#8A796D]">Giờ mở cửa</span>
+                    <strong className="mt-1 block text-xs sm:text-sm font-semibold text-[#20140D]">
+                      {SITE.open} – {SITE.close}
+                    </strong>
+                    <span className="block text-[11px] text-[#8A796D]">hàng ngày</span>
+                  </div>
                 </div>
-              </dl>
-              <ContactButtons className="mt-7" />
+              </div>
+
+              {/* 3 Quick Action Buttons */}
+              <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
+                <a
+                  href={`tel:${SITE.phone.replace(/\s+/g, '')}`}
+                  className="flex items-center justify-center gap-2 rounded-xl bg-[#8D381B] px-4 py-3.5 text-xs sm:text-sm font-semibold text-white shadow-md shadow-[#8D381B]/20 transition-all hover:bg-[#772F16] hover:shadow-lg active:scale-[0.99]"
+                >
+                  <PhoneCall className="h-4 w-4" />
+                  <span>Gọi {SITE.phone}</span>
+                </a>
+                <a
+                  href={SITE.zalo}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-2 rounded-xl border border-[#D9C4B2] bg-[#FDFBF7] px-4 py-3.5 text-xs sm:text-sm font-semibold text-[#8D381B] transition-all hover:bg-[#F5ECE1] hover:border-[#8D381B]/40 active:scale-[0.99]"
+                >
+                  <MessageCircle className="h-4 w-4" />
+                  <span>Chat Zalo</span>
+                </a>
+                <a
+                  href={SITE.mapUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-2 rounded-xl border border-[#D9C4B2] bg-[#FDFBF7] px-4 py-3.5 text-xs sm:text-sm font-semibold text-[#8D381B] transition-all hover:bg-[#F5ECE1] hover:border-[#8D381B]/40 active:scale-[0.99]"
+                >
+                  <Navigation className="h-4 w-4" />
+                  <span>Chỉ đường</span>
+                </a>
+              </div>
+
+              {/* Google Maps Card with storefront photo */}
               <a
                 href={SITE.mapUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-7 flex items-center gap-3 rounded-2xl border border-border bg-card/70 p-4 text-sm text-muted-foreground hover:border-primary/40"
+                className="group mt-5 flex items-center gap-4 rounded-2xl border border-[#EAE0D3] bg-[#FDFBF7] p-3.5 shadow-sm transition-all duration-300 hover:border-[#D0BAA6] hover:shadow-md"
               >
-                <MapPin className="h-5 w-5 shrink-0 text-primary" />
-                Mở Google Maps để xem đường đi và chỗ gửi xe
-                <ArrowRight className="ml-auto h-4 w-4 shrink-0" />
+                <div className="relative h-16 w-28 shrink-0 overflow-hidden rounded-xl border border-[#E8DEC1]">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="/spa-facade-thumb.jpg"
+                    alt="Lumière Spa storefront"
+                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-[#20140D]">
+                    <MapPin className="h-4 w-4 shrink-0 text-[#8D381B]" />
+                    <span className="truncate">Xem đường đi trên Google Maps</span>
+                  </div>
+                  <p className="mt-0.5 text-xs text-[#8A796D]">
+                    Mở bản đồ để xem đường đi và chỗ gửi xe
+                  </p>
+                </div>
+                <div className="mr-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#EFE6DC] text-[#736357] transition-all duration-300 group-hover:bg-[#8D381B] group-hover:text-white group-hover:scale-105">
+                  <ArrowRight className="h-4 w-4" />
+                </div>
               </a>
             </div>
-            <div className="rounded-2xl bg-card p-7 shadow-[0_18px_50px_hsl(var(--brand))_8%] sm:p-9">
-              <h3 className="font-serif text-3xl font-medium text-foreground">Để lại SĐT, spa gọi tư vấn</h3>
-              <p className="mb-6 mt-2 text-sm text-muted-foreground">
-                Chưa chắc chọn liệu trình nào, muốn mua gói hoặc thẻ quà tặng? Chuyên viên sẽ gọi lại trong giờ mở cửa.
-              </p>
-              <LeadForm source="contact" idPrefix="contact-lead" />
-              <div className="mt-6 border-t border-border pt-5 text-center text-sm text-muted-foreground">
-                Đã biết mình muốn gì?{' '}
-                <Link href="/booking" className="font-semibold text-primary hover:underline">
-                  Đặt lịch online ngay →
-                </Link>
+
+            {/* Right Column: Personalized Consultation Card */}
+            <div className="lg:col-span-5 xl:col-span-5">
+              <div className="rounded-[28px] sm:rounded-[36px] border border-[#EBE3D7] bg-[#FDFBF7]/95 p-6 sm:p-9 shadow-[0_16px_48px_rgba(40,20,10,0.06)] backdrop-blur-md">
+                {/* Eyebrow */}
+                <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-[#8D381B]">
+                  <Flower2 className="h-4 w-4" />
+                  <span>TƯ VẤN CÁ NHÂN HÓA</span>
+                </div>
+
+                {/* Headline */}
+                <h3 className="mt-3 font-serif text-2xl sm:text-3xl font-medium leading-[1.25] text-[#20140D]">
+                  Để lại thông tin,<br />
+                  Lumière Spa gọi lại tư vấn
+                </h3>
+
+                {/* Subtitle */}
+                <p className="mt-2 text-xs sm:text-sm leading-relaxed text-[#736357] font-light">
+                  Chưa chắc chọn liệu trình nào, muốn mua gói hoặc thẻ quà tặng? Chuyên viên sẽ gọi lại trong giờ mở cửa để tư vấn chi tiết cho bạn.
+                </p>
+
+                {/* Interactive Lead Form with luxury styling */}
+                <div className="mt-6">
+                  <LeadForm source="contact" idPrefix="contact-lead" luxury />
+                </div>
+
+                {/* Bottom Link */}
+                <div className="mt-6 border-t border-[#EFE8DF] pt-5 text-center text-xs sm:text-sm text-[#736357]">
+                  Đã biết mình muốn gì?{' '}
+                  <Link href="/booking" className="font-semibold text-[#8D381B] hover:underline inline-flex items-center gap-1">
+                    <span>Đặt lịch online ngay</span>
+                    <span>→</span>
+                  </Link>
+                </div>
               </div>
             </div>
           </div>

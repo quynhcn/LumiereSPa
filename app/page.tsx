@@ -229,8 +229,7 @@ export default async function HomePage() {
 
               {/* Main Headline */}
               <h2 className="mt-4 font-serif text-3xl sm:text-4xl lg:text-[52px] font-medium leading-[1.65] tracking-normal text-[#1F1A17]">
-                Một nhịp nghỉ vừa vặn
-                <br />
+                <span className="block pb-2 sm:pb-3">Một nhịp nghỉ vừa vặn</span>
                 <span className="font-semibold text-[#8D381B]">giữa phố thị.</span>
               </h2>
 
@@ -379,9 +378,8 @@ export default async function HomePage() {
             </div>
 
             <h2 className="mt-3 font-serif text-3xl sm:text-4xl lg:text-[48px] font-medium leading-[1.65] tracking-normal text-[#1F1A17]">
-              Nuông chiều bản thân,
-              <br />
-              nhận thêm ưu đãi.
+              <span className="block pb-2 sm:pb-3">Nuông chiều bản thân,</span>
+              <span>nhận thêm ưu đãi.</span>
             </h2>
 
             <p className="mt-3.5 text-center text-[15px] sm:text-[16px] leading-[1.75] text-[#6B5F54]">
@@ -706,8 +704,8 @@ export default async function HomePage() {
                 TẬN HƯỞNG THEO CÁCH CỦA BẠN
               </span>
               <h2 className="mt-4 font-serif text-3xl sm:text-4xl lg:text-5xl font-normal leading-[1.65] text-[#FAF6F0]">
-                Thời gian nghỉ ngơi<br />
-                cũng xứng đáng được<br />
+                <span className="block pb-2 sm:pb-3">Thời gian nghỉ ngơi</span>
+                <span className="block pb-2 sm:pb-3">cũng xứng đáng được</span>
                 <span className="font-serif italic text-[#E8A87C]">chăm chút.</span>
               </h2>
               <p className="mt-6 max-w-[490px] text-sm sm:text-base leading-relaxed text-[#D8CCC4] font-light">
@@ -934,10 +932,12 @@ export default async function HomePage() {
 
               {/* Main Headline */}
               <h2 className="mt-4 font-serif text-3xl sm:text-4xl lg:text-5xl font-normal leading-[1.65] text-[#20140D]">
-                Hôm nay, hãy dành<br />
-                thời gian cho <span className="font-serif italic text-[#8D381B]">chính mình</span>
-                <span className="inline-block ml-2.5 align-middle text-[#8D381B]/80">
-                  <Leaf className="h-6 w-6 sm:h-7 sm:w-7 inline-block -rotate-12" />
+                <span className="block pb-2 sm:pb-3">Hôm nay, hãy dành</span>
+                <span>
+                  thời gian cho <span className="font-serif italic text-[#8D381B]">chính mình</span>
+                  <span className="inline-block ml-2.5 align-middle text-[#8D381B]/80">
+                    <Leaf className="h-6 w-6 sm:h-7 sm:w-7 inline-block -rotate-12" />
+                  </span>
                 </span>
               </h2>
 
@@ -1065,9 +1065,9 @@ export default async function HomePage() {
                 </div>
 
                 {/* Headline */}
-                <h3 className="mt-3 font-serif text-2xl sm:text-3xl font-medium leading-snug text-[#20140D]">
-                  Để lại thông tin,<br />
-                  Lumière Spa gọi lại tư vấn
+                <h3 className="mt-3 font-serif text-2xl sm:text-3xl font-medium leading-[1.65] text-[#20140D]">
+                  <span className="block pb-2 sm:pb-3">Để lại thông tin,</span>
+                  <span>Lumière Spa gọi lại tư vấn</span>
                 </h3>
 
                 {/* Subtitle */}

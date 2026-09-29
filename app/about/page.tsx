@@ -241,7 +241,7 @@ export default function AboutPage() {
               </div>
 
               {/* Main Headline */}
-              <h1 className="mt-5 font-serif text-4xl sm:text-5xl lg:text-[60px] font-normal leading-[1.12] tracking-tight text-[#1F140E]">
+              <h1 className="mt-5 font-serif text-4xl sm:text-5xl lg:text-[60px] font-normal leading-[1.12] tracking-normal text-[#1F140E]">
                 Nơi thời gian dừng lại,<br />
                 <span className="font-serif italic font-normal text-[#8D381B]">
                   để bạn yêu thương<br />
@@ -444,7 +444,7 @@ export default function AboutPage() {
 
               {/* Card Content */}
               <div className="relative flex flex-1 flex-col px-6 pb-8 pt-2 sm:px-7 sm:pb-9">
-                <h3 className="font-serif text-xl sm:text-2xl font-semibold text-[#20140D] tracking-tight">
+                <h3 className="font-serif text-xl sm:text-2xl font-semibold text-[#20140D] tracking-normal">
                   Không gian tĩnh tại
                 </h3>
                 <p className="mt-3 text-[13.5px] sm:text-[14px] leading-relaxed text-[#5C4A3E]">
@@ -489,7 +489,7 @@ export default function AboutPage() {
 
               {/* Card Content */}
               <div className="relative flex flex-1 flex-col px-6 pb-8 pt-2 sm:px-7 sm:pb-9">
-                <h3 className="font-serif text-xl sm:text-2xl font-semibold text-[#20140D] tracking-tight">
+                <h3 className="font-serif text-xl sm:text-2xl font-semibold text-[#20140D] tracking-normal">
                   Dược liệu thuần khiết
                 </h3>
                 <p className="mt-3 text-[13.5px] sm:text-[14px] leading-relaxed text-[#5C4A3E]">
@@ -534,7 +534,7 @@ export default function AboutPage() {
 
               {/* Card Content */}
               <div className="relative flex flex-1 flex-col px-6 pb-8 pt-2 sm:px-7 sm:pb-9">
-                <h3 className="font-serif text-xl sm:text-2xl font-semibold text-[#20140D] tracking-tight">
+                <h3 className="font-serif text-xl sm:text-2xl font-semibold text-[#20140D] tracking-normal">
                   Đôi bàn tay thấu cảm
                 </h3>
                 <p className="mt-3 text-[13.5px] sm:text-[14px] leading-relaxed text-[#5C4A3E]">
@@ -641,7 +641,7 @@ export default function AboutPage() {
 
                   {/* Card Content */}
                   <div className="relative flex flex-1 flex-col px-6 pb-7 pt-2 sm:px-7 sm:pb-8">
-                    <h3 className="font-serif text-lg sm:text-[19px] leading-snug tracking-tight">
+                    <h3 className="font-serif text-lg sm:text-[19px] leading-snug tracking-normal">
                       <span className="font-semibold text-[#20140D]">{item.sense}</span>
                       <span className="text-[#C49A62] mx-1.5">·</span>
                       <span className="font-normal text-[#8D381B]">{item.detail}</span>
@@ -690,7 +690,7 @@ export default function AboutPage() {
 
                   {/* Card Content */}
                   <div className="relative flex flex-1 flex-col px-6 pb-7 pt-2 sm:px-7 sm:pb-8">
-                    <h3 className="font-serif text-lg sm:text-[19px] leading-snug tracking-tight">
+                    <h3 className="font-serif text-lg sm:text-[19px] leading-snug tracking-normal">
                       <span className="font-semibold text-[#20140D]">{item.sense}</span>
                       <span className="text-[#C49A62] mx-1.5">·</span>
                       <span className="font-normal text-[#8D381B]">{item.detail}</span>
@@ -814,7 +814,7 @@ export default function AboutPage() {
                         <span className="inline-flex items-center justify-center rounded-md bg-[#F6ECE1] px-2 py-0.5 text-xs font-bold font-serif text-[#8D381B]">
                           {step.step}
                         </span>
-                        <h3 className="font-serif text-[16.5px] font-semibold text-[#20140D] tracking-tight">
+                        <h3 className="font-serif text-[16.5px] font-semibold text-[#20140D] tracking-normal">
                           {step.title}
                         </h3>
                       </div>

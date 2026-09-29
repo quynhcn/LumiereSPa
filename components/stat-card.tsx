@@ -17,7 +17,7 @@ export function StatCard({ label, value, icon: Icon, hint, className }: StatCard
       <span className="mb-3 flex h-9 w-9 items-center justify-center rounded-full bg-primary/10 text-primary">
         <Icon className="h-[18px] w-[18px]" />
       </span>
-      <p className="truncate text-xl font-bold tracking-tight text-foreground sm:text-2xl">{value}</p>
+      <p className="truncate text-xl font-bold tracking-normal text-foreground sm:text-2xl">{value}</p>
       <p className="mt-1 text-sm font-semibold text-foreground/85">{label}</p>
       {hint && <p className="mt-1 text-xs font-medium leading-snug text-foreground/70">{hint}</p>}
     </div>

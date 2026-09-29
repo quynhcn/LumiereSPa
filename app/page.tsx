@@ -228,7 +228,7 @@ export default async function HomePage() {
               </div>
 
               {/* Main Headline */}
-              <h2 className="mt-4 font-serif text-3xl sm:text-4xl lg:text-[52px] font-medium leading-[1.12] tracking-[-0.02em] text-[#1F1A17]">
+              <h2 className="mt-4 font-serif text-3xl sm:text-4xl lg:text-[52px] font-medium leading-[1.12] tracking-normal text-[#1F1A17]">
                 Một nhịp nghỉ vừa vặn
                 <br />
                 <span className="font-semibold text-[#8D381B]">giữa phố thị.</span>
@@ -378,7 +378,7 @@ export default async function HomePage() {
               <span className="h-[1px] w-8 sm:w-14 bg-[#8D381B]/40" />
             </div>
 
-            <h2 className="mt-3 font-serif text-3xl sm:text-4xl lg:text-[48px] font-medium leading-[1.15] tracking-[-0.02em] text-[#1F1A17]">
+            <h2 className="mt-3 font-serif text-3xl sm:text-4xl lg:text-[48px] font-medium leading-[1.15] tracking-normal text-[#1F1A17]">
               Nuông chiều bản thân,
               <br />
               nhận thêm ưu đãi.
@@ -423,7 +423,7 @@ export default async function HomePage() {
                 {/* Big Discount Highlight */}
                 <div className="my-5 flex items-baseline gap-2">
                   <span className="font-serif italic text-3xl sm:text-4xl text-[#E8C296]">Giảm</span>
-                  <span className="font-serif text-5xl sm:text-6xl font-normal text-[#E8C296] tracking-tight">
+                  <span className="font-serif text-5xl sm:text-6xl font-normal text-[#E8C296] tracking-normal">
                     {offerPct > 0 ? `${offerPct}%` : '10%'}
                   </span>
                 </div>

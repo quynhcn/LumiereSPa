@@ -174,7 +174,7 @@ export function HeroCarousel({ offerPct = 10 }: { offerPct?: number }) {
             </span>
 
             {/* Headline */}
-            <h1 className="mt-4 font-serif text-4xl sm:text-5xl lg:text-[64px] font-medium leading-[1.08] tracking-[-0.03em] text-white">
+            <h1 className="mt-4 font-serif text-4xl sm:text-5xl lg:text-[64px] font-medium leading-[1.08] tracking-normal text-white">
               {activeSlide.titleLine1}
               <br />
               <em className="font-normal italic text-[#E58F6F]">{activeSlide.titleLine2}</em>
@@ -272,7 +272,7 @@ export function HeroCarousel({ offerPct = 10 }: { offerPct?: number }) {
                   <div className="absolute inset-x-0 bottom-0 p-2 text-center">
                     <span
                       className={cn(
-                        'block truncate rounded-md px-1.5 py-0.5 text-[11px] font-semibold leading-tight tracking-tight shadow-sm',
+                        'block truncate rounded-md px-1.5 py-0.5 text-[11px] font-semibold leading-tight tracking-normal shadow-sm',
                         isActive
                           ? 'bg-black/75 text-white ring-1 ring-white/30'
                           : 'bg-black/50 text-white/90'

@@ -1,6 +1,6 @@
 import './globals.css';
 import type { Metadata } from 'next';
-import { Quicksand, Playfair_Display } from 'next/font/google';
+import { Quicksand } from 'next/font/google';
 import { Toaster } from '@/components/ui/sonner';
 import { AuthProvider } from '@/lib/auth-context';
 import { Analytics } from '@/components/analytics';
@@ -10,14 +10,6 @@ const quicksand = Quicksand({
   subsets: ['latin', 'vietnamese'],
   weight: ['300', '400', '500', '600', '700'],
   variable: '--font-quicksand',
-  display: 'swap',
-});
-
-const playfair = Playfair_Display({
-  subsets: ['latin', 'vietnamese'],
-  weight: ['400', '500', '600', '700'],
-  style: ['normal', 'italic'],
-  variable: '--font-playfair',
   display: 'swap',
 });
 
@@ -49,12 +41,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="vi" className={`${quicksand.variable} ${playfair.variable}`}>
+    <html lang="vi" className={`${quicksand.variable}`}>
       <head>
         <link rel="icon" type="image/png" href="/logo.png" />
         <link rel="apple-touch-icon" href="/logo.png" />
       </head>
-      <body className={`${quicksand.variable} ${playfair.variable} font-sans antialiased`}>
+      <body className={`${quicksand.variable} font-sans antialiased`}>
         <AuthProvider>
           {children}
           <Toaster richColors position="top-center" />

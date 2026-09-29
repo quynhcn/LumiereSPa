@@ -51,7 +51,7 @@
 
 Component dùng chung: `Logo`, `SiteHeader`, `AuthCard` + `LoginForm` (dùng chung cho trang sign-in và dialog), `IconInput`, `RoleGate`, `PageLoader`, `StatusBadge`.
 
-- Toàn bộ app theo ngôn ngữ thiết kế của trang chủ: nền cream, tiêu đề Playfair (`.page-title`), eyebrow màu vàng, logo `Flower2` trong vòng tròn viền.
+- Toàn bộ app theo ngôn ngữ thiết kế của trang chủ: nền cream, tiêu đề Quicksand (`.page-title`), eyebrow màu vàng, logo `Flower2` trong vòng tròn viền.
 - `.btn-primary`/`.btn-outline`/`.btn-cream` trùng khớp với `<Button size="lg">` (một độ bo, cao 48px). Variant `outline`/`ghost` không còn hover màu vàng.
 - Booking: stepper bấm được + **tóm tắt dạng sticky** bên phải (trên mobile nằm dưới form). Bỏ bước "Xác nhận" riêng. "Đặt nhanh bằng câu nói" thu gọn mặc định.
 - `checked_in` có màu riêng (tím nhạt), không còn trùng `confirmed`.

@@ -12,7 +12,7 @@ const config: Config = {
     extend: {
       fontFamily: {
         sans: ['var(--font-quicksand)', 'Quicksand', 'sans-serif'],
-        serif: ['var(--font-playfair)', 'Playfair Display', 'Georgia', 'serif'],
+        serif: ['var(--font-quicksand)', 'Quicksand', 'sans-serif'],
         body: ['var(--font-quicksand)', 'Quicksand', 'sans-serif'],
       },
       backgroundImage: {

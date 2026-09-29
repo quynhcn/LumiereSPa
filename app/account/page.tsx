@@ -94,7 +94,6 @@ function AccountContent() {
     setSaving(true);
     const patch = {
       name: form.name.trim(),
-      phone: form.phone.trim(),
       email: form.email.trim() || null,
       notes: form.notes.trim() || null,
     };
@@ -216,7 +215,7 @@ function AccountContent() {
               </div>
               <div>
                 <Label htmlFor="p-phone">Số điện thoại</Label>
-                <Input id="p-phone" type="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
+                <Input id="p-phone" type="tel" value={form.phone} disabled title="Số điện thoại dùng để xác thực, không thể tự thay đổi" />
               </div>
               <div>
                 <Label htmlFor="p-email">Email</Label>

@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { ArrowRight, Loader2, LockKeyhole, Mail, Phone } from 'lucide-react';
 import { toast } from 'sonner';
 import { supabase } from '@/lib/supabase';
-import { fetchRole, SEED_ACCOUNTS, useAuth, type UserRole } from '@/lib/auth-context';
+import { fetchRole, type UserRole } from '@/lib/auth-context';
 import { track } from '@/lib/analytics';
 import { isValidPhone, cn } from '@/lib/utils';
 import { sendPhoneOtp, verifyPhoneOtp } from '@/lib/phone-auth';
@@ -21,7 +21,7 @@ interface LoginFormProps {
 
 /** Shared by the /sign-in page and the header login dialog. */
 export function LoginForm({ onSuccess, idPrefix = 'login', autoFocus }: LoginFormProps) {
-  const { signInAsSeed } = useAuth();
+
   const [mode, setMode] = useState<'email' | 'phone'>('email');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -75,23 +75,7 @@ export function LoginForm({ onSuccess, idPrefix = 'login', autoFocus }: LoginFor
       return;
     }
 
-    const norm = email.trim().toLowerCase();
-    const seed = SEED_ACCOUNTS[norm];
-    if (seed) {
-      if (password === seed.pass) {
-        setLoading(true);
-        const role = signInAsSeed(norm);
-        track('login', { method: 'password' });
-        toast.success('Đăng nhập thành công');
-        setLoading(false);
-        setPassword('');
-        if (role) onSuccess(role);
-        return;
-      } else {
-        toast.error('Email hoặc mật khẩu không đúng');
-        return;
-      }
-    }
+
 
     setLoading(true);
     const { data, error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
@@ -200,44 +184,7 @@ export function LoginForm({ onSuccess, idPrefix = 'login', autoFocus }: LoginFor
         {!loading ? <ArrowRight className="ml-2 h-4 w-4" /> : null}
       </Button>
 
-      <div className="pt-3 border-t border-border/50">
-        <p className="text-[11px] text-muted-foreground mb-2 text-center">Tài khoản demo nạp sẵn (bấm để điền nhanh):</p>
-        <div className="grid grid-cols-3 gap-1.5 text-xs">
-          <button
-            type="button"
-            onClick={() => {
-              setEmail('admin@lumierespa.vn');
-              setPassword('Admin@123456');
-            }}
-            className="p-2 rounded-lg border border-border/70 hover:border-primary hover:bg-primary/5 transition-all text-center group"
-          >
-            <span className="font-semibold block text-primary text-xs">👑 Admin</span>
-            <span className="text-[10px] text-muted-foreground">Quản trị</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              setEmail('lan@lumierespa.vn');
-              setPassword('Staff@123456');
-            }}
-            className="p-2 rounded-lg border border-border/70 hover:border-primary hover:bg-primary/5 transition-all text-center group"
-          >
-            <span className="font-semibold block text-primary text-xs">💆 Nhân viên</span>
-            <span className="text-[10px] text-muted-foreground">KTV Lan</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              setEmail('khachhang@lumierespa.vn');
-              setPassword('Khach@123456');
-            }}
-            className="p-2 rounded-lg border border-border/70 hover:border-primary hover:bg-primary/5 transition-all text-center group"
-          >
-            <span className="font-semibold block text-primary text-xs">👤 Khách hàng</span>
-            <span className="text-[10px] text-muted-foreground">Khách thân</span>
-          </button>
-        </div>
-      </div>
+
     </form>
   );
 }

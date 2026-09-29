@@ -50,7 +50,7 @@ function StaffContent() {
     if (!session) return;
     (async () => {
       const { data: profile } = await supabase.from('profiles').select('staff_id').eq('id', session.user.id).maybeSingle();
-      const staffId = profile?.staff_id || (session.user.email === 'lan@spaflow.vn' || session.user.email === 'lan@lumierespa.vn' ? 'a045c995-e737-449c-a04d-ccb571b87e00' : null);
+      const staffId = profile?.staff_id;
       if (staffId) {
         const [{ data: staff }, { data: sched }] = await Promise.all([
           supabase.from('staff').select('*').eq('id', staffId).maybeSingle(),

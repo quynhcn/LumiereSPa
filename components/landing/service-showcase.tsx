@@ -158,7 +158,7 @@ export function ServiceShowcase() {
           </div>
 
           {/* Heading with "phù hợp" in terracotta */}
-          <h2 className="mt-3 font-serif text-3xl sm:text-4xl lg:text-[48px] font-medium leading-normal tracking-normal text-[#1F1A17]">
+          <h2 className="mt-3 font-serif text-3xl sm:text-4xl lg:text-[48px] font-medium leading-[1.65] tracking-normal text-[#1F1A17]">
             Chọn dịch vụ <span className="font-semibold text-[#8D381B]">phù hợp</span> cho bạn
           </h2>
 

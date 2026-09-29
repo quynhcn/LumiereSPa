@@ -241,7 +241,7 @@ export default function AboutPage() {
               </div>
 
               {/* Main Headline */}
-              <h1 className="mt-5 font-serif text-4xl sm:text-5xl lg:text-[60px] font-normal leading-normal tracking-normal text-[#1F140E]">
+              <h1 className="mt-5 font-serif text-4xl sm:text-5xl lg:text-[60px] font-normal leading-[1.65] tracking-normal text-[#1F140E]">
                 Nơi thời gian dừng lại,<br />
                 <span className="font-serif italic font-normal text-[#8D381B]">
                   để bạn yêu thương<br />
@@ -409,8 +409,8 @@ export default function AboutPage() {
             </div>
 
             {/* Main Heading */}
-            <h2 className="mt-4 font-serif text-3xl sm:text-4xl lg:text-[46px] font-normal leading-normal text-[#20140D]">
-              <span className="font-semibold block">Một khoảng dừng chân an yên </span>
+            <h2 className="mt-4 font-serif text-3xl sm:text-4xl lg:text-[46px] font-normal leading-[1.4] text-[#20140D]">
+              <span className="font-semibold block pb-3 sm:pb-4">Một khoảng dừng chân an yên </span>
               <span className="font-serif italic font-normal text-[#8D381B]">giữa phố thị.</span>
             </h2>
 
@@ -589,7 +589,7 @@ export default function AboutPage() {
             </div>
 
             {/* Main Heading */}
-            <h2 className="mt-3.5 font-serif text-3xl sm:text-4xl lg:text-[46px] font-bold leading-normal text-[#20140D]">
+            <h2 className="mt-3.5 font-serif text-3xl sm:text-4xl lg:text-[46px] font-bold leading-[1.65] text-[#20140D]">
               Hành Trình Ngũ Quan Dưỡng Sinh.
             </h2>
 
@@ -737,7 +737,7 @@ export default function AboutPage() {
             </div>
 
             {/* Main Heading */}
-            <h2 className="mt-4 font-serif text-3xl sm:text-4xl lg:text-[46px] font-normal leading-normal text-[#20140D]">
+            <h2 className="mt-4 font-serif text-3xl sm:text-4xl lg:text-[46px] font-normal leading-[1.65] text-[#20140D]">
               <span className="font-bold">Đến Lumière, </span>
               <span className="font-serif italic font-normal text-[#8D381B]">gác lại vội vàng.</span>
             </h2>
@@ -1029,8 +1029,8 @@ export default function AboutPage() {
                 </div>
 
                 {/* Main Heading */}
-                <h2 className="mt-4 font-serif text-3xl sm:text-4xl lg:text-[44px] font-normal leading-normal text-[#20140D]">
-                  <span className="font-bold block">Hôm nay, hãy để</span>
+                <h2 className="mt-4 font-serif text-3xl sm:text-4xl lg:text-[44px] font-normal leading-[1.65] text-[#20140D]">
+                  <span className="font-bold block pb-2 sm:pb-3">Hôm nay, hãy để</span>
                   <span className="font-bold">
                     <span className="text-[#8D381B]">Lumière</span> chăm sóc bạn.
                   </span>

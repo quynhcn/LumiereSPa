@@ -174,7 +174,7 @@ export function HeroCarousel({ offerPct = 10 }: { offerPct?: number }) {
             </span>
 
             {/* Headline */}
-            <h1 className="mt-4 font-serif text-4xl sm:text-5xl lg:text-[64px] font-medium leading-normal tracking-normal text-white">
+            <h1 className="mt-4 font-serif text-4xl sm:text-5xl lg:text-[64px] font-medium leading-[1.65] tracking-normal text-white">
               {activeSlide.titleLine1}
               <br />
               <em className="font-normal italic text-[#E58F6F]">{activeSlide.titleLine2}</em>

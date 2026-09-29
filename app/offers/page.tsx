@@ -180,7 +180,7 @@ export default function OffersPage() {
               </div>
 
               {/* Main Heading with Dual Typography */}
-              <h1 className="mt-3.5 font-serif text-3xl sm:text-4xl lg:text-[50px] font-normal leading-snug text-[#20140D]">
+              <h1 className="mt-3.5 font-serif text-3xl sm:text-4xl lg:text-[50px] font-normal leading-normal text-[#20140D]">
                 <span className="font-bold">Ưu đãi tinh tế</span>
                 <br />
                 <span className="italic text-[#8D381B]">dành riêng cho bạn.</span>
@@ -518,7 +518,7 @@ export default function OffersPage() {
               </div>
 
               {/* Main Headline */}
-              <h2 className="mt-4 font-serif text-3xl sm:text-4xl lg:text-5xl font-normal leading-snug text-[#20140D]">
+              <h2 className="mt-4 font-serif text-3xl sm:text-4xl lg:text-5xl font-normal leading-normal text-[#20140D]">
                 Hôm nay, hãy dành<br />
                 thời gian cho <span className="font-serif italic text-[#8D381B]">chính mình</span>
                 <span className="inline-block ml-2.5 align-middle text-[#8D381B]/80">

@@ -228,7 +228,7 @@ export default async function HomePage() {
               </div>
 
               {/* Main Headline */}
-              <h2 className="mt-4 font-serif text-3xl sm:text-4xl lg:text-[52px] font-medium leading-snug tracking-normal text-[#1F1A17]">
+              <h2 className="mt-4 font-serif text-3xl sm:text-4xl lg:text-[52px] font-medium leading-normal tracking-normal text-[#1F1A17]">
                 Một nhịp nghỉ vừa vặn
                 <br />
                 <span className="font-semibold text-[#8D381B]">giữa phố thị.</span>
@@ -378,7 +378,7 @@ export default async function HomePage() {
               <span className="h-[1px] w-8 sm:w-14 bg-[#8D381B]/40" />
             </div>
 
-            <h2 className="mt-3 font-serif text-3xl sm:text-4xl lg:text-[48px] font-medium leading-snug tracking-normal text-[#1F1A17]">
+            <h2 className="mt-3 font-serif text-3xl sm:text-4xl lg:text-[48px] font-medium leading-normal tracking-normal text-[#1F1A17]">
               Nuông chiều bản thân,
               <br />
               nhận thêm ưu đãi.
@@ -705,7 +705,7 @@ export default async function HomePage() {
               <span className="text-xs sm:text-sm font-semibold tracking-[0.2em] text-[#E8A87C] uppercase">
                 TẬN HƯỞNG THEO CÁCH CỦA BẠN
               </span>
-              <h2 className="mt-4 font-serif text-3xl sm:text-4xl lg:text-5xl font-normal leading-snug text-[#FAF6F0]">
+              <h2 className="mt-4 font-serif text-3xl sm:text-4xl lg:text-5xl font-normal leading-normal text-[#FAF6F0]">
                 Thời gian nghỉ ngơi<br />
                 cũng xứng đáng được<br />
                 <span className="font-serif italic text-[#E8A87C]">chăm chút.</span>
@@ -933,7 +933,7 @@ export default async function HomePage() {
               </div>
 
               {/* Main Headline */}
-              <h2 className="mt-4 font-serif text-3xl sm:text-4xl lg:text-5xl font-normal leading-snug text-[#20140D]">
+              <h2 className="mt-4 font-serif text-3xl sm:text-4xl lg:text-5xl font-normal leading-normal text-[#20140D]">
                 Hôm nay, hãy dành<br />
                 thời gian cho <span className="font-serif italic text-[#8D381B]">chính mình</span>
                 <span className="inline-block ml-2.5 align-middle text-[#8D381B]/80">

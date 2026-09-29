@@ -319,7 +319,7 @@ export default function ServicesPage() {
               <span className="text-[11px] sm:text-xs font-semibold uppercase tracking-[0.22em] text-[#9B3E1F]">
                 DỊCH VỤ &amp; LIỆU TRÌNH · {SITE.name}
               </span>
-              <h1 className="mt-3 font-serif text-3xl sm:text-4xl lg:text-[46px] font-normal leading-snug text-[#20140D]">
+              <h1 className="mt-3 font-serif text-3xl sm:text-4xl lg:text-[46px] font-normal leading-normal text-[#20140D]">
                 <span className="font-bold">Chọn liệu trình</span>{' '}
                 <span className="italic text-[#8D381B]">thích hợp</span>
                 <br />

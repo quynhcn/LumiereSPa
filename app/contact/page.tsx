@@ -93,7 +93,7 @@ export default function ContactPage() {
                 <span>LIÊN HỆ &amp; ĐẶT HẸN · LUMIÈRE SPA</span>
               </div>
 
-              <h1 className="font-serif text-[40px] sm:text-[56px] font-bold leading-[1.08] tracking-tight text-[#1F140E]">
+              <h1 className="font-serif text-[40px] sm:text-[56px] font-bold leading-snug tracking-normal text-[#1F140E]">
                 Chúng tôi luôn<br />
                 sẵn sàng<br />
                 <span className="italic font-normal text-[#8D381B]">lắng nghe bạn.</span>

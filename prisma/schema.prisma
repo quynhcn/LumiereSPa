@@ -1,0 +1,208 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ------------------------------------------------------
+// ENUMS
+// ------------------------------------------------------
+
+enum Role {
+  admin
+  staff
+  customer
+}
+
+enum AppointmentStatus {
+  pending
+  confirmed
+  cancelled
+  completed
+}
+
+enum ServiceType {
+  single
+  package
+}
+
+// ------------------------------------------------------
+// MODELS
+// ------------------------------------------------------
+
+// Replaces auth.users + public.profiles
+model User {
+  id             String    @id @default(uuid()) @db.Uuid
+  email          String    @unique
+  passwordHash   String
+  role           Role      @default(customer)
+  staffId        String?   @db.Uuid
+  staff          Staff?    @relation(fields: [staffId], references: [id])
+  customer       Customer? // One-to-one with customer
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@map("users")
+}
+
+model Staff {
+  id               String          @id @default(uuid()) @db.Uuid
+  name             String
+  phone            String?
+  email            String?
+  avatarUrl        String?
+  role             String          @default("therapist")
+  isActive         Boolean         @default(true)
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+  users            User[]
+  staffServices    StaffService[]
+  staffSchedules   StaffSchedule[]
+  staffTimeOffs    StaffTimeOff[]
+  appointments     Appointment[]
+
+  @@map("staff")
+}
+
+model Customer {
+  id               String        @id @default(uuid()) @db.Uuid
+  userId           String?       @unique @db.Uuid
+  user             User?         @relation(fields: [userId], references: [id], onDelete: SetNull)
+  name             String
+  phone            String?       @unique
+  email            String?       @unique
+  phoneVerified    Boolean       @default(false)
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+  appointments     Appointment[]
+  giftCards        GiftCard[]
+  slotHolds        SlotHold[]
+
+  @@map("customers")
+}
+
+model Service {
+  id               String          @id @default(uuid()) @db.Uuid
+  name             String
+  description      String?
+  durationMinutes  Int             @default(60)
+  price            Int
+  type             ServiceType     @default(single)
+  isActive         Boolean         @default(true)
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+  staffServices    StaffService[]
+  appointments     Appointment[]
+  servicePackages  ServicePackage[]
+
+  @@map("services")
+}
+
+model StaffService {
+  staffId          String   @db.Uuid
+  serviceId        String   @db.Uuid
+  staff            Staff    @relation(fields: [staffId], references: [id], onDelete: Cascade)
+  service          Service  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+
+  @@id([staffId, serviceId])
+  @@map("staff_services")
+}
+
+model StaffSchedule {
+  id               String   @id @default(uuid()) @db.Uuid
+  staffId          String   @db.Uuid
+  staff            Staff    @relation(fields: [staffId], references: [id], onDelete: Cascade)
+  dayOfWeek        Int      // 0 = Sunday, 1 = Monday, etc.
+  startTime        String   @db.Time
+  endTime          String   @db.Time
+
+  @@map("staff_schedules")
+}
+
+model StaffTimeOff {
+  id               String   @id @default(uuid()) @db.Uuid
+  staffId          String   @db.Uuid
+  staff            Staff    @relation(fields: [staffId], references: [id], onDelete: Cascade)
+  startTime        DateTime
+  endTime          DateTime
+  reason           String?
+  isApproved       Boolean  @default(false)
+
+  @@map("staff_time_off")
+}
+
+model ServicePackage {
+  id               String   @id @default(uuid()) @db.Uuid
+  serviceId        String   @db.Uuid
+  service          Service  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  sessionCount     Int
+  price            Int
+  validDays        Int      @default(90)
+  isActive         Boolean  @default(true)
+  createdAt        DateTime @default(now())
+
+  @@map("service_packages")
+}
+
+model GiftCard {
+  id               String   @id @default(uuid()) @db.Uuid
+  customerId       String   @db.Uuid
+  customer         Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  packageId        String   @db.Uuid // Referencing ServicePackage id, but decoupled logic might be needed
+  remainingSessions Int
+  expiresAt        DateTime?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@map("gift_cards")
+}
+
+model Appointment {
+  id               String            @id @default(uuid()) @db.Uuid
+  bookingCode      String            @unique
+  customerId       String            @db.Uuid
+  customer         Customer          @relation(fields: [customerId], references: [id])
+  serviceId        String            @db.Uuid
+  service          Service           @relation(fields: [serviceId], references: [id])
+  staffId          String            @db.Uuid
+  staff            Staff             @relation(fields: [staffId], references: [id])
+  startTime        DateTime
+  endTime          DateTime
+  status           AppointmentStatus @default(pending)
+  originalPrice    Int
+  discountAmount   Int               @default(0)
+  finalPrice       Int
+  isFirstVisit     Boolean           @default(false)
+  giftCardId       String?           @db.Uuid
+  notes            String?
+  cancellationReason String?
+  remindedAt       DateTime?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+
+  @@map("appointments")
+}
+
+model SlotHold {
+  id               String   @id @default(uuid()) @db.Uuid
+  staffId          String   @db.Uuid
+  customerPhone    String
+  customer         Customer? @relation(fields: [customerPhone], references: [phone])
+  startTime        DateTime
+  endTime          DateTime
+  expiresAt        DateTime
+  createdAt        DateTime @default(now())
+
+  @@map("slot_holds")
+}
+
+model AppSetting {
+  key              String   @id
+  value            Json
+  updatedAt        DateTime @default(now())
+
+  @@map("app_settings")
+}

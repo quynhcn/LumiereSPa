@@ -116,8 +116,8 @@ model StaffSchedule {
   staffId          String   @db.Uuid
   staff            Staff    @relation(fields: [staffId], references: [id], onDelete: Cascade)
   dayOfWeek        Int      // 0 = Sunday, 1 = Monday, etc.
-  startTime        String   @db.Time
-  endTime          String   @db.Time
+  startTime        String
+  endTime          String
 
   @@map("staff_schedules")
 }

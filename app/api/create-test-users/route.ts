@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   try {
     const results = [];
@@ -8,7 +10,7 @@ export async function GET() {
     // Create Admin
     const { data: adminData, error: adminErr } = await supabase.auth.signUp({
       email: 'admin@lumierespa.vn',
-      password: 'Admin@123456'
+      password: 'Lumiere!@#2026Admin'
     });
     if (adminErr) results.push({ msg: 'Admin signup error', error: adminErr.message });
     else {
@@ -26,7 +28,7 @@ export async function GET() {
     // Create Staff
     const { data: staffData, error: staffErr } = await supabase.auth.signUp({
       email: 'lan@lumierespa.vn',
-      password: 'Staff@123456'
+      password: 'Lumiere!@#2026Staff'
     });
     if (staffErr) results.push({ msg: 'Staff signup error', error: staffErr.message });
     else {
@@ -46,7 +48,7 @@ export async function GET() {
     // Create Customer
     const { data: custData, error: custErr } = await supabase.auth.signUp({
       email: 'khachhang@lumierespa.vn',
-      password: 'Khach@123456'
+      password: 'Lumiere!@#2026Khach'
     });
     if (custErr) results.push({ msg: 'Customer signup error', error: custErr.message });
     else results.push({ msg: 'Customer created', id: custData.user!.id });

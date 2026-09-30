@@ -78,32 +78,26 @@ export function LoginForm({ onSuccess, idPrefix = 'login', autoFocus }: LoginFor
 
 
     setLoading(true);
-    
-    try {
-      const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email.trim(), password })
-      });
-      
-      const data = await res.json();
-      
-      if (!res.ok) {
-        toast.error(data.error || 'Đăng nhập thất bại');
-        setLoading(false);
-        return;
-      }
-      
-      const role = data.user?.role || 'customer';
+    const { data, error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
+
+    if (error || !data.session) {
+      toast.error(
+        error?.message === 'Invalid login credentials'
+          ? 'Email hoặc mật khẩu không đúng'
+          : error?.message === 'Email not confirmed'
+            ? 'Tài khoản chưa được xác nhận. Vui lòng kiểm tra email.'
+            : 'Không thể đăng nhập. Vui lòng thử lại.'
+      );
+      setLoading(false);
+      return;
+    }
+
+    const role = await fetchRole(data.session.user.id);
     track('login', { method: 'password' });
     toast.success('Đăng nhập thành công');
     setLoading(false);
     setPassword('');
     onSuccess(role);
-    } catch (err: any) {
-      toast.error('Lỗi kết nối máy chủ');
-      setLoading(false);
-    }
   };
 
   const tabs = (

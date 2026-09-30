@@ -1,19 +1,13 @@
 'use client';
 
-import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
+import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
+import type { Session, User } from '@supabase/supabase-js';
+import { supabase } from '@/lib/supabase';
 
 export type UserRole = 'admin' | 'staff' | 'customer';
 
-export interface User {
-  id: string;
-  email: string;
-  role: UserRole;
-  customer?: any;
-  staff?: any;
-}
-
 interface AuthContextValue {
-  session: { user: User } | null; // Mock session wrapper for compatibility
+  session: Session | null;
   user: User | null;
   role: UserRole | null;
   loading: boolean;
@@ -29,48 +23,77 @@ const AuthContext = createContext<AuthContextValue>({
 });
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
+  const [role, setRole] = useState<UserRole | null>(null);
   const [loading, setLoading] = useState(true);
+  const roleUserId = useRef<string | null>(null);
 
   useEffect(() => {
     let mounted = true;
+    let timeoutId: ReturnType<typeof setTimeout>;
+    let authChangeVersion = 0;
 
-    const fetchSession = async () => {
-      try {
-        const res = await fetch('/api/auth/me');
-        if (!res.ok) throw new Error('Not auth');
-        const data = await res.json();
-        
-        if (mounted) {
-          setUser(data.user || null);
-          setLoading(false);
-        }
-      } catch (err) {
-        if (mounted) {
-          setUser(null);
-          setLoading(false);
-        }
+    const applySession = async (nextSession: Session | null) => {
+      if (!mounted) return;
+      setSession(nextSession);
+      if (!nextSession) {
+        roleUserId.current = null;
+        setRole(null);
+        setLoading(false);
+        return;
       }
+      // TOKEN_REFRESHED etc. for the same user: role is unchanged, skip the query
+      if (roleUserId.current === nextSession.user.id) {
+        setLoading(false);
+        return;
+      }
+
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', nextSession.user.id)
+        .maybeSingle();
+      if (!mounted) return;
+      roleUserId.current = nextSession.user.id;
+      setRole((profile?.role as UserRole) || 'customer');
+      setLoading(false);
     };
 
-    void fetchSession();
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, newSession) => {
+      authChangeVersion += 1;
+      void applySession(newSession);
+    });
+
+    const initialVersion = authChangeVersion;
+    supabase.auth.getSession()
+      .then(({ data }) => {
+        if (authChangeVersion === initialVersion) void applySession(data.session);
+      })
+      .catch(() => {
+        if (mounted) setLoading(false);
+      });
+
+    timeoutId = setTimeout(() => {
+      if (mounted) setLoading(false);
+    }, 5000);
 
     return () => {
       mounted = false;
+      clearTimeout(timeoutId);
+      listener.subscription.unsubscribe();
     };
   }, []);
 
   const signOut = async () => {
-    setUser(null);
+    roleUserId.current = null;
+    setSession(null);
+    setRole(null);
     setLoading(false);
-    await fetch('/api/auth/logout', { method: 'POST' });
-    window.location.href = '/login';
+    await supabase.auth.signOut();
   };
 
-  const session = user ? { user } : null;
-
   return (
-    <AuthContext.Provider value={{ session, user, role: user?.role || null, loading, signOut }}>
+    <AuthContext.Provider value={{ session, user: session?.user ?? null, role, loading, signOut }}>
       {children}
     </AuthContext.Provider>
   );
@@ -90,4 +113,9 @@ export function getRedirectPath(role: UserRole | null): string {
 export function safeRedirect(path: string | null | undefined): string | null {
   if (!path || !path.startsWith('/') || path.startsWith('//') || path.startsWith('/\\')) return null;
   return path;
+}
+
+export async function fetchRole(userId: string): Promise<UserRole> {
+  const { data } = await supabase.from('profiles').select('role').eq('id', userId).maybeSingle();
+  return (data?.role as UserRole) || 'customer';
 }

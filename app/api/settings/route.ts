@@ -28,20 +28,4 @@ export async function GET() {
   }
 }
 
-export async function POST(request: Request) {
-  try {
-    const body = await request.json();
-    const { data, error } = await supabase
-      .from('app_settings')
-      .upsert({ id: 1, ...body, updated_at: new Date().toISOString() })
-      .select()
-      .maybeSingle();
 
-    if (error) {
-      return NextResponse.json({ ...DEFAULT_SETTINGS, ...body, saved_locally: true });
-    }
-    return NextResponse.json(data);
-  } catch {
-    return NextResponse.json(DEFAULT_SETTINGS);
-  }
-}

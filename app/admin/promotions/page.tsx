@@ -70,12 +70,15 @@ export default function PromotionsPage() {
   // ── First visit ──
   const saveSettings = async (patch: Partial<AppSettings>) => {
     try {
-      const res = await fetch('/api/settings', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(patch),
-      });
-      const data = await res.json();
+      const { data, error } = await supabase
+        .from('app_settings')
+        .update(patch)
+        .eq('id', 1)
+        .select()
+        .maybeSingle();
+
+      if (error) throw error;
+      
       setSettings((s) => (s ? { ...s, ...patch } : (data as AppSettings)));
       toast.success('Đã lưu ưu đãi thành công');
     } catch {
